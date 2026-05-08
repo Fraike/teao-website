@@ -7,18 +7,18 @@ export function CTASection() {
     <section
       className="relative py-24 text-white overflow-hidden"
       style={{
-        background: "linear-gradient(90deg, rgba(17,19,21,.96), rgba(17,19,21,.68)), url('/images/company/factory-entrance.jpg') center / cover no-repeat",
+        background: "linear-gradient(135deg, #111827, #1F2937)",
       }}
       id="contact"
     >
       {/* Decorative ring */}
-      <div className="absolute w-[440px] h-[440px] -right-[110px] -top-[130px] rounded-full border border-[#ED7606]/25 pointer-events-none" />
+      <div className="absolute w-[440px] h-[440px] -right-[110px] -top-[130px] rounded-full border border-[#ED7606]/20 pointer-events-none" />
 
       <div className="shell relative z-10">
         <div className="grid lg:grid-cols-[minmax(0,0.8fr)_minmax(320px,0.42fr)] gap-12 items-end">
           <Reveal>
             <span className="eyebrow">Start a Project</span>
-            <h2 className="mt-3.5 max-w-[790px] text-[clamp(42px,5vw,78px)] leading-[0.92] tracking-[-0.06em] font-black">
+            <h2 className="mt-3.5 max-w-[790px] text-[clamp(36px,4.5vw,66px)] leading-[0.92] tracking-[-0.05em] font-black">
               Share the application. Get a practical damper proposal.
             </h2>
             <p className="mt-4 text-white/65 text-lg max-w-[600px]">
@@ -27,7 +27,7 @@ export function CTASection() {
             </p>
           </Reveal>
 
-          <aside className="p-6 rounded-lg border border-white/15 bg-white/8 backdrop-blur-xl">
+          <aside className="p-6 rounded-lg border border-white/15 bg-white/6 backdrop-blur-xl">
             <h3 className="text-white text-xl font-extrabold leading-tight">
               Technical quotation contact
             </h3>

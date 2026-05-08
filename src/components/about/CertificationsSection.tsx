@@ -6,7 +6,7 @@ import { patentCertificates, systemCertificates } from "@/content/about";
 
 export function CertificationsSection() {
   return (
-    <section className="py-16 lg:py-24 bg-[#F7F7F5] text-[#171717]" id="quality-certifications">
+    <section className="py-16 lg:py-24 bg-white" id="quality-certifications">
       <div className="shell">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -17,11 +17,11 @@ export function CertificationsSection() {
         >
           <div>
             <span className="eyebrow">Quality Credentials</span>
-            <h2 className="mt-2.5 lg:mt-3.5 text-[28px] sm:text-[34px] lg:text-[clamp(34px,3.2vw,46px)] leading-[1.04] tracking-[-0.04em] font-black text-balance">
+            <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3vw,42px)] leading-[1.04] tracking-[-0.04em] font-black text-balance text-[#111827]">
               IATF 16949 and ISO 14001 certified systems, backed by 20+ patents.
             </h2>
           </div>
-          <p className="text-[#666] text-[15px] lg:text-[18px] leading-relaxed max-w-[620px]">
+          <p className="text-[#6B7280] text-[15px] lg:text-[17px] leading-relaxed max-w-[620px]">
             TEAO is an automotive quality system and environmental management system certified
             manufacturer, a high-tech enterprise, and a long-term developer of patented damper
             structures and mechanisms.
@@ -34,18 +34,18 @@ export function CertificationsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-6% 0px" }}
             transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-2xl border border-[#171717]/10 bg-white p-5 lg:p-6 shadow-[0_18px_50px_rgba(21,25,30,.06)]"
+            className="rounded-2xl border border-[#E5E7EB] bg-white p-5 lg:p-6 shadow-[0_4px_20px_rgba(0,0,0,.03)]"
           >
             <div className="flex items-start justify-between gap-5 mb-5">
               <div>
                 <span className="text-[#ED7606] text-xs font-black uppercase tracking-[0.14em]">
                   System Certificates
                 </span>
-                <h3 className="mt-2 text-2xl lg:text-3xl leading-tight font-black">
+                <h3 className="mt-2 text-2xl lg:text-3xl leading-tight font-black text-[#111827]">
                   IATF 16949 / ISO 14001
                 </h3>
               </div>
-              <span className="hidden sm:inline-flex rounded-full border border-[#171717]/10 px-3 py-1 text-xs font-bold text-[#666]">
+              <span className="hidden sm:inline-flex rounded-full border border-[#E5E7EB] px-3 py-1 text-xs font-bold text-[#6B7280]">
                 Factory Management
               </span>
             </div>
@@ -61,7 +61,7 @@ export function CertificationsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-6% 0px" }}
             transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-2xl border border-[#171717]/10 bg-[#171717] p-5 lg:p-6 text-white shadow-[0_18px_50px_rgba(21,25,30,.12)]"
+            className="rounded-2xl border border-[#111827]/10 bg-[#111827] p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(0,0,0,.06)]"
           >
             <div className="flex items-start justify-between gap-5 mb-5">
               <div>
@@ -107,7 +107,7 @@ function CertificateCard({
       className={`group overflow-hidden rounded-xl border transition-all duration-300 hover:-translate-y-1 ${
         dark
           ? "border-white/10 bg-white/[0.04] hover:border-[#ED7606]/35"
-          : "border-[#171717]/10 bg-[#F8F8F6] hover:border-[#ED7606]/35"
+          : "border-[#E5E7EB] bg-[#F8F9FA] hover:border-[#ED7606]/35"
       }`}
     >
       <div className={`relative aspect-[4/3] ${dark ? "bg-white/8" : "bg-white"}`}>
@@ -120,10 +120,10 @@ function CertificateCard({
         />
       </div>
       <div className="p-4">
-        <h4 className="text-sm lg:text-base font-extrabold tracking-[-0.02em]">
+        <h4 className={`text-sm lg:text-base font-extrabold tracking-[-0.02em] ${dark ? "text-white" : "text-[#111827]"}`}>
           {cert.name}
         </h4>
-        <p className={`mt-1 text-xs lg:text-sm leading-relaxed ${dark ? "text-white/45" : "text-[#666]"}`}>
+        <p className={`mt-1 text-xs lg:text-sm leading-relaxed ${dark ? "text-white/45" : "text-[#6B7280]"}`}>
           {cert.description}
         </p>
       </div>

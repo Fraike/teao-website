@@ -64,7 +64,7 @@ export default function TorqueConverter() {
   return (
     <div className="max-w-2xl mx-auto">
       {/* Input Card */}
-      <div className="rounded-2xl border border-white/10 bg-[#171717] p-6 lg:p-8 shadow-[0_24px_64px_rgba(0,0,0,.25)]">
+      <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-8 shadow-[0_4px_24px_rgba(0,0,0,.04)]">
         {/* Input row */}
         <div className="flex flex-col sm:flex-row gap-3">
           <input
@@ -72,12 +72,12 @@ export default function TorqueConverter() {
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Enter value..."
-            className="flex-1 h-14 px-5 rounded-xl border border-white/15 bg-white/[0.06] text-white text-lg font-semibold placeholder:text-white/20 focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all"
+            className="flex-1 h-14 px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#111827] text-lg font-semibold placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all"
           />
           <select
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-            className="h-14 px-5 rounded-xl border border-white/15 bg-white/[0.06] text-white text-sm font-bold focus:outline-none focus:border-[#ED7606] cursor-pointer transition-all appearance-none"
+            className="h-14 px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#374151] text-sm font-bold focus:outline-none focus:border-[#ED7606] cursor-pointer transition-all appearance-none"
             style={{
               backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ED7606' viewBox='0 0 16 16'%3E%3Cpath d='M8 10L4 6h8z'/%3E%3C/svg%3E")`,
               backgroundRepeat: "no-repeat",
@@ -86,7 +86,7 @@ export default function TorqueConverter() {
             }}
           >
             {UNITS.map((u) => (
-              <option key={u.key} value={u.key} className="bg-[#171717] text-white">
+              <option key={u.key} value={u.key} className="bg-white text-[#374151]">
                 {u.label}
               </option>
             ))}
@@ -95,10 +95,10 @@ export default function TorqueConverter() {
 
         {/* Arrow divider */}
         <div className="flex items-center gap-3 my-6">
-          <div className="flex-1 h-px bg-white/8" />
+          <div className="flex-1 h-px bg-[#E5E7EB]" />
           <ArrowDown size={16} className="text-[#ED7606] shrink-0" strokeWidth={2.5} />
-          <span className="text-white/30 text-xs font-bold uppercase tracking-[0.12em]">Converted</span>
-          <div className="flex-1 h-px bg-white/8" />
+          <span className="text-[#9CA3AF] text-xs font-bold uppercase tracking-[0.12em]">Converted</span>
+          <div className="flex-1 h-px bg-[#E5E7EB]" />
         </div>
 
         {/* Results grid */}
@@ -111,18 +111,18 @@ export default function TorqueConverter() {
                   key={r.key}
                   className={`rounded-xl p-3.5 lg:p-4 transition-all duration-300 ${
                     teaUnit
-                      ? "border border-[#ED7606]/30 bg-[#ED7606]/8"
-                      : "border border-white/6 bg-white/[0.025] hover:border-white/12"
+                      ? "border border-[#ED7606]/40 bg-[#ED7606]/6"
+                      : "border border-[#E5E7EB] bg-[#F8F9FA] hover:border-[#D1D5DB]"
                   }`}
                 >
-                  <div className="text-white/35 text-[10px] lg:text-[11px] font-bold uppercase tracking-[0.08em] mb-1">
+                  <div className="text-[#9CA3AF] text-[10px] lg:text-[11px] font-bold uppercase tracking-[0.08em] mb-1">
                     {r.label}
                     {teaUnit && (
                       <span className="ml-1.5 text-[#ED7606] text-[9px]">TEAO</span>
                     )}
                   </div>
                   <div className={`text-lg lg:text-xl font-black tracking-[-0.03em] tabular-nums ${
-                    teaUnit ? "text-[#FF9A3C]" : "text-white/90"
+                    teaUnit ? "text-[#ED7606]" : "text-[#111827]"
                   }`}>
                     {formatValue(r.value)}
                   </div>
@@ -131,14 +131,14 @@ export default function TorqueConverter() {
             })}
           </div>
         ) : (
-          <div className="text-center py-8 text-white/25 text-sm">
+          <div className="text-center py-8 text-[#9CA3AF] text-sm">
             Enter a value to see converted results
           </div>
         )}
       </div>
 
       {/* Reference note */}
-      <p className="mt-4 text-center text-white/25 text-xs">
+      <p className="mt-4 text-center text-[#9CA3AF] text-xs">
         TEAO damper torque is primarily specified in gf·cm. Market products use various units — use this tool for quick comparison.
       </p>
     </div>

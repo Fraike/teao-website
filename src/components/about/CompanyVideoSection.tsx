@@ -10,7 +10,7 @@ export function CompanyVideoSection() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section className="py-16 lg:py-24 bg-[#0a0b0d] text-white" id="company-video">
+    <section className="py-16 lg:py-24 bg-white" id="company-video">
       <div className="shell">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -20,10 +20,10 @@ export function CompanyVideoSection() {
           className="text-center mb-8 lg:mb-10"
         >
           <span className="eyebrow">Company Video</span>
-          <h2 className="mt-2.5 lg:mt-3.5 text-[28px] sm:text-[34px] lg:text-[clamp(34px,4vw,52px)] leading-[1.02] tracking-[-0.04em] font-extrabold">
+          <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3.6vw,46px)] leading-[1.02] tracking-[-0.04em] font-extrabold text-[#111827]">
             Inside TEAO Manufacturing
           </h2>
-          <p className="mt-3 text-white/50 text-[15px] lg:text-[17px] max-w-[560px] mx-auto">
+          <p className="mt-3 text-[#6B7280] text-[15px] lg:text-[17px] max-w-[560px] mx-auto">
             Watch our company video to learn more about our factory, production lines, testing
             capabilities and engineering support.
           </p>
@@ -34,7 +34,7 @@ export function CompanyVideoSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-8% 0px" }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="relative max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-[0_28px_80px_rgba(0,0,0,.35)] bg-black"
+          className="relative max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_32px_rgba(0,0,0,.05)] bg-black"
         >
           {playing ? (
             <iframe
@@ -57,7 +57,7 @@ export function CompanyVideoSection() {
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 896px"
               />
-              <div className="absolute inset-0 bg-black/45 group-hover:bg-black/35 transition-colors duration-300" />
+              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
 
               <motion.div
                 whileHover={{ scale: 1.08 }}

@@ -35,15 +35,15 @@ const contactFAQ = [
   },
   {
     q: "Can I request samples before mass production?",
-    a: "Yes. TEAO provides prototype and pre-production samples for customer fitment testing and validation. Sample lead time is typically 2-4 weeks depending on complexity. We recommend testing samples in your assembly before confirming mass production specifications.",
+    a: "Yes. TEAO provides prototype and pre-production samples for customer fitment testing and validation. Sample lead time is typically 2-4 weeks depending on complexity.",
   },
   {
     q: "How long does tooling and production take?",
-    a: "New tooling typically takes 4-8 weeks. Mass production lead time after tooling qualification is usually 4-6 weeks for initial orders, reducing for repeat orders. Rush schedules may be available — please discuss with our team.",
+    a: "New tooling typically takes 4-8 weeks. Mass production lead time after tooling qualification is usually 4-6 weeks for initial orders, reducing for repeat orders.",
   },
   {
     q: "Can TEAO customize the torque value for my application?",
-    a: "Yes. Custom torque adjustment is one of our core engineering capabilities. We can tune gear damper torque to your exact specification rather than using fixed off-the-shelf values. Provide your torque target and tolerance range for evaluation.",
+    a: "Yes. Custom torque adjustment is one of our core engineering capabilities. Provide your torque target and tolerance range for evaluation.",
   },
 ];
 
@@ -51,49 +51,49 @@ export default function ContactPage() {
   return (
     <>
       {/* ========== Hero ========== */}
-      <section className="relative pt-32 lg:pt-40 pb-16 lg:pb-20 bg-[#0a0b0d] text-white overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.35]"
+      <section className="relative pt-32 lg:pt-40 pb-16 lg:pb-20 bg-[#F8F9FA] overflow-hidden">
+        <div className="absolute inset-0 opacity-[0.3]"
           style={{
-            backgroundImage: "linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px)",
+            backgroundImage: "linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.03) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
             maskImage: "linear-gradient(180deg, #000, transparent 88%)",
           }}
         />
-        <div className="absolute w-[460px] h-[460px] -right-[120px] -bottom-[140px] rounded-full border border-[#ED7606]/15 pointer-events-none" />
+        <div className="absolute w-[460px] h-[460px] -right-[120px] -bottom-[140px] rounded-full border border-[#ED7606]/12 pointer-events-none" />
 
         <div className="shell relative z-10">
           <div className="grid lg:grid-cols-[1fr_0.7fr] gap-8 lg:gap-14 items-end">
             <div>
               <span className="eyebrow">Contact</span>
-              <h1 className="mt-3.5 max-w-[760px] text-[34px] sm:text-[44px] lg:text-[clamp(46px,4vw,58px)] leading-[1.06] tracking-[-0.04em] font-black text-balance">
+              <h1 className="mt-3.5 max-w-[680px] text-[clamp(30px,4vw,54px)] leading-[0.94] tracking-[-0.05em] font-black text-[#111827]">
                 Start a project with TEAO engineering.
               </h1>
-              <p className="mt-4 text-white/55 text-lg max-w-[580px] leading-relaxed">
-                Share your application details, torque target and annual volume. Our team
-                will recommend a suitable damper platform or define a custom solution.
+              <p className="mt-4 text-[#6B7280] text-lg max-w-[580px] leading-relaxed">
+                Share your application details, torque target and annual volume. Our team will
+                recommend a suitable damper platform or define a custom solution.
               </p>
             </div>
 
             <div className="flex flex-col gap-3">
               <a
                 href={`mailto:${SITE_CONFIG.email}`}
-                className="flex items-center gap-3.5 p-4 rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] hover:border-[#ED7606]/30 transition-all duration-300"
+                className="flex items-center gap-3.5 p-4 rounded-xl border border-[#E5E7EB] bg-white hover:shadow-md hover:border-[#ED7606]/30 transition-all duration-300"
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/15">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/10">
                   <Mail size={18} strokeWidth={2} className="text-[#ED7606]" />
                 </span>
                 <div>
-                  <div className="text-xs text-white/45 font-bold">Email</div>
-                  <div className="text-sm font-semibold text-white/85">{SITE_CONFIG.email}</div>
+                  <div className="text-xs text-[#9CA3AF] font-bold">Email</div>
+                  <div className="text-sm font-semibold text-[#374151]">{SITE_CONFIG.email}</div>
                 </div>
               </a>
-              <div className="flex items-start gap-3.5 p-4 rounded-xl border border-white/10 bg-white/[0.04]">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/15 mt-0.5">
+              <div className="flex items-start gap-3.5 p-4 rounded-xl border border-[#E5E7EB] bg-white">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/10 mt-0.5">
                   <MapPin size={18} strokeWidth={2} className="text-[#ED7606]" />
                 </span>
                 <div>
-                  <div className="text-xs text-white/45 font-bold">Address</div>
-                  <div className="text-sm font-semibold text-white/85 leading-relaxed">{SITE_CONFIG.address}</div>
+                  <div className="text-xs text-[#9CA3AF] font-bold">Address</div>
+                  <div className="text-sm font-semibold text-[#374151] leading-relaxed">{SITE_CONFIG.address}</div>
                 </div>
               </div>
             </div>
@@ -102,43 +102,43 @@ export default function ContactPage() {
       </section>
 
       {/* ========== Form + Download ========== */}
-      <section className="py-16 lg:py-24 bg-[#F7F7F5]">
+      <section className="py-16 lg:py-24 bg-white">
         <div className="shell">
           <div className="grid lg:grid-cols-[1fr_0.7fr] gap-8 lg:gap-12 max-w-6xl">
             {/* Form */}
-            <div className="rounded-2xl border border-[#171717]/8 bg-white p-6 lg:p-8 shadow-[0_18px_50px_rgba(21,25,30,.04)]">
-              <h2 className="text-2xl lg:text-3xl font-black tracking-[-0.03em] text-[#171717] mb-6 lg:mb-7">
+            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-8 shadow-[0_4px_24px_rgba(0,0,0,.03)]">
+              <h2 className="text-2xl lg:text-3xl font-black tracking-[-0.03em] text-[#111827] mb-6 lg:mb-7">
                 Send an inquiry
               </h2>
               <form className="space-y-5">
                 <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
                   <div>
-                    <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Name *</label>
-                    <input type="text" required className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
+                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Name *</label>
+                    <input type="text" required className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
                   </div>
                   <div>
-                    <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Company</label>
-                    <input type="text" className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Email *</label>
-                    <input type="email" required className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Phone</label>
-                    <input type="tel" className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
+                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Company</label>
+                    <input type="text" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
                   <div>
-                    <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Country</label>
-                    <input type="text" className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
+                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Email *</label>
+                    <input type="email" required className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
                   </div>
                   <div>
-                    <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Product Interest</label>
-                    <select className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all">
+                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Phone</label>
+                    <input type="tel" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
+                  <div>
+                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Country</label>
+                    <input type="text" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
+                  </div>
+                  <div>
+                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Product Interest</label>
+                    <select className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all">
                       <option value="">Select product...</option>
                       <option value="gear-damper">Gear Damper</option>
                       <option value="cylinder-damper">Cylinder Damper</option>
@@ -149,12 +149,12 @@ export default function ContactPage() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Annual Volume</label>
-                  <input type="text" placeholder="e.g. 50,000 units/year" className="w-full h-11 px-4 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
+                  <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Annual Volume</label>
+                  <input type="text" placeholder="e.g. 50,000 units/year" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#171717] mb-1.5">Message *</label>
-                  <textarea required rows={5} placeholder="Describe your application, torque requirements, mounting space and any other relevant details..." className="w-full px-4 py-3 rounded-lg border border-[#E5E5E5] bg-white text-[#333] text-sm placeholder:text-[#999] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all resize-y" />
+                  <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Message *</label>
+                  <textarea required rows={5} placeholder="Describe your application, torque requirements, mounting space..." className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all resize-y" />
                 </div>
                 <button type="submit" className="btn btn-primary px-8 text-base">
                   Send Inquiry →
@@ -162,17 +162,14 @@ export default function ContactPage() {
               </form>
             </div>
 
-            {/* Sidebar: Download + Quick Info */}
+            {/* Sidebar */}
             <div className="flex flex-col gap-5">
               {/* PDF Download */}
               <a
                 href="/remark/阻尼器使用注意事项.pdf"
                 download
-                className="group relative rounded-2xl overflow-hidden border border-[#ED7606]/25 bg-[#171717] p-6 lg:p-7 text-white hover:-translate-y-1 transition-all duration-300 shadow-[0_18px_48px_rgba(237,118,6,.1)]"
+                className="group relative rounded-2xl overflow-hidden border border-[#ED7606]/20 bg-gradient-to-br from-[#111827] to-[#1F2937] p-6 lg:p-7 text-white hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_32px_rgba(237,118,6,.08)]"
               >
-                <div className="absolute inset-0 opacity-8"
-                  style={{ background: "radial-gradient(circle at right top, #ED7606, transparent 70%)" }}
-                />
                 <div className="relative z-10">
                   <div className="flex items-center gap-2.5 mb-4">
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ED7606]/20">
@@ -195,9 +192,9 @@ export default function ContactPage() {
                 </div>
               </a>
 
-              {/* Quick info card */}
-              <div className="rounded-2xl border border-[#171717]/8 bg-white p-6 lg:p-7 shadow-[0_18px_50px_rgba(21,25,30,.04)]">
-                <h3 className="text-lg font-black tracking-[-0.02em] text-[#171717] mb-4">
+              {/* Quick info */}
+              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-7 shadow-[0_4px_24px_rgba(0,0,0,.03)]">
+                <h3 className="text-lg font-black tracking-[-0.02em] text-[#111827] mb-4">
                   What happens next?
                 </h3>
                 <ol className="space-y-3">
@@ -207,8 +204,8 @@ export default function ContactPage() {
                     "We send a technical proposal with specifications, pricing and lead time.",
                     "Sample validation before mass production if needed.",
                   ].map((step, i) => (
-                    <li key={i} className="flex items-start gap-3 text-sm text-[#555]">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F5F5F5] text-[#ED7606] text-xs font-black mt-0.5">
+                    <li key={i} className="flex items-start gap-3 text-sm text-[#6B7280]">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#F0F2F5] text-[#ED7606] text-xs font-black mt-0.5">
                         {i + 1}
                       </span>
                       {step}
@@ -222,28 +219,28 @@ export default function ContactPage() {
       </section>
 
       {/* ========== FAQ ========== */}
-      <section className="py-16 lg:py-24 bg-[#171717] text-white">
+      <section className="py-16 lg:py-24 bg-[#F0F2F5]">
         <div className="shell">
           <div className="text-center mb-8 lg:mb-12">
             <span className="eyebrow">FAQ</span>
-            <h2 className="mt-2.5 lg:mt-3.5 text-[28px] sm:text-[34px] lg:text-[clamp(34px,4vw,52px)] leading-[1.02] tracking-[-0.04em] font-extrabold">
+            <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3.6vw,46px)] leading-[1.02] tracking-[-0.04em] font-extrabold text-[#111827]">
               Frequently asked questions.
             </h2>
-            <p className="mt-3 text-white/45 text-[15px] lg:text-[17px] max-w-[560px] mx-auto">
+            <p className="mt-3 text-[#6B7280] text-[15px] lg:text-[17px] max-w-[560px] mx-auto">
               Common questions about inquiry process, customization, samples and production.
             </p>
           </div>
 
-          <div className="max-w-3xl mx-auto divide-y divide-white/8">
+          <div className="max-w-3xl mx-auto divide-y divide-[#E5E7EB]">
             {contactFAQ.map((item, i) => (
               <details key={i} className="group">
                 <summary className="flex items-center justify-between gap-4 py-5 cursor-pointer list-none">
-                  <span className="text-base lg:text-lg font-bold text-white/85 group-open:text-white pr-4">
+                  <span className="text-base lg:text-lg font-bold text-[#374151] group-open:text-[#111827] pr-4">
                     {item.q}
                   </span>
-                  <ChevronDown size={18} className="shrink-0 text-white/35 group-open:rotate-180 transition-transform duration-200" />
+                  <ChevronDown size={18} className="shrink-0 text-[#9CA3AF] group-open:rotate-180 transition-transform duration-200" />
                 </summary>
-                <p className="pb-5 text-white/55 text-sm lg:text-[15px] leading-relaxed">
+                <p className="pb-5 text-[#6B7280] text-sm lg:text-[15px] leading-relaxed">
                   {item.a}
                 </p>
               </details>

@@ -25,12 +25,12 @@ export default function TorqueConverterPage() {
   return (
     <>
       {/* Hero */}
-      <section className="relative pt-32 lg:pt-40 pb-10 lg:pb-14 bg-[#0a0b0d] text-white overflow-hidden">
+      <section className="relative pt-32 lg:pt-40 pb-10 lg:pb-14 bg-[#F8F9FA] overflow-hidden">
         <div
           className="absolute inset-0 opacity-[0.3]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px)",
+              "linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.03) 1px, transparent 1px)",
             backgroundSize: "80px 80px",
             maskImage: "linear-gradient(180deg, #000, transparent 90%)",
           }}
@@ -39,10 +39,10 @@ export default function TorqueConverterPage() {
 
         <div className="shell relative z-10 text-center">
           <span className="eyebrow">Engineering Tools</span>
-          <h1 className="mt-3.5 text-[clamp(34px,4.5vw,60px)] leading-[0.94] tracking-[-0.05em] font-black">
+          <h1 className="mt-3.5 text-[clamp(30px,4vw,50px)] leading-[0.94] tracking-[-0.05em] font-black text-[#111827]">
             Torque Unit Converter
           </h1>
-          <p className="mt-4 text-white/55 text-lg max-w-[600px] mx-auto leading-relaxed">
+          <p className="mt-4 text-[#6B7280] text-lg max-w-[600px] mx-auto leading-relaxed">
             Instantly convert between nine common torque units. Engineered for damper specification
             and motion control design.
           </p>
@@ -50,17 +50,17 @@ export default function TorqueConverterPage() {
       </section>
 
       {/* Converter */}
-      <section className="py-2 pb-16 lg:pb-24 bg-[#0a0b0d]">
+      <section className="py-2 pb-16 lg:pb-24 bg-white">
         <div className="shell">
           <TorqueConverter />
         </div>
       </section>
 
       {/* Tips */}
-      <section className="py-12 lg:py-16 bg-[#171717] text-white">
+      <section className="py-12 lg:py-16 bg-[#F0F2F5]">
         <div className="shell">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-xl lg:text-2xl font-black tracking-[-0.03em] mb-6 text-center">
+            <h2 className="text-xl lg:text-2xl font-black tracking-[-0.03em] mb-6 text-center text-[#111827]">
               How to use this tool
             </h2>
             <div className="grid sm:grid-cols-3 gap-4">
@@ -83,20 +83,20 @@ export default function TorqueConverterPage() {
               ].map((t) => (
                 <div
                   key={t.step}
-                  className="p-5 rounded-xl border border-white/8 bg-white/[0.03] text-center"
+                  className="p-5 rounded-xl border border-[#E5E7EB] bg-white text-center hover:-translate-y-1 hover:border-[#ED7606]/25 hover:shadow-md transition-all duration-300"
                 >
                   <span className="text-[#ED7606] text-xs font-black tracking-[0.14em]">
                     {t.step}
                   </span>
-                  <h3 className="mt-2 font-extrabold text-white/90">{t.title}</h3>
-                  <p className="mt-1.5 text-white/45 text-sm leading-relaxed">{t.desc}</p>
+                  <h3 className="mt-2 font-extrabold text-[#374151]">{t.title}</h3>
+                  <p className="mt-1.5 text-[#6B7280] text-sm leading-relaxed">{t.desc}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-8 p-5 rounded-xl border border-white/8 bg-white/[0.03]">
-              <p className="text-white/45 text-sm leading-relaxed text-center">
-                <strong className="text-[#FF9A3C]">TEAO tip:</strong> Damper torque specifications
+            <div className="mt-8 p-5 rounded-xl border border-[#E5E7EB] bg-white">
+              <p className="text-[#6B7280] text-sm leading-relaxed text-center">
+                <strong className="text-[#ED7606]">TEAO tip:</strong> Damper torque specifications
                 vary widely across the market — gf·cm, N·m, mN·m, kgf·cm and more. Use this
                 converter to quickly align units when comparing product parameters.
               </p>

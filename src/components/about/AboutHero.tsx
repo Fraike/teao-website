@@ -11,17 +11,17 @@ export function AboutHero() {
   const [playing, setPlaying] = useState(false);
 
   return (
-    <section className="relative min-h-[82vh] lg:min-h-svh flex items-end bg-[#F4F1EC] text-[#171717] overflow-hidden">
+    <section className="relative min-h-[82vh] lg:min-h-svh flex items-end bg-[#FAFAFA] text-[#111827] overflow-hidden">
       <div
-        className="absolute inset-0 opacity-[0.42]"
+        className="absolute inset-0 opacity-[0.35]"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(23,23,23,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(23,23,23,.045) 1px, transparent 1px)",
+            "linear-gradient(rgba(0,0,0,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,.035) 1px, transparent 1px)",
           backgroundSize: "84px 84px",
           maskImage: "linear-gradient(180deg, #000, transparent 82%)",
         }}
       />
-      <div className="absolute right-[-14vw] top-[10%] h-[42vw] w-[42vw] max-w-[620px] max-h-[620px] rounded-full border border-[#ED7606]/20" />
+      <div className="absolute right-[-14vw] top-[10%] h-[42vw] w-[42vw] max-w-[620px] max-h-[620px] rounded-full border border-[#ED7606]/15" />
       <div className="absolute left-0 bottom-0 h-28 w-full bg-gradient-to-t from-white to-transparent" />
 
       <div className="relative z-10 w-full pt-32 lg:pt-40 pb-14 lg:pb-18">
@@ -40,7 +40,7 @@ export function AboutHero() {
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-5 lg:mt-6 max-w-[760px] text-[34px] sm:text-[42px] lg:text-[clamp(42px,4.4vw,66px)] leading-[1.02] tracking-[-0.045em] font-black text-balance"
+                className="mt-5 lg:mt-6 max-w-[760px] text-[30px] sm:text-[38px] lg:text-[clamp(38px,4vw,58px)] leading-[1.02] tracking-[-0.045em] font-black text-balance"
               >
                 Dongguan Teao Electronic Technology Co., Ltd.
               </motion.h1>
@@ -49,7 +49,7 @@ export function AboutHero() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="mt-5 text-[#555] text-[16px] lg:text-[19px] leading-relaxed max-w-[620px]"
+                className="mt-5 text-[#4B5563] text-[16px] lg:text-[18px] leading-relaxed max-w-[620px]"
               >
                 A focused manufacturer of dampers, latches, synchronizers and custom
                 motion-control modules for automotive, appliance and precision product programs.
@@ -70,12 +70,12 @@ export function AboutHero() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.7, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
-                className="grid grid-cols-2 sm:grid-cols-4 gap-px mt-8 lg:mt-10 overflow-hidden rounded-xl border border-[#171717]/10 bg-[#171717]/10"
+                className="grid grid-cols-2 sm:grid-cols-4 gap-px mt-8 lg:mt-10 overflow-hidden rounded-xl border border-[#E5E7EB] bg-[#E5E7EB]"
               >
                 {trustBadges.map((b) => (
                   <span
                     key={b}
-                    className="px-3 py-3 bg-white/70 text-[#555] text-[10px] lg:text-[11px] font-extrabold text-center"
+                    className="px-3 py-3 bg-white text-[#4B5563] text-[10px] lg:text-[11px] font-extrabold text-center"
                   >
                     {b}
                   </span>
@@ -89,7 +89,7 @@ export function AboutHero() {
               transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="relative"
             >
-              <div className="relative aspect-[16/10] lg:aspect-[5/4] overflow-hidden rounded-2xl border border-[#171717]/10 bg-[#171717] shadow-[0_30px_80px_rgba(21,25,30,.18)]">
+              <div className="relative aspect-[16/10] lg:aspect-[5/4] overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[#111827] shadow-[0_16px_48px_rgba(0,0,0,.06)]">
                 {playing ? (
                   <iframe
                     src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&modestbranding=1`}
@@ -112,8 +112,8 @@ export function AboutHero() {
                       sizes="(max-width: 1024px) 100vw, 52vw"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#171717]/54 via-transparent to-transparent" />
-                    <div className="absolute left-5 top-5 lg:left-7 lg:top-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-[#171717]/45 px-3.5 py-2 text-white/80 backdrop-blur-md">
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#111827]/54 via-transparent to-transparent" />
+                    <div className="absolute left-5 top-5 lg:left-7 lg:top-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-[#111827]/50 px-3.5 py-2 text-white/80 backdrop-blur-md">
                       <Video size={15} strokeWidth={2} />
                       <span className="text-[11px] font-black uppercase tracking-[0.14em]">
                         Company Video
@@ -125,7 +125,7 @@ export function AboutHero() {
                       </span>
                     </div>
                     <div className="absolute left-5 right-5 bottom-5 lg:left-7 lg:right-7 lg:bottom-7">
-                      <h2 className="max-w-[420px] text-white text-2xl lg:text-[34px] leading-[1.02] font-black tracking-[-0.04em]">
+                      <h2 className="max-w-[420px] text-white text-2xl lg:text-[30px] leading-[1.02] font-black tracking-[-0.04em]">
                         Inside TEAO Manufacturing
                       </h2>
                     </div>
@@ -133,9 +133,9 @@ export function AboutHero() {
                 )}
               </div>
 
-              <div className="absolute -left-5 -bottom-5 hidden lg:block rounded-xl border border-[#171717]/10 bg-white px-5 py-4 shadow-[0_18px_48px_rgba(21,25,30,.12)]">
+              <div className="absolute -left-5 -bottom-5 hidden lg:block rounded-xl border border-[#E5E7EB] bg-white px-5 py-4 shadow-[0_12px_32px_rgba(0,0,0,.06)]">
                 <b className="block text-3xl leading-none font-black text-[#ED7606]">20+</b>
-                <span className="mt-1 block text-xs font-bold text-[#666]">Years of focused manufacturing</span>
+                <span className="mt-1 block text-xs font-bold text-[#6B7280]">Years of focused manufacturing</span>
               </div>
             </motion.div>
           </div>

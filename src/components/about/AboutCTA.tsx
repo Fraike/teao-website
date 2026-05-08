@@ -32,7 +32,7 @@ export function AboutCTA() {
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           >
             <span className="eyebrow">Work With TEAO</span>
-            <h2 className="mt-3.5 max-w-[640px] text-[clamp(34px,4.5vw,58px)] leading-[0.94] tracking-[-0.05em] font-black">
+            <h2 className="mt-3.5 max-w-[640px] text-[clamp(30px,4vw,50px)] leading-[0.94] tracking-[-0.05em] font-black">
               Looking for a reliable damper manufacturing partner?
             </h2>
             <p className="mt-4 text-white/55 text-lg max-w-[560px] leading-relaxed">

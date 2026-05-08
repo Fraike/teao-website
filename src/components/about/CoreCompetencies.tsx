@@ -9,7 +9,7 @@ const icons = [Settings, Wrench, Cog];
 
 export function CoreCompetencies() {
   return (
-    <section className="py-16 lg:py-24 bg-[#171717] text-white">
+    <section className="py-16 lg:py-24 bg-[#F0F2F5]">
       <div className="shell">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -19,7 +19,7 @@ export function CoreCompetencies() {
           className="text-center"
         >
           <span className="eyebrow">Core Competencies</span>
-          <h2 className="mt-2.5 lg:mt-3.5 text-[28px] sm:text-[34px] lg:text-[clamp(34px,4vw,52px)] leading-[1.02] tracking-[-0.04em] font-extrabold">
+          <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3.6vw,46px)] leading-[1.02] tracking-[-0.04em] font-extrabold text-[#111827]">
             Complete manufacturing capabilities.
           </h2>
         </motion.div>
@@ -36,10 +36,10 @@ export function CoreCompetencies() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-6% 0px" }}
                 transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
-                className={`group relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 ${
+                className={`group relative rounded-2xl overflow-hidden border transition-all duration-300 hover:-translate-y-1 bg-white ${
                   isHighlight
-                    ? "border-[#ED7606]/40 shadow-[0_16px_48px_rgba(237,118,6,.12)]"
-                    : "border-white/10 shadow-[0_16px_40px_rgba(0,0,0,.2)]"
+                    ? "border-[#ED7606]/40 shadow-[0_8px_32px_rgba(237,118,6,.08)]"
+                    : "border-[#E5E7EB] shadow-[0_4px_16px_rgba(0,0,0,.03)]"
                 }`}
               >
                 {/* Image */}
@@ -48,10 +48,10 @@ export function CoreCompetencies() {
                     src={comp.image}
                     alt={comp.title}
                     fill
-                    className="object-cover opacity-90 transition-transform duration-[0.65s] group-hover:scale-[1.04]"
+                    className="object-cover transition-transform duration-[0.65s] group-hover:scale-[1.04]"
                     sizes="(max-width: 1024px) 100vw, 33vw"
                   />
-                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#171717] to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
                 </div>
 
                 {/* Content */}
@@ -59,12 +59,12 @@ export function CoreCompetencies() {
                   <div className="flex items-start gap-3">
                     <Icon
                       className={`w-6 h-6 mt-0.5 shrink-0 ${
-                        isHighlight ? "text-[#ED7606]" : "text-[#FF9A3C]"
+                        isHighlight ? "text-[#ED7606]" : "text-[#ED7606]"
                       }`}
                       strokeWidth={1.5}
                     />
                     <div>
-                      <h3 className="text-lg lg:text-xl font-extrabold tracking-[-0.02em]">
+                      <h3 className="text-lg lg:text-xl font-extrabold tracking-[-0.02em] text-[#111827]">
                         {comp.title}
                       </h3>
                       {isHighlight && (
@@ -73,11 +73,11 @@ export function CoreCompetencies() {
                         </span>
                       )}
                       {!isHighlight && (
-                        <span className="inline-block mt-0.5 text-white/40 text-xs font-bold">
+                        <span className="inline-block mt-0.5 text-[#9CA3AF] text-xs font-bold">
                           {comp.subtitle}
                         </span>
                       )}
-                      <p className="mt-2.5 text-white/55 text-sm leading-relaxed">
+                      <p className="mt-2.5 text-[#6B7280] text-sm leading-relaxed">
                         {comp.description}
                       </p>
                     </div>
