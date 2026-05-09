@@ -166,7 +166,7 @@ export default function ContactPage() {
             <div className="flex flex-col gap-5">
               {/* PDF Download */}
               <a
-                href="/remark/阻尼器使用注意事项.pdf"
+                href="/remark/damper-usage-notes.pdf"
                 download
                 className="group relative rounded-2xl overflow-hidden border border-[#ED7606]/20 bg-gradient-to-br from-[#111827] to-[#1F2937] p-6 lg:p-7 text-white hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_32px_rgba(237,118,6,.08)]"
               >

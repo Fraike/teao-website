@@ -66,12 +66,12 @@ export const systemCertificates = [
   {
     name: "IATF 16949",
     description: "Automotive quality management system certification.",
-    image: "/images/体系证书/IATF16949证书.png",
+    image: "/images/certifications/IATF16949.png",
   },
   {
     name: "ISO 14001",
     description: "Environmental management system certification.",
-    image: "/images/体系证书/ISO14001证书.png",
+    image: "/images/certifications/ISO14001.png",
   },
 ];
 
@@ -79,17 +79,17 @@ export const patentCertificates = [
   {
     name: "Hanging-rope Damper Patent",
     description: "Patent certificate for damper mechanism innovation.",
-    image: "/images/patents/RD-V109专利证书 一种挂绳阻尼器(1)_页面_1.png",
+    image: "/images/patents/RD-V109.png",
   },
   {
     name: "Air Damper Patent",
     description: "Patent certificate covering air damping structure design.",
-    image: "/images/patents/RD-V108空气阻尼专利书第1页.jpg",
+    image: "/images/patents/RD-V108.jpg",
   },
   {
     name: "Rotary Damper Patent",
     description: "Patent certificate for rotary damping component structure.",
-    image: "/images/patents/RD-T088专利证书.jpg",
+    image: "/images/patents/RD-T088.jpg",
   },
 ];
 

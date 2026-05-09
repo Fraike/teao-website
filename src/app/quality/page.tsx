@@ -2,70 +2,294 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
-import { CheckCircle, ClipboardCheck, BarChart3, FileCheck } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Gauge, Eye, Shield, Thermometer, Clock, Target, Sliders, Waves } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Quality Control",
-  description: "IATF 16949 oriented quality management system. In-house testing, torque validation and production traceability.",
+  title: "Quality Control | IATF 16949 Certified",
+  description:
+    "IATF 16949 certified quality system. 100% torque testing, 100% visual inspection, professional laboratory with lifecycle testing, environmental chamber and optical inspection capabilities.",
+  keywords: [
+    "IATF 16949 damper",
+    "quality control damper",
+    "torque testing",
+    "damper inspection",
+    "automotive quality",
+    "lifecycle testing",
+  ],
 };
 
-const QUALITY_ITEMS = [
-  { icon: ClipboardCheck, title: "IATF 16949 Oriented", description: "Quality management system aligned with automotive industry requirements for consistent, traceable production." },
-  { icon: BarChart3, title: "Torque Testing", description: "Every damper design is validated for torque output, damping consistency and endurance across specified temperature ranges." },
-  { icon: FileCheck, title: "Production Traceability", description: "Batch-level traceability from raw material to finished product, supporting customer quality audit requirements." },
-  { icon: CheckCircle, title: "ISO 14001 Certified", description: "Environmental management system certification, ensuring responsible manufacturing processes." },
+const ENGINEERING_CAPABILITIES = [
+  { icon: Gauge, title: "High Torque, Small Size", description: "Achieving high torque output in compact, space-constrained damper designs." },
+  { icon: Clock, title: "Extended Lifespan", description: "Material and design optimization validated to >100,000 cycles for extended product life." },
+  { icon: Thermometer, title: "Wide Temperature Range", description: "Consistent damping performance across temperatures from -40°C to +150°C." },
+  { icon: Target, title: "Unidirectional Damping", description: "Precision-controlled damping in a single direction — open smooth, close firm." },
+  { icon: Sliders, title: "Tailored Performance", description: "Damping profiles tuned to your specific torque, speed and motion-feel requirements." },
+  { icon: Waves, title: "Low Temperature Sensitivity", description: "Viscosity-stable silicone oil formulations minimize performance drift under thermal cycling." },
+];
+
+const LAB_GROUPS = [
+  {
+    label: "Mechanical Testing",
+    items: [
+      { equipment: "Digital Push-Pull Force Gauge", range: "0.25 ~ 500N", accuracy: "±0.25N" },
+      { equipment: "Torque Meter", range: "10g ~ 6000g", accuracy: "±0.1g" },
+      { equipment: "Torque Tester", range: "1 ~ 100 Turns", accuracy: "Internal Standard" },
+    ],
+  },
+  {
+    label: "Environmental Testing",
+    items: [
+      { equipment: "Environmental Chamber", range: "-60°C ~ +150°C", accuracy: "±1°C" },
+      { equipment: "High Temperature Chamber", range: "+150°C", accuracy: "±1°C" },
+      { equipment: "Thermometer", range: "-40°C ~ 120°C", accuracy: "±1°C" },
+    ],
+  },
+  {
+    label: "Durability & Inspection",
+    items: [
+      { equipment: "Lifecycle Tester", range: "＞100,000 Cycles", accuracy: "Internal Standard" },
+      { equipment: "Optical Projector", range: "X200mm × Y100mm", accuracy: "0.001mm" },
+      { equipment: "Rubber Hardness Tester", range: "0 ~ 100A", accuracy: "±1A" },
+    ],
+  },
+  {
+    label: "Precision Measurement",
+    items: [
+      { equipment: "Digital Caliper / Height Gauge", range: "0 ~ 150mm", accuracy: "0.01mm" },
+      { equipment: "Electronic Balance", range: "0.000001 ~ 150kg", accuracy: "0.000001kg" },
+      { equipment: "Viscosity Tester", range: "0.1 ~ 60 Turns", accuracy: "1mpa" },
+    ],
+  },
 ];
 
 export default function QualityPage() {
   return (
     <>
-      <section className="section pt-32">
+      {/* ===== Hero ===== */}
+      <section className="pt-28 pb-12 lg:pt-32 lg:pb-14">
         <div className="shell">
           <Reveal>
             <SectionHead
               eyebrow="Quality Control"
-              title="Built for repeatable, traceable quality."
-              description="IATF-oriented process control, torque checks and production traceability for every batch."
+              title="Zero compromise on quality. Every damper tested."
+              description="IATF 16949 certified quality management system. 100% torque testing plus 100% visual inspection on every single unit — with full batch traceability from raw material to finished product."
             />
           </Reveal>
 
-          <div className="grid sm:grid-cols-2 gap-5 max-w-4xl">
-            {QUALITY_ITEMS.map((item, i) => (
-              <Reveal key={item.title} delay={(Math.min(i, 3) + 1) as 1 | 2 | 3}>
-                <div className="flex gap-5 p-6 rounded-xl border border-[#E5E5E5] bg-white hover:shadow-md transition-shadow">
-                  <item.icon className="w-8 h-8 text-[#ED7606] shrink-0 mt-0.5" />
+          {/* ===== Two 100% Inspection Processes ===== */}
+          <div className="grid lg:grid-cols-2 items-stretch gap-5 xl:gap-8 mt-8 max-w-5xl">
+            <Reveal>
+              <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div className="relative h-[220px] overflow-hidden bg-[#F8F9FA]">
+                  <Image
+                    src="/images/company/visual-inspection-2.png"
+                    alt="Torque testing station"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 600px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#111827]/55 via-transparent to-transparent" />
+                  <div className="absolute left-5 bottom-5 flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold text-[#171717] shadow-lg">
+                    <span className="h-2 w-2 rounded-full bg-[#ED7606] animate-pulse" />
+                    Torque data logged
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col p-7 sm:p-8">
+                  <div className="mb-6 flex items-center justify-between gap-4">
+                    <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-[#ED7606]/10">
+                      <Gauge className="w-7 h-7 text-[#ED7606]" />
+                    </div>
+                    <span className="inline-block px-3 py-1 text-xs font-extrabold tracking-wide text-[#ED7606] bg-[#ED7606]/8 rounded-full">
+                      100% Torque Testing
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-extrabold tracking-[-0.02em] mb-4">
+                    Every unit measured. Zero exceptions.
+                  </h3>
+                  <ul className="space-y-3 text-[#666666] text-sm leading-relaxed">
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>100% torque verification on every unit before shipment</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>Single-direction, bi-directional and custom torque profiles</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>Stable torque across -30°C to +80°C operating range</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>Real-time data logging with full batch traceability</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={1}>
+              <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                <div className="relative h-[220px] overflow-hidden bg-[#F8F9FA]">
+                  <Image
+                    src="/images/company/visual-inspection.jpg"
+                    alt="Visual inspection station"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 1024px) 100vw, 600px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#111827]/55 via-transparent to-transparent" />
+                  <div className="absolute left-5 bottom-5 flex items-center gap-2 rounded-full bg-white/90 px-3 py-1.5 text-xs font-extrabold text-[#171717] shadow-lg">
+                    <span className="h-2 w-2 rounded-full bg-[#ED7606] animate-pulse" />
+                    Surface checked
+                  </div>
+                </div>
+                <div className="flex flex-1 flex-col p-7 sm:p-8">
+                  <div className="mb-6 flex items-center justify-between gap-4">
+                    <div className="w-12 h-12 flex items-center justify-center rounded-xl bg-[#ED7606]/10">
+                      <Eye className="w-7 h-7 text-[#ED7606]" />
+                    </div>
+                    <span className="inline-block px-3 py-1 text-xs font-extrabold tracking-wide text-[#ED7606] bg-[#ED7606]/8 rounded-full">
+                      100% Visual Inspection
+                    </span>
+                  </div>
+                  <h3 className="text-2xl font-extrabold tracking-[-0.02em] mb-4">
+                    Every surface checked. Every time.
+                  </h3>
+                  <ul className="space-y-3 text-[#666666] text-sm leading-relaxed">
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>100% visual inspection for surface quality and conformance</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>Defect classification: burrs, sink marks, color, dimensions</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>Standardized SOP with defined acceptance criteria</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
+                      <span>High-res optical inspection + trained operator verification</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Engineering Capability ===== */}
+      <section className="py-12 lg:py-14">
+        <div className="shell">
+          <Reveal>
+            <SectionHead
+              eyebrow="Engineering"
+              title="We tune dampers to your exact requirements."
+              description="Our team is capable of creating suitable products for you and adjusting key parameters of the dampers."
+            />
+          </Reveal>
+
+          <div className="grid sm:grid-cols-2 gap-5 max-w-5xl">
+            {ENGINEERING_CAPABILITIES.map((cap, i) => (
+              <Reveal key={cap.title} delay={(Math.min(i, 3) + 1) as 1 | 2 | 3}>
+                <div className="group flex gap-5 p-6 rounded-2xl border border-[#E5E5E5] bg-white hover:border-[#ED7606]/30 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                  <div className="w-11 h-11 flex items-center justify-center rounded-xl bg-[#F8F9FA] group-hover:bg-[#ED7606]/10 shrink-0 transition-colors duration-300">
+                    <cap.icon className="w-5 h-5 text-[#ED7606]" />
+                  </div>
                   <div>
-                    <h3 className="text-lg font-extrabold tracking-[-0.02em]">{item.title}</h3>
-                    <p className="mt-2 text-[#666666] text-sm leading-relaxed">{item.description}</p>
+                    <h4 className="font-extrabold text-[15px] text-[#171717] mb-1.5">{cap.title}</h4>
+                    <p className="text-[#666666] text-[14px] leading-relaxed">{cap.description}</p>
                   </div>
                 </div>
               </Reveal>
             ))}
           </div>
+        </div>
+      </section>
 
-          {/* Factory images */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-16">
-            <Reveal>
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                <Image src="/images/company/automation-workshop.jpg" alt="Workshop" fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw" />
-              </div>
-            </Reveal>
-            <Reveal delay={1}>
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                <Image src="/images/company/automation-equipment-2.JPG" alt="Equipment" fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw" />
-              </div>
-            </Reveal>
-            <Reveal delay={2}>
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                <Image src="/images/company/production-workshop.JPG" alt="Production" fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw" />
-              </div>
-            </Reveal>
-            <Reveal delay={3}>
-              <div className="relative h-48 rounded-lg overflow-hidden">
-                <Image src="/images/company/automation-equipment-3.jpg" alt="Automation" fill className="object-cover" sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw" />
-              </div>
-            </Reveal>
+      {/* ===== Laboratory Capability ===== */}
+      <section className="py-12 lg:py-14">
+        <div className="shell">
+          <Reveal>
+            <SectionHead
+              eyebrow="Laboratory"
+              title="Professional testing & validation equipment."
+              description="TEAO laboratory supports product reliability verification, quality consistency control and automotive-grade validation requirements."
+            />
+          </Reveal>
+
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4 max-w-5xl">
+            {LAB_GROUPS.map((group, gi) => (
+              <Reveal key={group.label} delay={(Math.min(gi, 2) + 1) as 1 | 2 | 3}>
+                <div className="rounded-2xl border border-[#E5E5E5] bg-white p-5 h-full">
+                  <h4 className="text-xs font-extrabold text-[#9CA3AF] uppercase tracking-widest mb-4">
+                    {group.label}
+                  </h4>
+                  <ul className="space-y-4">
+                    {group.items.map((item) => (
+                      <li key={item.equipment}>
+                        <div className="text-[13px] font-bold text-[#171717] leading-snug mb-0.5">
+                          {item.equipment}
+                        </div>
+                        <div className="flex gap-3 text-[11px] text-[#9CA3AF]">
+                          <span>Range: {item.range}</span>
+                          <span>± {item.accuracy}</span>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </Reveal>
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* ===== IATF 16949 Reference ===== */}
+      <section className="py-12 lg:py-14">
+        <div className="shell">
+          <div className="max-w-4xl rounded-2xl bg-gradient-to-br from-[#F8F9FA] to-[#EDF0F3] border border-[#E5E5E5] p-8 sm:p-10">
+            <div className="flex items-start gap-5">
+              <div className="w-14 h-14 flex items-center justify-center rounded-2xl bg-[#ED7606]/10 shrink-0">
+                <Shield className="w-7 h-7 text-[#ED7606]" />
+              </div>
+              <div>
+                <h3 className="text-xl font-extrabold tracking-[-0.02em] mb-3">
+                  IATF 16949 Certified Quality System
+                </h3>
+                <p className="text-[#666666] leading-relaxed mb-6">
+                  TEAO has maintained automotive-grade quality certification since 2016 (originally TS 16949).
+                  Our quality management system spans the full product lifecycle — from design and raw material
+                  procurement through manufacturing, testing and after-sales service. Continuous improvement is
+                  driven by customer feedback, internal audits and regular management reviews.
+                </p>
+                <Button href="/about" variant="outline">
+                  View Certifications →
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ===== CTA ===== */}
+      <section className="py-12 lg:py-16">
+        <div className="shell text-center">
+          <Reveal>
+            <h2 className="text-[28px] sm:text-[34px] font-extrabold tracking-[-0.03em] mb-4">
+              Need verified quality data?
+            </h2>
+            <p className="text-[#666666] text-[15px] sm:text-[17px] mb-8 max-w-xl mx-auto">
+              Request PPAP documentation, torque test reports and quality certifications for your program.
+            </p>
+            <Button href="/contact" variant="primary">
+              Request Quality Documents →
+            </Button>
+          </Reveal>
         </div>
       </section>
     </>

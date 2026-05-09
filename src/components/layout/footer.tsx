@@ -14,13 +14,12 @@ const FOOTER_LINKS = {
     { label: "About TEAO", href: "/about" },
     { label: "Quality", href: "/quality" },
     { label: "Applications", href: "/applications" },
-    { label: "Solutions", href: "/solutions" },
+    { label: "News", href: "/news" },
     { label: "Contact", href: "/contact" },
   ],
   Resources: [
     { label: "Torque Converter", href: "/torque-converter" },
     { label: "FAQ", href: "/faq" },
-    { label: "News", href: "/news" },
   ],
 };
 
@@ -47,6 +46,7 @@ export default function Footer() {
               <Link href="/products" className="hover:text-[#ED7606]">Products</Link>
               <Link href="/quality" className="hover:text-[#ED7606]">Quality</Link>
               <Link href="/applications" className="hover:text-[#ED7606]">Applications</Link>
+              <Link href="/news" className="hover:text-[#ED7606]">News</Link>
               <Link href="/contact" className="hover:text-[#ED7606]">Contact</Link>
             </div>
           </div>
