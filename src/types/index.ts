@@ -1,20 +1,58 @@
 export interface Product {
   slug: string;
+  model: string;
   name: string;
   category: ProductCategory;
+  sub_type?: "individual" | "series";
+  series?: string;
+  variant?: string;
+
+  summary: string;
   description: string;
-  overview: string;
-  image: string;
-  images: string[];
-  specifications: Record<string, string>;
   features: string[];
+
+  image: string;
+  images: { url: string; alt?: string }[];
+
+  tech_params?: Record<string, string | number>;
+  specifications: Record<string, string>;
+
+  torque?: {
+    min: number;
+    max: number;
+    unit: "gf.cm" | "kgf.cm" | "N·m" | "N";
+  };
+  force_range?: string;
+  hard_torque?: string;
+  hard_force?: string;
+
+  durability?: {
+    temperature?: string;
+    temperature_value?: string;
+    test_method?: string;
+    cycles?: number;
+    cycles_unit?: string;
+  };
+
+  materials?: { part: string; material: string }[];
+
+  buffer_direction?: string;
+  assembly_method?: string;
+
+  applications: string[];
+
+  seo_title?: string;
+  seo_description?: string;
+
+  tags?: string[];
+  status?: "active" | "inactive" | "draft";
   isActive: boolean;
   sortOrder: number;
 }
 
 export type ProductCategory =
   | "gear-damper"
-  | "cylinder-damper"
+  | "axial-damper"
   | "glove-box-damper"
   | "latch"
   | "other";

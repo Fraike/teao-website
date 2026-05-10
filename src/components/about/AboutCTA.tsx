@@ -59,7 +59,7 @@ export function AboutCTA() {
           >
             {[
               { src: "/images/products/gear-damper/GearDamperSingle.png", label: "Custom Torque" },
-              { src: "/images/products/cylinder-damper/AxialDamperSingle.png", label: "Full Engineering Support" },
+              { src: "/images/products/axial-damper/AxialDamperSingle.png", label: "Full Engineering Support" },
               { src: "/images/products/glove-box-damper/GloveBoxDamperSingle.png", label: "Stable Mass Production" },
             ].map((item) => (
               <div

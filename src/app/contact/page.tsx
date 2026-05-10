@@ -141,7 +141,7 @@ export default function ContactPage() {
                     <select className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all">
                       <option value="">Select product...</option>
                       <option value="gear-damper">Gear Damper</option>
-                      <option value="cylinder-damper">Cylinder Damper</option>
+                      <option value="axial-damper">Axial Damper</option>
                       <option value="glove-box-damper">Glove Box Damper</option>
                       <option value="latch">Latch</option>
                       <option value="other">Custom / Other</option>

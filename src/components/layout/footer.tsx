@@ -5,7 +5,7 @@ import { SITE_CONFIG } from "@/lib/constants";
 const FOOTER_LINKS = {
   Products: [
     { label: "Gear Dampers", href: "/products?category=gear-damper" },
-    { label: "Cylinder Dampers", href: "/products?category=cylinder-damper" },
+    { label: "Axial Dampers", href: "/products?category=axial-damper" },
     { label: "Glove Box Dampers", href: "/products?category=glove-box-damper" },
     { label: "Latches", href: "/products?category=latch" },
     { label: "Other Products", href: "/products?category=other" },

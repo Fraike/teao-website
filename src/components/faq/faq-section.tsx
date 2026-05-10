@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const FAQS = [
-  { q: "What types of dampers does TEAO manufacture?", a: "TEAO manufactures five product lines: gear dampers (rotary), cylinder dampers (axial/linear), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, and mounting configuration." },
+  { q: "What types of dampers does TEAO manufacture?", a: "TEAO manufactures five product lines: gear dampers (rotary), axial dampers (linear), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, and mounting configuration." },
   { q: "Can TEAO customize dampers for our specific application?", a: "Yes. TEAO's core capability is custom damper development. Share your drawing, torque target, space envelope and application requirements. Our engineering team will review and recommend a standard platform or design a custom solution." },
   { q: "What is the typical lead time for samples?", a: "Standard platform samples typically ship within 2-3 weeks. Custom designs require an engineering review and tooling lead time, typically 4-8 weeks depending on complexity." },
   { q: "What quality certifications does TEAO hold?", a: "TEAO operates under an IATF 16949-oriented quality management system and holds ISO 14001 environmental management certification." },

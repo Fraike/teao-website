@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) return { title: "Product Not Found" };
   return {
     title: product.name,
-    description: product.description,
+    description: product.summary,
   };
 }
 
@@ -71,7 +71,7 @@ export default async function ProductDetailPage({ params }: Props) {
               <h1 className="mt-2 text-[clamp(32px,4vw,48px)] leading-[1.05] tracking-[-0.04em] font-extrabold text-[#171717]">
                 {product.name}
               </h1>
-              <p className="mt-4 text-lg text-[#666666] leading-relaxed">{product.overview}</p>
+              <p className="mt-4 text-lg text-[#666666] leading-relaxed">{product.description}</p>
 
               {/* Features */}
               <div className="mt-8">
@@ -129,7 +129,7 @@ export default async function ProductDetailPage({ params }: Props) {
                     </div>
                     <div>
                       <h3 className="font-extrabold tracking-[-0.02em]">{p.name}</h3>
-                      <p className="text-sm text-[#666666] mt-1">{p.description}</p>
+                      <p className="text-sm text-[#666666] mt-1">{p.summary}</p>
                     </div>
                   </Link>
                 ))}

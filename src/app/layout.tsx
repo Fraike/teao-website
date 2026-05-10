@@ -19,11 +19,11 @@ export const metadata: Metadata = {
     template: "%s | TEAO",
   },
   description:
-    "TEAO manufactures gear dampers, cylinder dampers, glove box dampers, latches and custom soft-motion components for global B2B automotive and industrial projects.",
+    "TEAO manufactures gear dampers, axial dampers, glove box dampers, latches and custom soft-motion components for global B2B automotive and industrial projects.",
   keywords: [
     "automotive damper",
     "gear damper",
-    "cylinder damper",
+    "axial damper",
     "glove box damper",
     "rotary damper",
     "latch mechanism",
