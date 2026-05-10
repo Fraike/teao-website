@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import Header from "@/components/layout/header";
-import Footer from "@/components/layout/footer";
+import { PublicChrome } from "@/components/layout/public-chrome";
 import { env } from "@/lib/env";
 import "./globals.css";
 
@@ -55,9 +54,7 @@ export default function RootLayout({
         <link rel="icon" href="/images/favicon.ico" sizes="any" />
       </head>
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
+        <PublicChrome>{children}</PublicChrome>
       </body>
     </html>
   );
