@@ -3,8 +3,10 @@ import { CATEGORIES } from "@/lib/constants";
 
 export function Breadcrumb({
   category,
+  productName,
 }: {
   category?: string;
+  productName?: string;
 }) {
   const cat = CATEGORIES.find((c) => c.slug === category);
 
@@ -20,7 +22,18 @@ export function Breadcrumb({
       {cat && (
         <>
           <span className="text-[#D1D5DB]">/</span>
-          <span className="text-[#171717] font-medium">{cat.name}</span>
+          <Link
+            href={`/products?category=${cat.slug}`}
+            className="hover:text-[#ED7606] transition-colors"
+          >
+            {cat.name}
+          </Link>
+        </>
+      )}
+      {productName && (
+        <>
+          <span className="text-[#D1D5DB]">/</span>
+          <span className="text-[#171717] font-medium">{productName}</span>
         </>
       )}
     </nav>

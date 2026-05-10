@@ -1,11 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Fragment } from "react";
-import { CATEGORIES } from "@/lib/constants";
+import { db } from "@/db";
+import { categories } from "@/db/schema";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 
 export function ProductGrid() {
+  const cats = db.select().from(categories).all().sort((a, b) => a.sortOrder - b.sortOrder);
+
   return (
     <section className="section" id="products">
       <div className="shell">
@@ -18,7 +21,7 @@ export function ProductGrid() {
         </Reveal>
 
         <div className="product-card-grid">
-          {CATEGORIES.map((cat, i) => (
+          {cats.map((cat, i) => (
             <Fragment key={cat.slug}>
               {i === 4 && (
                 <Reveal delay={1} className="product-card-intro-slot">

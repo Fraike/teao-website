@@ -3,3 +3,6 @@ node_modules/
 .env.local
 .env*.local
 trash_review/
+data/
+drizzle/
+.DS_Store

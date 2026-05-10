@@ -1,9 +1,26 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import Image from "next/image";
-import { PRODUCTS, CATEGORIES } from "@/lib/constants";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { products, categories } from "@/db/schema";
+import { mapDbProduct } from "@/lib/products";
+import { Breadcrumb } from "@/components/products/Breadcrumb";
+import { ProductGallery } from "@/components/products/ProductGallery";
+import { CharacteristicsPills } from "@/components/products/CharacteristicsPills";
+import { TorqueRangeBar } from "@/components/products/TorqueRangeBar";
+import { TechSpecsTable } from "@/components/products/TechSpecsTable";
+import { MaterialsTable } from "@/components/products/MaterialsTable";
+import { PerformanceCharts } from "@/components/products/PerformanceCharts";
+import { DimensionDrawing } from "@/components/products/DimensionDrawing";
+import { ApplicationScenarios } from "@/components/products/ApplicationScenarios";
+import { RelatedProducts } from "@/components/products/RelatedProducts";
+import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { Button } from "@/components/ui/button";
+
+export async function generateStaticParams() {
+  const rows = db.select({ slug: products.slug }).from(products).all();
+  return rows.map((r) => ({ slug: r.slug }));
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -11,133 +28,163 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  const product = db.select().from(products).where(eq(products.slug, slug)).get();
   if (!product) return { title: "Product Not Found" };
+
   return {
-    title: product.name,
-    description: product.summary,
+    title: product.seoTitle ?? `${product.model} - ${product.name}`,
+    description: product.seoDescription ?? product.summary,
+    openGraph: {
+      title: product.name,
+      description: product.summary,
+      images: JSON.parse(product.images || "[]")?.[0]?.url
+        ? [{ url: JSON.parse(product.images || "[]")[0].url, width: 800, height: 800 }]
+        : product.image
+          ? [{ url: product.image, width: 800, height: 800 }]
+          : [],
+    },
   };
 }
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const product = PRODUCTS.find((p) => p.slug === slug);
-  if (!product) notFound();
+  const row = db.select().from(products).where(eq(products.slug, slug)).get();
+  if (!row) notFound();
 
-  const category = CATEGORIES.find((c) => c.slug === product.category);
-  const related = PRODUCTS.filter(
-    (p) => p.category === product.category && p.slug !== product.slug
-  ).slice(0, 2);
+  const product = mapDbProduct(row);
+  const categoryRow = db.select().from(categories).where(eq(categories.slug, product.category)).get();
+  const relatedRows = db.select().from(products).where(eq(products.category, product.category)).all();
+  const related = relatedRows
+    .filter((p) => p.slug !== slug)
+    .map(mapDbProduct);
+
+  const galleryImages =
+    product.images.length > 0
+      ? product.images
+      : [{ url: product.image, alt: product.name }];
 
   return (
     <>
-      <section className="section pt-32">
+      <section className="section pt-28 !pb-6 lg:pt-32">
         <div className="shell">
           {/* Breadcrumb */}
-          <nav className="text-sm text-[#666666] mb-8">
-            <Link href="/" className="hover:text-[#ED7606]">Home</Link>
-            <span className="mx-2">/</span>
-            <Link href="/products" className="hover:text-[#ED7606]">Products</Link>
-            <span className="mx-2">/</span>
-            {category && (
-              <>
-                <Link href={`/products?category=${category.slug}`} className="hover:text-[#ED7606]">{category.name}</Link>
-                <span className="mx-2">/</span>
-              </>
-            )}
-            <span className="text-[#171717] font-medium">{product.name}</span>
-          </nav>
+          <div className="mb-8">
+            <Breadcrumb category={product.category} productName={product.model} />
+          </div>
 
-          {/* Product hero */}
-          <div className="grid lg:grid-cols-2 gap-12 mb-20">
-            {/* Image */}
-            <div className="relative bg-[#F5F5F5] rounded-xl aspect-square">
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-contain p-12"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+          {/* Hero Grid */}
+          <div className="grid lg:grid-cols-[0.82fr_1.18fr] gap-8 lg:gap-12 mb-12 lg:mb-14 items-start">
+            {/* Left: Gallery */}
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <ProductGallery images={galleryImages} />
             </div>
 
-            {/* Info */}
+            {/* Right: Info */}
             <div>
-              {category && (
-                <span className="text-[#ED7606] text-xs font-black uppercase tracking-[0.12em]">
-                  {category.name}
-                </span>
-              )}
-              <h1 className="mt-2 text-[clamp(32px,4vw,48px)] leading-[1.05] tracking-[-0.04em] font-extrabold text-[#171717]">
+              {categoryRow && <span className="eyebrow">{categoryRow.name}</span>}
+
+              <span className="inline-block mt-2 px-2.5 py-1 rounded-full bg-[#111827] text-white text-[10px] font-black uppercase tracking-[0.14em]">
+                {product.model}
+              </span>
+
+              <h1 className="mt-3 text-[clamp(30px,3.5vw,46px)] leading-[1.04] tracking-[-0.04em] font-extrabold text-[#111827]">
                 {product.name}
               </h1>
-              <p className="mt-4 text-lg text-[#666666] leading-relaxed">{product.description}</p>
 
-              {/* Features */}
-              <div className="mt-8">
-                <h3 className="text-sm font-extrabold uppercase tracking-[0.12em] text-[#171717] mb-3">
-                  Key Features
-                </h3>
-                <ul className="space-y-2">
-                  {product.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2.5 text-[#333333]">
-                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className="mt-4 text-[15px] lg:text-[16px] text-[#6B7280] leading-relaxed max-w-[560px]">
+                {product.description}
+              </p>
 
-              <div className="flex gap-3 mt-8">
-                <Button href="/contact" variant="primary">Request Quotation</Button>
-                <Button href="/contact" variant="outline">Send Your Drawing</Button>
+              {product.characteristics && product.characteristics.length > 0 && (
+                <div className="mt-6">
+                  <CharacteristicsPills characteristics={product.characteristics} />
+                </div>
+              )}
+
+              {product.torque && (
+                <div className="mt-7">
+                  <TorqueRangeBar torque={product.torque} />
+                </div>
+              )}
+
+              <div className="flex flex-wrap gap-3 mt-8">
+                <Button
+                  href={`/contact?product=${encodeURIComponent(product.model)}`}
+                  variant="primary"
+                >
+                  Request Quotation
+                </Button>
+                <Button href="/contact" variant="outline">
+                  Send Your Drawing
+                </Button>
               </div>
             </div>
           </div>
 
-          {/* Specifications */}
-          <div className="mb-20">
-            <h2 className="text-2xl font-extrabold tracking-[-0.03em] mb-6">Technical Specifications</h2>
-            <div className="border border-[#E5E5E5] rounded-lg overflow-hidden">
-              {Object.entries(product.specifications).map(([key, value], i) => (
-                <div
-                  key={key}
-                  className={`flex justify-between px-6 py-4 ${
-                    i % 2 === 1 ? "bg-[#F5F5F5]" : "bg-white"
-                  }`}
-                >
-                  <span className="text-[#666666] font-medium">{key}</span>
-                  <span className="text-[#171717] font-semibold">{value}</span>
+          {/* Dimension Drawing */}
+          {product.dimension_drawing && (
+            <div className="mb-12 lg:mb-14 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-5 lg:p-6">
+              <div className="grid lg:grid-cols-[260px_minmax(0,680px)] gap-5 lg:gap-8 items-start">
+                <div>
+                  <span className="eyebrow">Drawing</span>
+                  <h2 className="mt-3 text-xl font-extrabold tracking-[-0.02em] text-[#111827]">
+                    Technical Drawing
+                  </h2>
+                  <p className="mt-3 text-sm leading-relaxed text-[#6B7280]">
+                    Key mounting and gear dimensions for engineering review. Click the drawing to inspect details.
+                  </p>
                 </div>
-              ))}
+                <DimensionDrawing
+                  src={product.dimension_drawing}
+                  alt={`${product.model} dimension drawing`}
+                />
+              </div>
             </div>
+          )}
+
+          {/* Specs + Materials */}
+          <div className="grid lg:grid-cols-2 gap-5 lg:gap-6 mb-12 lg:mb-14 items-stretch">
+            <TechSpecsTable
+              specifications={product.specifications}
+              tech_params={product.tech_params}
+            />
+            {product.materials && product.materials.length > 0 && (
+              <MaterialsTable materials={product.materials} />
+            )}
+          </div>
+
+          {/* Performance Charts */}
+          {product.performance_charts && (
+            <div className="mb-12 lg:mb-14">
+              <PerformanceCharts charts={product.performance_charts} />
+            </div>
+          )}
+
+          {/* Application Scenarios */}
+          <div className="mb-12 lg:mb-14">
+            <div className="mb-5 flex items-end justify-between gap-6">
+              <div>
+                <h2 className="text-xl font-extrabold tracking-[-0.02em] text-[#111827]">
+                  Application Scenarios
+                </h2>
+                <p className="mt-2 max-w-[560px] text-sm leading-relaxed text-[#6B7280]">
+                  Two common use cases for this damper platform. More applications can be reviewed from your drawing.
+                </p>
+              </div>
+            </div>
+            <ApplicationScenarios max={2} />
           </div>
 
           {/* Related Products */}
           {related.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-extrabold tracking-[-0.03em] mb-6">Related Products</h2>
-              <div className="grid sm:grid-cols-2 gap-5">
-                {related.map((p) => (
-                  <Link
-                    key={p.slug}
-                    href={`/products/${p.slug}`}
-                    className="group flex items-center gap-5 p-5 rounded-lg border border-[#E5E5E5] hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="relative w-24 h-24 bg-[#F5F5F5] rounded-lg">
-                      <Image src={p.image} alt={p.name} fill className="object-contain p-3" sizes="96px" />
-                    </div>
-                    <div>
-                      <h3 className="font-extrabold tracking-[-0.02em]">{p.name}</h3>
-                      <p className="text-sm text-[#666666] mt-1">{p.summary}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+            <div className="mb-2 lg:mb-4">
+              <RelatedProducts products={related} max={4} />
             </div>
           )}
         </div>
       </section>
+
+      <InquiryCTA />
     </>
   );
 }

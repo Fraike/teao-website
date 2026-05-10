@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-import { PRODUCTS, CATEGORIES } from "@/lib/constants";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { categories, products } from "@/db/schema";
+import { mapDbProduct } from "@/lib/products";
+import type { CategoryInfo } from "@/types";
 import { CategoryHero } from "@/components/products/CategoryHero";
 import { CategoryTabs } from "@/components/products/CategoryTabs";
 import { ProductListClient } from "@/components/products/ProductListClient";
@@ -12,20 +16,16 @@ type Props = {
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { category } = await searchParams;
-  const cat = CATEGORIES.find((c) => c.slug === category);
+  const catRows = category
+    ? db.select().from(categories).where(eq(categories.slug, category)).all()
+    : [];
 
-  if (cat) {
+  if (catRows.length > 0) {
+    const cat = catRows[0];
     return {
       title: `${cat.name} Manufacturer | Precision Dampers | TEAO`,
       description: `Explore TEAO ${cat.name.toLowerCase()} for automotive interiors, household appliances, office equipment, and industrial machinery. Custom torque available.`,
-      keywords: [
-        cat.slug,
-        cat.name.toLowerCase(),
-        "damper",
-        "automotive damper",
-        "motion control",
-        "TEAO",
-      ],
+      keywords: [cat.slug, cat.name.toLowerCase(), "damper", "automotive damper", "motion control", "TEAO"],
     };
   }
 
@@ -38,22 +38,31 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function ProductsPage({ searchParams }: Props) {
   const { category } = await searchParams;
-  const selectedCategory = CATEGORIES.find((c) => c.slug === category);
 
-  const products = category
-    ? PRODUCTS.filter((p) => p.category === category)
-    : PRODUCTS;
+  const allCategories = db.select().from(categories).all();
+  const selectedCategory = category
+    ? allCategories.find((c) => c.slug === category) ?? null
+    : null;
+
+  const productRows = category
+    ? db.select().from(products).where(eq(products.category, category)).all()
+    : db.select().from(products).all();
+
+  const mappedProducts = productRows
+    .map(mapDbProduct)
+    .filter((p) => p.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <>
-      <CategoryHero category={selectedCategory} />
+      <CategoryHero category={selectedCategory as CategoryInfo | undefined} />
       <CategoryTabs current={category} />
       <section className="section !pt-8 !pb-12">
         <div className="shell">
-          <ProductListClient products={products} category={selectedCategory} />
+          <ProductListClient products={mappedProducts} category={selectedCategory as CategoryInfo | undefined} />
         </div>
       </section>
-      {selectedCategory && <ApplicationContent category={selectedCategory} />}
+      {selectedCategory && <ApplicationContent category={selectedCategory as CategoryInfo} />}
       <InquiryCTA />
     </>
   );

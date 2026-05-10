@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { desc } from "drizzle-orm";
+import { db } from "@/db";
+import { news } from "@/db/schema";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 
@@ -8,13 +11,14 @@ export const metadata: Metadata = {
   description: "TEAO company news, quality updates and engineering insights.",
 };
 
-const NEWS_ALL = [
-  { slug: "teao-expands-capacity", category: "Company", title: "TEAO expands automated damper assembly capacity.", summary: "Improved automation supports stable quality and large-volume delivery.", date: "2026-03-15" },
-  { slug: "automotive-quality-systems", category: "Quality", title: "Automotive quality systems for damper production.", summary: "IATF-oriented process control helps ensure repeatable torque performance.", date: "2026-02-20" },
-  { slug: "torque-requirements-guide", category: "Engineering", title: "How to define torque requirements for soft motion.", summary: "Key parameters for faster damper selection and technical quotation.", date: "2026-01-10" },
-];
-
 export default function NewsPage() {
+  const articles = db
+    .select()
+    .from(news)
+    .orderBy(desc(news.publishedAt))
+    .all()
+    .filter((n) => Boolean(n.isPublished));
+
   return (
     <>
       <section className="section pt-32">
@@ -28,7 +32,7 @@ export default function NewsPage() {
           </Reveal>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {NEWS_ALL.map((item, i) => (
+            {articles.map((item, i) => (
               <Reveal key={item.slug} delay={(Math.min(i, 2) + 1) as 1 | 2 | 3}>
                 <Link
                   href={`/news/${item.slug}`}
@@ -36,7 +40,7 @@ export default function NewsPage() {
                 >
                   <div>
                     <time className="text-[#ED7606] text-xs font-black uppercase tracking-[0.14em]">
-                      {item.category} — {item.date}
+                      {item.category} — {item.publishedAt}
                     </time>
                     <h3 className="mt-7 text-2xl leading-[1.08] tracking-[-0.03em] font-extrabold text-[#171717]">
                       {item.title}
@@ -50,6 +54,10 @@ export default function NewsPage() {
               </Reveal>
             ))}
           </div>
+
+          {articles.length === 0 && (
+            <p className="text-center py-16 text-[#9CA3AF] text-sm">No articles yet.</p>
+          )}
         </div>
       </section>
     </>

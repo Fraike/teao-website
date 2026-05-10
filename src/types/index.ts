@@ -36,6 +36,18 @@ export interface Product {
 
   materials?: { part: string; material: string }[];
 
+  /** Short technical tags displayed as pills (e.g. "SOC Free", "Two-way") */
+  characteristics?: string[];
+
+  /** Path to the technical dimension/engineering drawing */
+  dimension_drawing?: string;
+
+  /** Paths to performance curve chart images */
+  performance_charts?: {
+    rotation_curve?: string;
+    temperature_curve?: string;
+  };
+
   buffer_direction?: string;
   assembly_method?: string;
 

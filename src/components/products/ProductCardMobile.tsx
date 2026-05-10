@@ -1,35 +1,9 @@
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
+import { formatTorque, getTorqueRange, formatMount } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.png";
-
-function niceCeil(value: number) {
-  if (value <= 0) return 1;
-  const power = 10 ** Math.floor(Math.log10(value));
-  const normalized = value / power;
-  const step = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10;
-  return step * power;
-}
-
-function getTorqueRange(product: Product) {
-  const torque = product.torque;
-  if (!torque) return null;
-  const scaleMax = niceCeil(torque.max * 1.45);
-  const start = Math.max(0, Math.min(100, (torque.min / scaleMax) * 100));
-  const end = Math.max(start, Math.min(100, (torque.max / scaleMax) * 100));
-  return { scaleMax, start, width: Math.max(8, end - start) };
-}
-
-function formatTorque(product: Product) {
-  if (!product.torque) return null;
-  return `${product.torque.min} – ${product.torque.max} ${product.torque.unit}`;
-}
-
-function formatMount(value?: string) {
-  if (!value) return null;
-  return value.replace(/Screw Fixing/gi, "Screw fit");
-}
 
 export function ProductCardMobile({ product }: { product: Product }) {
   const imgSrc = product.image || PLACEHOLDER;
