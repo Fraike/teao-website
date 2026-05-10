@@ -18,6 +18,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
         <Link href="/admin/news" className="text-xs text-white/70 hover:text-white transition-colors">
           News
         </Link>
+        <Link href="/admin/media" className="text-xs text-white/70 hover:text-white transition-colors">
+          Media
+        </Link>
         <div className="flex-1" />
         <span className="text-xs text-white/50">{session.username}</span>
         <form action="/api/auth/logout" method="POST">

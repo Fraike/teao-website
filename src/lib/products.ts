@@ -3,6 +3,45 @@ import type { products } from "@/db/schema";
 
 type DbProduct = typeof products.$inferSelect;
 
+/** Parse JSON fields from a DB row, keeping DB column names (for API responses) */
+export function serializeProduct(row: DbProduct): Record<string, unknown> {
+  return {
+    ...row,
+    features: JSON.parse(row.features || "[]"),
+    images: JSON.parse(row.images || "[]"),
+    techParams: row.techParams ? JSON.parse(row.techParams) : undefined,
+    specifications: JSON.parse(row.specifications || "{}"),
+    torque: row.torque ? JSON.parse(row.torque) : undefined,
+    durability: row.durability ? JSON.parse(row.durability) : undefined,
+    materials: JSON.parse(row.materials || "[]"),
+    characteristics: JSON.parse(row.characteristics || "[]"),
+    performanceCharts: row.performanceCharts ? JSON.parse(row.performanceCharts) : undefined,
+    applications: JSON.parse(row.applications || "[]"),
+    tags: JSON.parse(row.tags || "[]"),
+    isActive: Boolean(row.isActive),
+  };
+}
+
+/** Stringify JSON fields for DB insert/update from a form payload */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function deserializeProduct(data: Record<string, any>) {
+  return {
+    ...data,
+    features: JSON.stringify(data.features || []),
+    images: JSON.stringify(data.images || []),
+    techParams: data.techParams ? JSON.stringify(data.techParams) : null,
+    specifications: JSON.stringify(data.specifications || {}),
+    torque: data.torque ? JSON.stringify(data.torque) : null,
+    durability: data.durability ? JSON.stringify(data.durability) : null,
+    materials: JSON.stringify(data.materials || []),
+    characteristics: JSON.stringify(data.characteristics || []),
+    performanceCharts: data.performanceCharts ? JSON.stringify(data.performanceCharts) : null,
+    applications: JSON.stringify(data.applications || []),
+    tags: JSON.stringify(data.tags || []),
+    isActive: data.isActive ? 1 : 0,
+  };
+}
+
 export function mapDbProduct(row: DbProduct): Product {
   return {
     slug: row.slug,

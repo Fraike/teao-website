@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 type ProductData = Record<string, unknown>;
@@ -14,6 +14,9 @@ export default function ProductForm({ initial, isNew }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [dirty, setDirty] = useState(false);
 
   const [form, setForm] = useState({
     slug: (initial?.slug as string) || "",
@@ -26,7 +29,7 @@ export default function ProductForm({ initial, isNew }: Props) {
     summary: (initial?.summary as string) || "",
     description: (initial?.description as string) || "",
     image: (initial?.image as string) || "",
-    images: (initial?.images as { url: string; alt: string }[]) || [],
+    images: (initial?.images as { url: string; alt?: string }[]) || [],
     specifications: (initial?.specifications as Record<string, string>) || {},
     techParams: (initial?.techParams as Record<string, string | number>) || {},
     torque: (initial?.torque as { min: number; max: number; unit: string } | null) || null,
@@ -57,8 +60,30 @@ export default function ProductForm({ initial, isNew }: Props) {
   const [galleryUrl, setGalleryUrl] = useState("");
   const [galleryAlt, setGalleryAlt] = useState("");
 
+  // Unsaved changes warning
+  useEffect(() => {
+    if (!dirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dirty]);
+
   const set = useCallback((field: string, value: unknown) => {
+    setDirty(true);
     setForm((prev) => ({ ...prev, [field]: value }));
+  }, []);
+
+  // Auto-generate slug from model
+  const handleModelChange = useCallback((val: string) => {
+    const slug = val
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+    setForm((prev) => ({ ...prev, model: val, slug: prev.slug || slug }));
+    setDirty(true);
   }, []);
 
   async function uploadImage(file: File) {
@@ -76,19 +101,20 @@ export default function ProductForm({ initial, isNew }: Props) {
     try {
       const url = await uploadImage(file);
       set("image", url);
+      setSuccessMsg("Image uploaded successfully");
+      setTimeout(() => setSuccessMsg(""), 3000);
     } catch {
-      alert("Image upload failed");
+      setError("Image upload failed");
     }
   }
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent, redirectAfter = true) {
     e.preventDefault();
     setSaving(true);
     setError("");
 
     const payload = {
       ...form,
-      images: form.images.length > 0 ? form.images : (form.image ? [{ url: form.image, alt: form.name }] : []),
       tags: form.tags,
       isActive: form.isActive ? 1 : 0,
     };
@@ -103,8 +129,13 @@ export default function ProductForm({ initial, isNew }: Props) {
     });
 
     if (res.ok) {
-      router.push("/admin/products");
-      router.refresh();
+      setDirty(false);
+      setSuccessMsg(isNew ? "Product created" : "Changes saved");
+      setTimeout(() => setSuccessMsg(""), 3000);
+      if (redirectAfter) {
+        router.push("/admin/products");
+        router.refresh();
+      }
     } else {
       const data = await res.json();
       setError(data.error || "Save failed");
@@ -112,12 +143,38 @@ export default function ProductForm({ initial, isNew }: Props) {
     setSaving(false);
   }
 
+  async function handleDelete() {
+    if (!confirmDelete) {
+      setConfirmDelete(true);
+      return;
+    }
+    setSaving(true);
+    const res = await fetch(`/api/products/${initial?.id}`, { method: "DELETE" });
+    if (res.ok) {
+      router.push("/admin/products");
+      router.refresh();
+    } else {
+      setError("Delete failed");
+      setSaving(false);
+    }
+  }
+
+  // Gallery: move image up/down
+  function moveGalleryImage(index: number, dir: -1 | 1) {
+    const next = [...form.images];
+    const target = index + dir;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    set("images", next);
+  }
+
   const inputClass = "w-full h-10 px-3 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10";
   const labelClass = "block text-xs font-bold text-[#374151] mb-1";
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
+    <form onSubmit={(e) => handleSubmit(e, true)} className="space-y-8">
       {error && <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs font-medium">{error}</div>}
+      {successMsg && <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs font-medium">{successMsg}</div>}
 
       {/* Basic Info */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
@@ -125,7 +182,7 @@ export default function ProductForm({ initial, isNew }: Props) {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className={labelClass}>Model *</label>
-            <input className={inputClass} value={form.model} onChange={(e) => set("model", e.target.value)} required />
+            <input className={inputClass} value={form.model} onChange={(e) => handleModelChange(e.target.value)} required />
           </div>
           <div>
             <label className={labelClass}>Slug *</label>
@@ -151,7 +208,11 @@ export default function ProductForm({ initial, isNew }: Props) {
           </div>
           <div>
             <label className={labelClass}>Sub Type</label>
-            <input className={inputClass} value={form.subType} onChange={(e) => set("subType", e.target.value)} />
+            <select className={inputClass} value={form.subType} onChange={(e) => set("subType", e.target.value)}>
+              <option value="">None</option>
+              <option value="individual">Individual</option>
+              <option value="series">Series</option>
+            </select>
           </div>
           <div>
             <label className={labelClass}>Variant</label>
@@ -189,6 +250,12 @@ export default function ProductForm({ initial, isNew }: Props) {
           <div>
             <label className={labelClass}>Main Image URL</label>
             <input className={inputClass} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="/uploads/..." />
+            {form.image && (
+              <div className="mt-2 relative w-32 h-32 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={form.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+              </div>
+            )}
           </div>
           <div>
             <label className={labelClass}>Upload Image</label>
@@ -197,25 +264,51 @@ export default function ProductForm({ initial, isNew }: Props) {
           <div>
             <label className={labelClass}>Dimension Drawing URL</label>
             <input className={inputClass} value={form.dimensionDrawing} onChange={(e) => set("dimensionDrawing", e.target.value)} placeholder="/images/..." />
+            {form.dimensionDrawing && (
+              <div className="mt-2 relative w-32 h-32 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={form.dimensionDrawing} alt="Drawing preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+              </div>
+            )}
           </div>
         </div>
+
         {/* Gallery images */}
         <div className="mt-4">
           <label className={labelClass}>Gallery Images</label>
-          <div className="flex flex-wrap gap-2 mb-2">
-            {form.images.map((img, i) => (
-              <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-[#F3F4F6] rounded text-xs">
-                {img.alt || img.url}
-                <button type="button" onClick={() => set("images", form.images.filter((_, j) => j !== i))} className="text-red-500 font-bold">&times;</button>
-              </span>
-            ))}
-          </div>
+          {form.images.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-3">
+              {form.images.map((img, i) => (
+                <div key={i} className="relative group w-20 h-20 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={img.url} alt={img.alt || ""} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                  <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] px-1 truncate">{img.alt || img.url.split("/").pop()}</span>
+                  <div className="absolute top-0 inset-x-0 flex justify-between p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {i > 0 && (
+                      <button type="button" onClick={() => moveGalleryImage(i, -1)} className="w-5 h-5 bg-black/60 rounded text-white text-[10px]">&uarr;</button>
+                    )}
+                    {i < form.images.length - 1 && (
+                      <button type="button" onClick={() => moveGalleryImage(i, 1)} className="w-5 h-5 bg-black/60 rounded text-white text-[10px] ml-auto">&darr;</button>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => set("images", form.images.filter((_, j) => j !== i))}
+                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    &times;
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="flex gap-2">
             <input className={inputClass + " flex-1"} placeholder="Image URL" value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} />
             <input className={inputClass + " w-32"} placeholder="Alt text" value={galleryAlt} onChange={(e) => setGalleryAlt(e.target.value)} />
             <button type="button" onClick={() => { if (galleryUrl) { set("images", [...form.images, { url: galleryUrl, alt: galleryAlt || form.name }]); setGalleryUrl(""); setGalleryAlt(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">Add</button>
           </div>
         </div>
+
         {/* Performance charts */}
         <div className="grid sm:grid-cols-2 gap-4 mt-4">
           <div>
@@ -235,15 +328,29 @@ export default function ProductForm({ initial, isNew }: Props) {
         <div className="grid sm:grid-cols-3 gap-4">
           <div>
             <label className={labelClass}>Torque Min</label>
-            <input className={inputClass} type="number" value={form.torque?.min || ""} onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: Number(e.target.value), max: form.torque?.max || 0 })} />
+            <input
+              className={inputClass}
+              type="number"
+              value={form.torque?.min ?? ""}
+              onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: e.target.value ? Number(e.target.value) : 0, max: form.torque?.max ?? 0 })}
+            />
           </div>
           <div>
             <label className={labelClass}>Torque Max</label>
-            <input className={inputClass} type="number" value={form.torque?.max || ""} onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: form.torque?.min || 0, max: Number(e.target.value) })} />
+            <input
+              className={inputClass}
+              type="number"
+              value={form.torque?.max ?? ""}
+              onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: form.torque?.min ?? 0, max: e.target.value ? Number(e.target.value) : 0 })}
+            />
           </div>
           <div>
             <label className={labelClass}>Torque Unit</label>
-            <select className={inputClass} value={form.torque?.unit || "gf.cm"} onChange={(e) => set("torque", { ...form.torque || { min: 0, max: 0 }, unit: e.target.value })}>
+            <select
+              className={inputClass}
+              value={form.torque?.unit || "gf.cm"}
+              onChange={(e) => set("torque", { ...form.torque || { min: 0, max: 0 }, unit: e.target.value })}
+            >
               <option value="gf.cm">gf·cm</option>
               <option value="kgf.cm">kgf·cm</option>
               <option value="N·m">N·m</option>
@@ -254,7 +361,12 @@ export default function ProductForm({ initial, isNew }: Props) {
         <div className="grid sm:grid-cols-3 gap-4 mt-4">
           <div>
             <label className={labelClass}>Durability Cycles</label>
-            <input className={inputClass} type="number" value={form.durability?.cycles || ""} onChange={(e) => set("durability", { ...form.durability || {}, cycles: Number(e.target.value) })} />
+            <input
+              className={inputClass}
+              type="number"
+              value={form.durability?.cycles ?? ""}
+              onChange={(e) => set("durability", { ...form.durability || {}, cycles: e.target.value ? Number(e.target.value) : undefined })}
+            />
           </div>
           <div>
             <label className={labelClass}>Temperature Range</label>
@@ -321,7 +433,7 @@ export default function ProductForm({ initial, isNew }: Props) {
         </div>
       </section>
 
-      {/* Tags */}
+      {/* Characteristics, Applications, Tags */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
         <h2 className="text-base font-extrabold text-[#111827] mb-5">Characteristics & Applications</h2>
         <div className="grid sm:grid-cols-3 gap-5">
@@ -360,7 +472,10 @@ export default function ProductForm({ initial, isNew }: Props) {
             <label className={labelClass}>SEO Tags</label>
             <div className="flex flex-wrap gap-1.5 mb-2">
               {form.tags.map((t, i) => (
-                <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-[#F3F4F6] rounded text-xs">{t}</span>
+                <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-[#F3F4F6] rounded text-xs">
+                  {t}
+                  <button type="button" onClick={() => set("tags", form.tags.filter((_, j) => j !== i))} className="text-red-500">&times;</button>
+                </span>
               ))}
             </div>
             <div className="flex gap-1.5">
@@ -385,13 +500,43 @@ export default function ProductForm({ initial, isNew }: Props) {
         </div>
       </section>
 
-      <div className="flex justify-end gap-3">
-        <button type="button" onClick={() => router.back()} className="px-6 h-11 rounded-lg border border-[#E5E7EB] text-sm font-bold text-[#374151]">
-          Cancel
-        </button>
-        <button type="submit" disabled={saving} className="px-6 h-11 rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors">
-          {saving ? "Saving..." : isNew ? "Create Product" : "Save Changes"}
-        </button>
+      {/* Actions */}
+      <div className="flex justify-between items-center">
+        <div>
+          {!isNew && (
+            confirmDelete ? (
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-red-600 font-medium">Are you sure?</span>
+                <button type="button" onClick={handleDelete} disabled={saving} className="px-3 h-9 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 disabled:opacity-50">
+                  {saving ? "Deleting..." : "Yes, delete"}
+                </button>
+                <button type="button" onClick={() => setConfirmDelete(false)} className="px-3 h-9 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151]">
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button type="button" onClick={handleDelete} className="px-4 h-10 rounded-lg border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors">
+                Delete Product
+              </button>
+            )
+          )}
+        </div>
+        <div className="flex gap-3">
+          <button type="button" onClick={() => router.back()} className="px-6 h-11 rounded-lg border border-[#E5E7EB] text-sm font-bold text-[#374151]">
+            Cancel
+          </button>
+          <button
+            type="button"
+            onClick={(e) => handleSubmit(e as unknown as React.FormEvent, false)}
+            disabled={saving}
+            className="px-6 h-11 rounded-lg border border-[#ED7606] text-[#ED7606] text-sm font-bold hover:bg-[#FFF1E3] disabled:opacity-50 transition-colors"
+          >
+            {saving ? "Saving..." : "Save & Continue"}
+          </button>
+          <button type="submit" disabled={saving} className="px-6 h-11 rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors">
+            {saving ? "Saving..." : isNew ? "Create Product" : "Save Changes"}
+          </button>
+        </div>
       </div>
     </form>
   );
