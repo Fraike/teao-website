@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { Product, CategoryInfo } from "@/types";
 import { ProductSearch } from "./ProductSearch";
 import { ProductTable } from "./ProductTable";
@@ -17,6 +17,15 @@ export function ProductListClient({
 }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
+  const prevProductsRef = useRef(products);
+
+  // Reset page to 1 when products change (e.g. switching categories)
+  useEffect(() => {
+    if (prevProductsRef.current !== products) {
+      prevProductsRef.current = products;
+      setPage(1);
+    }
+  }, [products]);
 
   const filtered = useMemo(() => {
     if (!search.trim()) return products;

@@ -129,6 +129,28 @@ export function formatMount(value?: string) {
   return value.replace(/Screw Fixing/gi, "Screw fit");
 }
 
+/** Look up a spec value from both specifications and tech_params, case-insensitive partial match */
+export function findSpecValue(product: Product, key: string): string | number | null {
+  const lowerKey = key.toLowerCase();
+  const specs = product.specifications;
+
+  // Exact match first
+  for (const [k, v] of Object.entries(specs)) {
+    if (k.toLowerCase() === lowerKey) return v;
+  }
+  // Partial match (handles composite keys like "Outer Diameter (外径)")
+  for (const [k, v] of Object.entries(specs)) {
+    if (k.toLowerCase().includes(lowerKey)) return v;
+  }
+  // tech_params fallback
+  if (product.tech_params) {
+    for (const [k, v] of Object.entries(product.tech_params)) {
+      if (k.toLowerCase().includes(lowerKey)) return v;
+    }
+  }
+  return null;
+}
+
 export function filterProducts(products: Product[], filters: ProductFilters): Product[] {
   return products.filter((p) => {
     if (filters.search) {

@@ -1,15 +1,16 @@
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-import { formatTorque, getTorqueRange, formatMount } from "@/lib/products";
+import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.png";
 
 export function ProductCardMobile({ product }: { product: Product }) {
   const imgSrc = product.image || PLACEHOLDER;
   const torqueLabel = formatTorque(product);
-  const diameter = product.tech_params?.outer_diameter;
-  const mod = product.tech_params?.module;
+  const teeth = findSpecValue(product, "teeth");
+  const mod = findSpecValue(product, "module");
+  const diameter = findSpecValue(product, "outer diameter");
   const mount = formatMount(product.assembly_method);
   const torqueRange = getTorqueRange(product);
 
@@ -72,16 +73,22 @@ export function ProductCardMobile({ product }: { product: Product }) {
 
           <div className="flex items-center justify-between gap-2 mt-2">
             <div className="flex items-center gap-3 text-[10px] text-[#6B7280]">
-              {diameter != null && (
+              {teeth != null && (
                 <span>
-                  <span className="text-[#9CA3AF]">Size </span>
-                  <span className="font-semibold text-[#374151]">{String(diameter)}</span>
+                  <span className="text-[#9CA3AF]">Teeth </span>
+                  <span className="font-semibold text-[#374151]">{String(teeth)}</span>
                 </span>
               )}
               {mod != null && (
                 <span>
                   <span className="text-[#9CA3AF]">Mod </span>
                   <span className="font-semibold text-[#374151]">{String(mod)}</span>
+                </span>
+              )}
+              {diameter != null && (
+                <span>
+                  <span className="text-[#9CA3AF]">Dia </span>
+                  <span className="font-semibold text-[#374151]">{String(diameter)}</span>
                 </span>
               )}
               {mount && (

@@ -2,7 +2,7 @@ import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight, Cog, Gauge, Ruler, Wrench } from "lucide-react";
-import { formatTorque, getTorqueRange, formatMount } from "@/lib/products";
+import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.png";
 
@@ -32,11 +32,12 @@ export function ProductTable({ products }: { products: Product[] }) {
       {products.map((product) => {
         const imgSrc = product.image || PLACEHOLDER;
         const torqueLabel = formatTorque(product);
-        const diameter = product.tech_params?.outer_diameter;
-        const mod = product.tech_params?.module;
+        const teeth = findSpecValue(product, "teeth");
+        const mod = findSpecValue(product, "module");
+        const diameter = findSpecValue(product, "outer diameter");
         const mount = formatMount(product.assembly_method);
         const torqueRange = getTorqueRange(product);
-        const hasSpecs = diameter != null || mod != null || Boolean(mount);
+        const hasSpecs = teeth != null || diameter != null || mod != null || Boolean(mount);
 
         return (
           <article
@@ -114,8 +115,9 @@ export function ProductTable({ products }: { products: Product[] }) {
                 <div className="flex items-center justify-between gap-2">
                   {hasSpecs && (
                     <div className="flex min-w-0 flex-1 flex-wrap gap-1.5">
-                      <SpecPill icon={<Ruler size={12} />} label="Dia" value={diameter} />
+                      <SpecPill icon={<Cog size={12} />} label="Teeth" value={teeth} />
                       <SpecPill icon={<Cog size={12} />} label="M" value={mod} />
+                      <SpecPill icon={<Ruler size={12} />} label="Dia" value={diameter} />
                       <SpecPill icon={<Wrench size={12} />} label="Mount" value={mount} />
                     </div>
                   )}
