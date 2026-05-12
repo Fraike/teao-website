@@ -108,15 +108,19 @@ export function getTorqueRange(product: Product): TorqueRange | null {
   const torque = product.torque;
   if (!torque) return null;
   const scaleMax = niceCeil(torque.max * 1.45);
-  const start = Math.max(0, Math.min(100, (torque.min / scaleMax) * 100));
-  const end = Math.max(start, Math.min(100, (torque.max / scaleMax) * 100));
-  return { scaleMax, start, width: Math.max(8, end - start) };
+  const rawStart = Math.max(0, Math.min(100, (torque.min / scaleMax) * 100));
+  const rawEnd = Math.max(rawStart, Math.min(100, (torque.max / scaleMax) * 100));
+  const minWidth = 6; // minimum bar width in %
+  const width = Math.min(Math.max(minWidth, rawEnd - rawStart), 100 - rawStart);
+  const start = rawStart + rawEnd > 0 ? Math.min(rawStart, 100 - width) : rawStart;
+  return { scaleMax, start, width };
 }
 
 /** Format torque range as human-readable string */
 export function formatTorque(product: Product) {
   if (!product.torque) return null;
-  return `${product.torque.min} – ${product.torque.max} ${product.torque.unit}`;
+  const { min, max, unit } = product.torque;
+  return min === max ? `${min} ${unit}` : `${min} – ${max} ${unit}`;
 }
 
 /** Clean up assembly method string */

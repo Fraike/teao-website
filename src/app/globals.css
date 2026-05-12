@@ -38,19 +38,11 @@
 }
 
 @keyframes torqueFill {
-  from {
-    left: var(--torque-start);
-    width: 0;
-  }
-  to {
-    left: var(--torque-start);
-    width: var(--torque-width);
-  }
+  from { width: 0; }
+  to { width: var(--torque-width); }
 }
 
 .torque-fill {
-  left: var(--torque-start);
-  width: var(--torque-width);
   animation: torqueFill 0.9s cubic-bezier(.16,1,.3,1) both;
 }
 

@@ -26,6 +26,8 @@ export function TorqueRangeBar({ torque }: { torque: NonNullable<Product["torque
           style={{
             left: `${torqueRange.start}%`,
             width: `${torqueRange.width}%`,
+            // @ts-expect-error CSS custom property for fill animation
+            "--torque-width": `${torqueRange.width}%`,
           }}
         />
       </div>

@@ -8,6 +8,7 @@ import { Breadcrumb } from "@/components/products/Breadcrumb";
 import { ProductGallery } from "@/components/products/ProductGallery";
 import { CharacteristicsPills } from "@/components/products/CharacteristicsPills";
 import { TorqueRangeBar } from "@/components/products/TorqueRangeBar";
+import { PerformanceStats } from "@/components/products/PerformanceStats";
 import { TechSpecsTable } from "@/components/products/TechSpecsTable";
 import { MaterialsTable } from "@/components/products/MaterialsTable";
 import { PerformanceCharts } from "@/components/products/PerformanceCharts";
@@ -119,6 +120,11 @@ export default async function ProductDetailPage({ params }: Props) {
                 </Button>
               </div>
             </div>
+          </div>
+
+          {/* Performance Stats */}
+          <div className="mb-12 lg:mb-14">
+            <PerformanceStats product={product} />
           </div>
 
           {/* Dimension Drawing */}

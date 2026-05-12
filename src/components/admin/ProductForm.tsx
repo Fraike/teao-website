@@ -33,7 +33,10 @@ export default function ProductForm({ initial, isNew }: Props) {
     specifications: (initial?.specifications as Record<string, string>) || {},
     techParams: (initial?.techParams as Record<string, string | number>) || {},
     torque: (initial?.torque as { min: number; max: number; unit: string } | null) || null,
-    durability: (initial?.durability as { temperature?: string; cycles?: number; cycles_unit?: string } | null) || null,
+    durability: (initial?.durability as { temperature?: string; test_method?: string; cycles?: number; cycles_unit?: string } | null) || null,
+    hardTorque: (initial?.hardTorque as string) || "",
+    hardForce: (initial?.hardForce as string) || "",
+    forceRange: (initial?.forceRange as string) || "",
     materials: (initial?.materials as { part: string; material: string }[]) || [],
     characteristics: (initial?.characteristics as string[]) || [],
     applications: (initial?.applications as string[]) || [],
@@ -372,6 +375,26 @@ export default function ProductForm({ initial, isNew }: Props) {
             <label className={labelClass}>Temperature Range</label>
             <input className={inputClass} value={form.durability?.temperature || ""} onChange={(e) => set("durability", { ...form.durability || {}, temperature: e.target.value })} />
           </div>
+          <div>
+            <label className={labelClass}>Test Method</label>
+            <input className={inputClass} value={form.durability?.test_method || ""} onChange={(e) => set("durability", { ...form.durability || {}, test_method: e.target.value })} />
+          </div>
+        </div>
+        <div className="grid sm:grid-cols-3 gap-4 mt-4">
+          <div>
+            <label className={labelClass}>Hard Torque</label>
+            <input className={inputClass} value={form.hardTorque} onChange={(e) => set("hardTorque", e.target.value)} placeholder="e.g. 50" />
+          </div>
+          <div>
+            <label className={labelClass}>Hard Force</label>
+            <input className={inputClass} value={form.hardForce} onChange={(e) => set("hardForce", e.target.value)} placeholder="e.g. 6.0" />
+          </div>
+          <div>
+            <label className={labelClass}>Force Range</label>
+            <input className={inputClass} value={form.forceRange} onChange={(e) => set("forceRange", e.target.value)} placeholder="e.g. 6N" />
+          </div>
+        </div>
+        <div className="grid sm:grid-cols-3 gap-4 mt-4">
           <div>
             <label className={labelClass}>Buffer Direction</label>
             <input className={inputClass} value={form.bufferDirection} onChange={(e) => set("bufferDirection", e.target.value)} placeholder="bidirectional" />
