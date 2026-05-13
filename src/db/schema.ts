@@ -37,6 +37,7 @@ export const products = sqliteTable("products", {
   bufferDirection: text("buffer_direction"),
   assemblyMethod: text("assembly_method"),
   applications: text("applications").notNull().default("[]"),
+  applicationScenarios: text("application_scenarios").default("[]"),
   seoTitle: text("seo_title"),
   seoDescription: text("seo_description"),
   tags: text("tags").default("[]"),

@@ -101,7 +101,7 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2.5">
-            <span className="hidden lg:inline text-xs font-bold text-[#9CA3AF]">EN / 中文</span>
+            <span className="hidden lg:inline text-xs font-bold text-[#9CA3AF]">EN</span>
             <Link
               href="/torque-converter"
               className="hidden sm:inline-flex items-center h-[38px] px-4 text-xs font-bold rounded-full border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606] transition-colors"

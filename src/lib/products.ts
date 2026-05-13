@@ -17,6 +17,7 @@ export function serializeProduct(row: DbProduct): Record<string, unknown> {
     characteristics: JSON.parse(row.characteristics || "[]"),
     performanceCharts: row.performanceCharts ? JSON.parse(row.performanceCharts) : undefined,
     applications: JSON.parse(row.applications || "[]"),
+    applicationScenarios: row.applicationScenarios ? JSON.parse(row.applicationScenarios) : undefined,
     tags: JSON.parse(row.tags || "[]"),
     isActive: Boolean(row.isActive),
   };
@@ -37,6 +38,7 @@ export function deserializeProduct(data: Record<string, any>) {
     characteristics: JSON.stringify(data.characteristics || []),
     performanceCharts: data.performanceCharts ? JSON.stringify(data.performanceCharts) : null,
     applications: JSON.stringify(data.applications || []),
+    applicationScenarios: data.applicationScenarios ? JSON.stringify(data.applicationScenarios) : null,
     tags: JSON.stringify(data.tags || []),
     isActive: data.isActive ? 1 : 0,
   };
@@ -70,6 +72,7 @@ export function mapDbProduct(row: DbProduct): Product {
     buffer_direction: row.bufferDirection ?? undefined,
     assembly_method: row.assemblyMethod ?? undefined,
     applications: JSON.parse(row.applications || "[]"),
+    application_scenarios: row.applicationScenarios ? JSON.parse(row.applicationScenarios) : undefined,
     seo_title: row.seoTitle ?? undefined,
     seo_description: row.seoDescription ?? undefined,
     tags: JSON.parse(row.tags || "[]"),
@@ -138,7 +141,7 @@ export function findSpecValue(product: Product, key: string): string | number | 
   for (const [k, v] of Object.entries(specs)) {
     if (k.toLowerCase() === lowerKey) return v;
   }
-  // Partial match (handles composite keys like "Outer Diameter (外径)")
+  // Partial match for composite keys
   for (const [k, v] of Object.entries(specs)) {
     if (k.toLowerCase().includes(lowerKey)) return v;
   }

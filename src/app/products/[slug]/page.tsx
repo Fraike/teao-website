@@ -174,11 +174,11 @@ export default async function ProductDetailPage({ params }: Props) {
                   Application Scenarios
                 </h2>
                 <p className="mt-2 max-w-[560px] text-sm leading-relaxed text-[#6B7280]">
-                  Two common use cases for this damper platform. More applications can be reviewed from your drawing.
+                  Common use cases for this product. More applications can be reviewed from your drawing.
                 </p>
               </div>
             </div>
-            <ApplicationScenarios max={2} />
+            <ApplicationScenarios scenarios={product.application_scenarios} />
           </div>
 
           {/* Related Products */}

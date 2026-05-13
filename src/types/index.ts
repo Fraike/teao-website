@@ -53,6 +53,9 @@ export interface Product {
 
   applications: string[];
 
+  /** Custom application scenario images per product */
+  application_scenarios?: { image: string; label: string }[];
+
   seo_title?: string;
   seo_description?: string;
 

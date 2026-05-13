@@ -40,6 +40,7 @@ export default function ProductForm({ initial, isNew }: Props) {
     materials: (initial?.materials as { part: string; material: string }[]) || [],
     characteristics: (initial?.characteristics as string[]) || [],
     applications: (initial?.applications as string[]) || [],
+    applicationScenarios: (initial?.applicationScenarios as { image: string; label: string }[]) || [],
     assemblyMethod: (initial?.assemblyMethod as string) || "",
     bufferDirection: (initial?.bufferDirection as string) || "",
     dimensionDrawing: (initial?.dimensionDrawing as string) || "",
@@ -506,6 +507,54 @@ export default function ProductForm({ initial, isNew }: Props) {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Application Scenarios */}
+      <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">Application Scenarios</h2>
+        <p className="text-xs text-[#6B7280] mb-3">
+          Upload custom scenario images for this product. Leave empty to use default scenarios.
+        </p>
+        <div className="space-y-2 mb-3">
+          {form.applicationScenarios.map((s, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <input
+                className={inputClass + " flex-1"}
+                value={s.image}
+                onChange={(e) => {
+                  const next = [...form.applicationScenarios];
+                  next[i] = { ...next[i], image: e.target.value };
+                  set("applicationScenarios", next);
+                }}
+                placeholder="Image URL or path"
+              />
+              <input
+                className={inputClass + " w-40"}
+                value={s.label}
+                onChange={(e) => {
+                  const next = [...form.applicationScenarios];
+                  next[i] = { ...next[i], label: e.target.value };
+                  set("applicationScenarios", next);
+                }}
+                placeholder="Label"
+              />
+              <button
+                type="button"
+                onClick={() => set("applicationScenarios", form.applicationScenarios.filter((_, j) => j !== i))}
+                className="shrink-0 w-8 h-8 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50"
+              >
+                &times;
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => set("applicationScenarios", [...form.applicationScenarios, { image: "", label: "" }])}
+          className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold"
+        >
+          + Add Scenario
+        </button>
       </section>
 
       {/* SEO */}
