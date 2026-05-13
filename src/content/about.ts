@@ -167,7 +167,16 @@ export const trustBadges = [
   "200+ Customers",
 ];
 
-export const youtubeVideoId = env.YOUTUBE_VIDEO_ID || "REPLACE_WITH_YOUTUBE_VIDEO_ID";
+const defaultYoutubeVideoId = "BsnzfexouZs";
+
+export const youtubeVideoId = env.YOUTUBE_VIDEO_ID || defaultYoutubeVideoId;
+export const youtubeVideoEmbedUrl =
+  youtubeVideoId === defaultYoutubeVideoId
+    ? "https://www.youtube.com/embed/BsnzfexouZs?si=KpO656T0pKhlWFjq"
+    : `https://www.youtube.com/embed/${youtubeVideoId}`;
+export const youtubeVideoPlaybackUrl = `${youtubeVideoEmbedUrl}${
+  youtubeVideoEmbedUrl.includes("?") ? "&" : "?"
+}autoplay=1&rel=0&modestbranding=1`;
 export const videoPoster = "/images/company/automation-workshop.jpg";
 
 export const aboutFAQ = [

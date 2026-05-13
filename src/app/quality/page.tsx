@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const ENGINEERING_CAPABILITIES = [
   { icon: Gauge, title: "High Torque, Small Size", description: "Achieving high torque output in compact, space-constrained damper designs." },
   { icon: Clock, title: "Extended Lifespan", description: "Material and design optimization validated to >100,000 cycles for extended product life." },
-  { icon: Thermometer, title: "Wide Temperature Range", description: "Consistent damping performance across temperatures from -40°C to +150°C." },
+  { icon: Thermometer, title: "Wide Temperature Range", description: "Consistent damping performance across ambient conditions from -40°C to +110°C." },
   { icon: Target, title: "Unidirectional Damping", description: "Precision-controlled damping in a single direction — open smooth, close firm." },
   { icon: Sliders, title: "Tailored Performance", description: "Damping profiles tuned to your specific torque, speed and motion-feel requirements." },
   { icon: Waves, title: "Low Temperature Sensitivity", description: "Viscosity-stable silicone oil formulations minimize performance drift under thermal cycling." },
@@ -34,21 +34,21 @@ const LAB_GROUPS = [
     items: [
       { equipment: "Digital Push-Pull Force Gauge", range: "0.25 ~ 500N", accuracy: "±0.25N" },
       { equipment: "Torque Meter", range: "10g ~ 6000g", accuracy: "±0.1g" },
-      { equipment: "Torque Tester", range: "1 ~ 100 Turns", accuracy: "Internal Standard" },
+      { equipment: "Torque Tester", range: "1 ~ 100 turns", accuracy: "Internal standard" },
     ],
   },
   {
     label: "Environmental Testing",
     items: [
-      { equipment: "Environmental Chamber", range: "-60°C ~ +150°C", accuracy: "±1°C" },
-      { equipment: "High Temperature Chamber", range: "+150°C", accuracy: "±1°C" },
-      { equipment: "Thermometer", range: "-40°C ~ 120°C", accuracy: "±1°C" },
+      { equipment: "Environmental Chamber", range: "-40°C to +110°C", accuracy: "±1°C" },
+      { equipment: "High Temperature Chamber", range: "-40°C to +110°C", accuracy: "±1°C" },
+      { equipment: "Thermometer", range: "-40°C to +110°C", accuracy: "±1°C" },
     ],
   },
   {
     label: "Durability & Inspection",
     items: [
-      { equipment: "Lifecycle Tester", range: "＞100,000 Cycles", accuracy: "Internal Standard" },
+      { equipment: "Lifecycle Tester", range: ">100,000 cycles", accuracy: "Internal standard" },
       { equipment: "Optical Projector", range: "X200mm × Y100mm", accuracy: "0.001mm" },
       { equipment: "Rubber Hardness Tester", range: "0 ~ 100A", accuracy: "±1A" },
     ],
@@ -58,7 +58,7 @@ const LAB_GROUPS = [
     items: [
       { equipment: "Digital Caliper / Height Gauge", range: "0 ~ 150mm", accuracy: "0.01mm" },
       { equipment: "Electronic Balance", range: "0.000001 ~ 150kg", accuracy: "0.000001kg" },
-      { equipment: "Viscosity Tester", range: "0.1 ~ 60 Turns", accuracy: "1mpa" },
+      { equipment: "Viscosity Tester", range: "0.1 ~ 60 turns", accuracy: "1mPa" },
     ],
   },
 ];
@@ -72,8 +72,9 @@ export default function QualityPage() {
           <Reveal>
             <SectionHead
               eyebrow="Quality Control"
-              title="Zero compromise on quality. Every damper tested."
-              description="IATF 16949 certified quality management system. 100% torque testing plus 100% visual inspection on every single unit — with full batch traceability from raw material to finished product."
+              title="Validated quality for every damper."
+              description="IATF 16949 certified system with 100% torque testing, 100% visual inspection and batch traceability from raw material to finished product."
+              className="max-w-5xl"
             />
           </Reveal>
 
@@ -118,7 +119,7 @@ export default function QualityPage() {
                     </li>
                     <li className="flex items-start gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
-                      <span>Stable torque across -30°C to +80°C operating range</span>
+                      <span>Stable torque across -40°C to +110°C ambient conditions</span>
                     </li>
                     <li className="flex items-start gap-2.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shrink-0 mt-2" />
@@ -217,8 +218,8 @@ export default function QualityPage() {
           <Reveal>
             <SectionHead
               eyebrow="Laboratory"
-              title="Professional testing & validation equipment."
-              description="TEAO laboratory supports product reliability verification, quality consistency control and automotive-grade validation requirements."
+              title="Clear validation data from calibrated equipment."
+              description="TEAO laboratory supports torque, lifecycle, dimensional and environmental verification for automotive-grade quality control."
             />
           </Reveal>
 
@@ -235,9 +236,19 @@ export default function QualityPage() {
                         <div className="text-[13px] font-bold text-[#171717] leading-snug mb-0.5">
                           {item.equipment}
                         </div>
-                        <div className="flex gap-3 text-[11px] text-[#9CA3AF]">
-                          <span>Range: {item.range}</span>
-                          <span>± {item.accuracy}</span>
+                        <div className="mt-2 grid grid-cols-2 gap-2 text-[11px]">
+                          <span className="rounded-lg bg-[#F8F9FA] px-2.5 py-2 text-[#6B7280]">
+                            <span className="block text-[9px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">
+                              Range
+                            </span>
+                            <span className="mt-0.5 block font-bold">{item.range}</span>
+                          </span>
+                          <span className="rounded-lg bg-[#F8F9FA] px-2.5 py-2 text-[#6B7280]">
+                            <span className="block text-[9px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">
+                              Accuracy
+                            </span>
+                            <span className="mt-0.5 block font-bold">{item.accuracy}</span>
+                          </span>
                         </div>
                       </li>
                     ))}

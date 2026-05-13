@@ -1,14 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Play } from "lucide-react";
-import { youtubeVideoId, videoPoster } from "@/content/about";
+import { videoPoster, youtubeVideoPlaybackUrl } from "@/content/about";
 
 export function CompanyVideoSection() {
-  const [playing, setPlaying] = useState(false);
-
   return (
     <section className="py-16 lg:py-24 bg-white" id="company-video">
       <div className="shell">
@@ -36,17 +33,10 @@ export function CompanyVideoSection() {
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="relative max-w-4xl mx-auto aspect-video rounded-2xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_32px_rgba(0,0,0,.05)] bg-black"
         >
-          {playing ? (
-            <iframe
-              src={`https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1&rel=0&modestbranding=1`}
-              title="TEAO Company Video"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-            />
-          ) : (
-            <button
-              onClick={() => setPlaying(true)}
+            <a
+              href={youtubeVideoPlaybackUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className="group absolute inset-0 w-full h-full cursor-pointer"
               aria-label="Play company video"
             >
@@ -68,8 +58,7 @@ export function CompanyVideoSection() {
                   <Play size={32} className="text-white ml-1.5" strokeWidth={2.5} />
                 </span>
               </motion.div>
-            </button>
-          )}
+            </a>
         </motion.div>
       </div>
     </section>

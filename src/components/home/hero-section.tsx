@@ -44,7 +44,7 @@ export function HeroSection() {
                 Engineered for stable torque, quiet motion and repeatable mass production.
               </p>
               <div className="flex flex-wrap gap-2.5 lg:gap-3 mt-6 lg:mt-8">
-                <Button href="/products" variant="primary">
+                <Button href="#products" variant="primary">
                   Explore Products
                 </Button>
                 <Button href="/contact" variant="ghost">

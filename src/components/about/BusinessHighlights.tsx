@@ -5,7 +5,7 @@ import { businessStats } from "@/content/about";
 
 export function BusinessHighlights() {
   return (
-    <section className="py-16 lg:py-24 bg-[#F0F2F5]">
+    <section className="pt-14 pb-8 lg:pt-18 lg:pb-10 bg-[#F0F2F5]">
       <div className="shell">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

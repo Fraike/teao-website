@@ -8,7 +8,7 @@ const valueIcons = [BookOpen, HeartHandshake, Leaf, Building2];
 
 export function CorporateValues() {
   return (
-    <section className="py-16 lg:py-24 bg-white">
+    <section className="pt-10 pb-16 lg:pt-12 lg:pb-24 bg-white">
       <div className="shell">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

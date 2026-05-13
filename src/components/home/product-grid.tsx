@@ -10,7 +10,7 @@ export function ProductGrid() {
   const cats = db.select().from(categories).all().sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <section className="section" id="products">
+    <section className="section scroll-mt-24 lg:scroll-mt-28" id="products">
       <div className="shell">
         <Reveal>
           <SectionHead
