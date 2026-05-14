@@ -35,6 +35,7 @@ export default function Footer() {
                 src="/images/logo-color.png"
                 alt="TEAO"
                 fill
+                loading="lazy"
                 className="object-contain"
                 sizes="(max-width: 768px) 82px, 98px"
               />

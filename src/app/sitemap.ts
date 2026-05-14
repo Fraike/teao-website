@@ -18,25 +18,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ];
 
   const productRoutes = db
-    .select({ slug: products.slug })
+    .select({ slug: products.slug, updatedAt: products.updatedAt })
     .from(products)
     .all()
     .map((p) => ({
       url: `${baseUrl}/products/${p.slug}`,
-      lastModified: new Date(),
+      lastModified: p.updatedAt ?? new Date(),
       changeFrequency: "monthly" as const,
-      priority: 0.7,
+      priority: 0.7 as const,
     }));
 
   const newsRoutes = db
-    .select({ slug: news.slug })
+    .select({ slug: news.slug, updatedAt: news.updatedAt })
     .from(news)
     .all()
     .map((n) => ({
       url: `${baseUrl}/news/${n.slug}`,
-      lastModified: new Date(),
+      lastModified: n.updatedAt ?? new Date(),
       changeFrequency: "monthly" as const,
-      priority: 0.6,
+      priority: 0.6 as const,
     }));
 
   return [...staticRoutes, ...productRoutes, ...newsRoutes];

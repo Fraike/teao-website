@@ -32,6 +32,7 @@ export function ApplicationScenarios({ scenarios, max = 6 }: Props) {
               src={item.image}
               alt={item.label}
               fill
+              loading="lazy"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
               sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
               unoptimized={item.image.endsWith(".gif")}

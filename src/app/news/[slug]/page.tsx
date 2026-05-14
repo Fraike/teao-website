@@ -18,7 +18,22 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const article = db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) return { title: "Article Not Found" };
-  return { title: article.title, description: article.summary };
+  return {
+    title: `${article.title} | TEAO News`,
+    description: article.summary,
+    openGraph: {
+      title: article.title,
+      description: article.summary,
+      type: "article",
+      images: article.image ? [{ url: article.image, width: 1200, height: 630 }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.summary,
+      images: article.image ? [article.image] : [],
+    },
+  };
 }
 
 export default async function NewsDetailPage({ params }: Props) {
@@ -26,8 +41,44 @@ export default async function NewsDetailPage({ params }: Props) {
   const article = db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) notFound();
 
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: article.title,
+    description: article.summary,
+    image: article.image,
+    datePublished: article.publishedAt,
+    publisher: {
+      "@type": "Organization",
+      name: "TEAO",
+      url: "https://www.teao-damper.com",
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `https://www.teao-damper.com/news/${article.slug}`,
+    },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.teao-damper.com" },
+      { "@type": "ListItem", position: 2, name: "News", item: "https://www.teao-damper.com/news" },
+      { "@type": "ListItem", position: 3, name: article.title },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <section className="section pt-32">
         <div className="shell max-w-3xl">
           <nav className="text-sm text-[#666666] mb-8">

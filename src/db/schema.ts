@@ -68,3 +68,16 @@ export const admins = sqliteTable("admins", {
   passwordHash: text("password_hash").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
+
+export const contactInquiries = sqliteTable("contact_inquiries", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  name: text("name").notNull(),
+  company: text("company"),
+  email: text("email").notNull(),
+  phone: text("phone"),
+  country: text("country"),
+  productInterest: text("product_interest"),
+  annualVolume: text("annual_volume"),
+  message: text("message").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});

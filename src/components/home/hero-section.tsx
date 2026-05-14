@@ -69,6 +69,7 @@ export function HeroSection() {
                     src={f.src}
                     alt=""
                     fill
+                    loading="lazy"
                     className="object-contain p-4"
                     sizes="(max-width: 1024px) 50vw, 33vw"
                   />

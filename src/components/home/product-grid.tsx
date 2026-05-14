@@ -49,6 +49,7 @@ export function ProductGrid() {
                     src={cat.image}
                     alt={cat.name}
                     fill
+                    loading="lazy"
                     className="product-card__image"
                     sizes="(max-width: 520px) 100vw, (max-width: 1024px) 50vw, 20vw"
                   />

@@ -9,4 +9,6 @@ export const env = {
   ALIBABA_URL: process.env.NEXT_PUBLIC_ALIBABA_URL || "#",
 
   YOUTUBE_VIDEO_ID: process.env.NEXT_PUBLIC_YOUTUBE_VIDEO_ID || "",
+  GOOGLE_SITE_VERIFICATION: process.env.GOOGLE_SITE_VERIFICATION || "",
+  PLAUSIBLE_DOMAIN: process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN || "",
 } as const;

@@ -48,6 +48,7 @@ export function CoreCompetencies() {
                     src={comp.image}
                     alt={comp.title}
                     fill
+                    loading="lazy"
                     className="object-cover transition-transform duration-[0.65s] group-hover:scale-[1.04]"
                     sizes="(max-width: 1024px) 100vw, 33vw"
                   />

@@ -31,6 +31,7 @@ export function ApplicationSection() {
                   src={app.image}
                   alt={app.title}
                   fill
+                  loading="lazy"
                   className="object-cover transition-transform duration-[0.55s] group-hover:scale-[1.06]"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />

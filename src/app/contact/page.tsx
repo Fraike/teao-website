@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Mail, MapPin, Download, FileText, ChevronDown } from "lucide-react";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact TEAO | Send Inquiry for Custom Damper Solution",
@@ -110,56 +112,9 @@ export default function ContactPage() {
               <h2 className="text-2xl lg:text-3xl font-black tracking-[-0.03em] text-[#111827] mb-6 lg:mb-7">
                 Send an inquiry
               </h2>
-              <form className="space-y-5">
-                <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Name *</label>
-                    <input type="text" required className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Company</label>
-                    <input type="text" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Email *</label>
-                    <input type="email" required className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Phone</label>
-                    <input type="tel" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                </div>
-                <div className="grid sm:grid-cols-2 gap-4 lg:gap-5">
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Country</label>
-                    <input type="text" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                  </div>
-                  <div>
-                    <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Product Interest</label>
-                    <select className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all">
-                      <option value="">Select product...</option>
-                      <option value="gear-damper">Gear Damper</option>
-                      <option value="axial-damper">Axial Damper</option>
-                      <option value="glove-box-damper">Glove Box Damper</option>
-                      <option value="latch">Latch</option>
-                      <option value="other">Custom / Other</option>
-                    </select>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Annual Volume</label>
-                  <input type="text" placeholder="e.g. 50,000 units/year" className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all" />
-                </div>
-                <div>
-                  <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Message *</label>
-                  <textarea required rows={5} placeholder="Describe your application, torque requirements, mounting space..." className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all resize-y" />
-                </div>
-                <button type="submit" className="btn btn-primary px-8 text-base">
-                  Send Inquiry →
-                </button>
-              </form>
+              <Suspense fallback={<div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-8 animate-pulse"><div className="h-96 bg-[#F8F9FA] rounded-lg" /></div>}>
+                <ContactForm />
+              </Suspense>
             </div>
 
             {/* Sidebar */}

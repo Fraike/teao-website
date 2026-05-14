@@ -37,6 +37,7 @@ export function PartnerSection() {
                     src={partner.logo}
                     alt={partner.name}
                     fill
+                    loading="lazy"
                     className="object-contain transition-transform duration-300 group-hover:scale-[1.08]"
                     sizes="(max-width: 1024px) 33vw, 16vw"
                   />

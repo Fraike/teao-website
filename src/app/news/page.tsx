@@ -7,8 +7,28 @@ import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 
 export const metadata: Metadata = {
-  title: "News",
-  description: "TEAO company news, quality updates and engineering insights.",
+  title: "News | TEAO Damper Engineering Updates & Company News",
+  description:
+    "Stay updated with TEAO's latest company news, damper engineering insights, quality initiatives and technical resources for automotive and industrial applications.",
+  keywords: [
+    "damper manufacturer news",
+    "TEAO company updates",
+    "damper engineering",
+    "automotive damper news",
+  ],
+  openGraph: {
+    title: "News | TEAO Damper Engineering Updates & Company News",
+    description:
+      "Company news, engineering insights and technical resources from TEAO damper manufacturer.",
+    images: [{ url: "/images/logo-color.png", width: 512, height: 512 }],
+  },
+  twitter: {
+    card: "summary",
+    title: "News | TEAO Damper Engineering & Company Updates",
+    description:
+      "Company news and engineering insights from TEAO damper manufacturer.",
+    images: ["/images/logo-color.png"],
+  },
 };
 
 export default function NewsPage() {

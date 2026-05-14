@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Gauge, Eye, Shield, Thermometer, Clock, Target, Sliders, Waves } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Quality Control | IATF 16949 Certified",
+  title: "Quality Control | IATF 16949 Certified Damper Testing",
   description:
     "IATF 16949 certified quality system. 100% torque testing, 100% visual inspection, professional laboratory with lifecycle testing, environmental chamber and optical inspection capabilities.",
   keywords: [
@@ -17,6 +17,19 @@ export const metadata: Metadata = {
     "automotive quality",
     "lifecycle testing",
   ],
+  openGraph: {
+    title: "Quality Control | IATF 16949 Certified Damper Testing",
+    description:
+      "IATF 16949 certified damper quality with 100% torque testing and professional laboratory validation.",
+    images: [{ url: "/images/company/visual-inspection.jpg", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Quality Control | IATF 16949 Certified | TEAO",
+    description:
+      "100% torque testing, visual inspection and professional laboratory validation for automotive dampers.",
+    images: ["/images/company/visual-inspection.jpg"],
+  },
 };
 
 const ENGINEERING_CAPABILITIES = [

@@ -115,6 +115,7 @@ function CertificateCard({
           src={cert.image}
           alt={cert.name}
           fill
+          loading="lazy"
           className={`object-contain transition-transform duration-500 group-hover:scale-[1.05] ${imageClassName}`}
           sizes="(max-width: 1024px) 50vw, 22vw"
         />

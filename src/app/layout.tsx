@@ -6,7 +6,7 @@ import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
+  weight: ["400", "500", "700", "900"],
   display: "swap",
   variable: "--font-inter",
 });
@@ -36,10 +36,24 @@ export const metadata: Metadata = {
     title: "TEAO | Automotive Damper & Latch Manufacturer",
     description:
       "Precision dampers for automotive programs. 20+ years of damper expertise.",
+    images: [{ url: "/images/logo-color.png", width: 512, height: 512 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "TEAO | Automotive Damper & Latch Manufacturer",
+    description:
+      "Precision dampers for automotive programs. 20+ years of damper expertise.",
+    images: ["/images/logo-color.png"],
   },
   robots: {
     index: true,
     follow: true,
+  },
+  alternates: {
+    canonical: "/",
+  },
+  verification: {
+    google: env.GOOGLE_SITE_VERIFICATION,
   },
 };
 
@@ -55,6 +69,13 @@ export default function RootLayout({
       </head>
       <body>
         <PublicChrome>{children}</PublicChrome>
+        {env.PLAUSIBLE_DOMAIN && (
+          <script
+            defer
+            data-domain={env.PLAUSIBLE_DOMAIN}
+            src="https://plausible.io/js/script.js"
+          />
+        )}
       </body>
     </html>
   );

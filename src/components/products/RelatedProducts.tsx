@@ -34,6 +34,7 @@ export function RelatedProducts({
                   src={product.image || PLACEHOLDER}
                   alt={product.name}
                   fill
+                  loading="lazy"
                   className="object-contain p-2"
                   sizes="64px"
                 />

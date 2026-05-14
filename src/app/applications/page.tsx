@@ -4,8 +4,29 @@ import { Reveal } from "@/components/ui/reveal";
 import { Car, Bath, Monitor, Cog } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Applications",
-  description: "Automotive, bathroom, office equipment and industrial damper applications.",
+  title: "Damper Applications | Automotive, Bathroom, Office & Industrial",
+  description:
+    "TEAO dampers serve automotive interiors, bathroom & sanitary fittings, office equipment and industrial machinery. Gear dampers, axial dampers, latches and custom modules for every application.",
+  keywords: [
+    "automotive damper applications",
+    "bathroom damper",
+    "office equipment damper",
+    "industrial damper",
+    "custom damper solution",
+  ],
+  openGraph: {
+    title: "Damper Applications | Automotive, Bathroom, Office & Industrial",
+    description:
+      "Explore TEAO damper applications across automotive, sanitary, office equipment and industrial sectors.",
+    images: [{ url: "/images/applications/automotive.png", width: 800, height: 500 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Damper Applications | TEAO",
+    description:
+      "TEAO dampers for automotive, bathroom, office equipment and industrial applications.",
+    images: ["/images/applications/automotive.png"],
+  },
 };
 
 const APPLICATIONS = [
