@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     title: "TEAO | Automotive Damper & Latch Manufacturer",
     description:
       "Precision dampers for automotive programs. 20+ years of damper expertise.",
-    images: [{ url: "/images/logo-color.png", width: 512, height: 512 }],
+    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "TEAO | Automotive Damper & Latch Manufacturer",
     description:
       "Precision dampers for automotive programs. 20+ years of damper expertise.",
-    images: ["/images/logo-color.png"],
+    images: ["/images/logo-color.webp"],
   },
   robots: {
     index: true,

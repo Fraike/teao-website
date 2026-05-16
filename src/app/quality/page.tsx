@@ -21,14 +21,14 @@ export const metadata: Metadata = {
     title: "Quality Control | IATF 16949 Certified Damper Testing",
     description:
       "IATF 16949 certified damper quality with 100% torque testing and professional laboratory validation.",
-    images: [{ url: "/images/company/visual-inspection.jpg", width: 1200, height: 630 }],
+    images: [{ url: "/images/company/visual-inspection.webp", width: 1200, height: 630 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Quality Control | IATF 16949 Certified | TEAO",
     description:
       "100% torque testing, visual inspection and professional laboratory validation for automotive dampers.",
-    images: ["/images/company/visual-inspection.jpg"],
+    images: ["/images/company/visual-inspection.webp"],
   },
 };
 
@@ -97,7 +97,7 @@ export default function QualityPage() {
               <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div className="relative h-[220px] overflow-hidden bg-[#F8F9FA]">
                   <Image
-                    src="/images/company/visual-inspection-2.png"
+                    src="/images/company/visual-inspection-2.webp"
                     alt="Torque testing station"
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -147,7 +147,7 @@ export default function QualityPage() {
               <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#E5E5E5] bg-white hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
                 <div className="relative h-[220px] overflow-hidden bg-[#F8F9FA]">
                   <Image
-                    src="/images/company/visual-inspection.jpg"
+                    src="/images/company/visual-inspection.webp"
                     alt="Visual inspection station"
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-105"

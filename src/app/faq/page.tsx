@@ -19,14 +19,14 @@ export const metadata: Metadata = {
     title: "FAQ | Custom Damper Quotation, Production & Technical Questions",
     description:
       "Get answers about TEAO damper customization, MOQ, samples, lead times, quality certifications and quotation process.",
-    images: [{ url: "/images/logo-color.png", width: 512, height: 512 }],
+    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
   },
   twitter: {
     card: "summary",
     title: "FAQ | Damper Quotation & Production Questions | TEAO",
     description:
       "Common questions about damper customization, samples, production lead times and quality certifications.",
-    images: ["/images/logo-color.png"],
+    images: ["/images/logo-color.webp"],
   },
 };
 

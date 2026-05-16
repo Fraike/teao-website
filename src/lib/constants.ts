@@ -6,31 +6,31 @@ export const CATEGORIES: CategoryInfo[] = [
     slug: "gear-damper",
     name: "Gear Dampers",
     description: "Compact rotary control for cup holders, lids and storage doors.",
-    image: "/images/products/gear-damper/GearDamperCategory.png",
+    image: "/images/products/gear-damper/GearDamperCategory.webp",
   },
   {
     slug: "axial-damper",
     name: "Axial Dampers",
     description: "Linear damping for controlled opening, closing and sliding motion.",
-    image: "/images/products/axial-damper/AxialDamperCategory.png",
+    image: "/images/products/axial-damper/AxialDamperCategory.webp",
   },
   {
     slug: "glove-box-damper",
     name: "Glove Box Dampers",
     description: "Automotive soft motion for glove boxes and interior panels.",
-    image: "/images/products/glove-box-damper/GloveBoxDamperCategory.png",
+    image: "/images/products/glove-box-damper/GloveBoxDamperCategory.webp",
   },
   {
     slug: "latch",
     name: "Latches",
     description: "Reliable lock, release and engagement mechanisms for interiors.",
-    image: "/images/products/latch/LatchCategory.png",
+    image: "/images/products/latch/LatchCategory.webp",
   },
   {
     slug: "other",
     name: "Other Products",
     description: "Organizers, custom modules and application-specific mechanisms.",
-    image: "/images/products/other/OthersCategory.png",
+    image: "/images/products/other/OthersCategory.webp",
   },
 ];
 
@@ -43,7 +43,7 @@ export const PRODUCTS: Product[] = [
     summary: "High-torque rotary damper for automotive interior applications.",
     description:
       "The TRD-25 series provides smooth, controlled rotary motion for automotive interior applications including cup holders, storage compartments, and assist handles. Available in multiple torque ranges with customizable mounting configurations.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     specifications: {
       "Torque Range": "0.5 – 4.0 N·m",
@@ -70,19 +70,19 @@ export const PRODUCTS: Product[] = [
     summary: "SOC-free rotary gear damper with bidirectional damping for automotive interior mechanisms.",
     description:
       "The RD-T015 is a compact rotary gear damper engineered for controlled deceleration in automotive interior applications including cup holders, storage compartments, door handles, and assist grips. SOC-free silicone oil provides consistent torque output across a wide temperature range, with screw-mount installation and no angular limit.",
-    image: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-01.jpg",
+    image: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-01.webp",
     images: [
-      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-01.jpg", alt: "RD-T015 gear damper front view" },
-      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-02.jpg", alt: "RD-T015 gear damper angled view" },
-      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-03.jpg", alt: "RD-T015 gear damper side view" },
-      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-04.jpg", alt: "RD-T015 gear damper detail view" },
+      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-01.webp", alt: "RD-T015 gear damper front view" },
+      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-02.webp", alt: "RD-T015 gear damper angled view" },
+      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-03.webp", alt: "RD-T015 gear damper side view" },
+      { url: "/images/product-list/Gear-damper/RD-T015/RD-T015-product-04.webp", alt: "RD-T015 gear damper detail view" },
     ],
     features: [],
     characteristics: ["SOC Free", "Screw mounting", "Two-way", "No angle limit"],
-    dimension_drawing: "/images/product-list/Gear-damper/RD-T015/dimension.png",
+    dimension_drawing: "/images/product-list/Gear-damper/RD-T015/dimension.webp",
     performance_charts: {
-      rotation_curve: "/images/product-list/Gear-damper/RD-T015/rotation-curve.png",
-      temperature_curve: "/images/product-list/Gear-damper/RD-T015/temperature-curve.png",
+      rotation_curve: "/images/product-list/Gear-damper/RD-T015/rotation-curve.webp",
+      temperature_curve: "/images/product-list/Gear-damper/RD-T015/temperature-curve.webp",
     },
     torque: { min: 50, max: 500, unit: "gf.cm" },
     tech_params: {
@@ -139,7 +139,7 @@ export const PRODUCTS: Product[] = [
     summary: "Applicable to automotive interior and exterior fittings as well as office equipment.",
     description:
       "The RD-T021 gear damper provides smooth rotary damping for automotive interior and exterior applications. Compact design with customizable torque output within standard ranges.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     tech_params: { teeth_count: 11, module: 0.8, pressure_angle: 20 },
     specifications: {
@@ -171,7 +171,7 @@ export const PRODUCTS: Product[] = [
       "Bidirectional type, suitable for automotive interiors, household appliances, and industrial machinery.",
     description:
       "The RD-T069 / RD-V069 bidirectional gear damper provides controlled rotary damping in both directions. Ideal for applications requiring smooth motion in both opening and closing directions.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     tech_params: { teeth_count: 12, module: 0.8, outer_diameter: "Φ14.7", pressure_angle: 20 },
     specifications: {
@@ -202,7 +202,7 @@ export const PRODUCTS: Product[] = [
       "Applicable to automotive dampers, household appliance dampers, plastic gear dampers, and buffer components.",
     description:
       "The RD-T040 gear damper delivers consistent rotary damping for automotive, appliance, and industrial buffer applications. Compact size with reliable screw-fit mounting.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     tech_params: { teeth_count: 10, module: 0.8, outer_diameter: "Φ10.4", pressure_angle: 20 },
     specifications: {
@@ -231,7 +231,7 @@ export const PRODUCTS: Product[] = [
     summary: "Applicable to automotive interiors, household appliances, and industrial machinery.",
     description:
       "The RD-T036 gear damper provides high-torque rotary damping with a Φ13 size and 1.2 module. Suitable for automotive interiors, appliances, and industrial applications requiring higher damping force.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     tech_params: { teeth_count: 13, module: 1.2, outer_diameter: "Φ13", pressure_angle: 20 },
     specifications: {
@@ -260,7 +260,7 @@ export const PRODUCTS: Product[] = [
     summary: "Applicable to automotive interiors, household appliances, and industrial machinery.",
     description:
       "The RD-T029 gear damper is a compact Φ10.4 rotary damper with 0.8 module. Designed for space-constrained applications in automotive interiors, household appliances, and industrial machinery.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     tech_params: { teeth_count: 10, module: 0.8, outer_diameter: "Φ10.4", pressure_angle: 20 },
     specifications: {
@@ -290,7 +290,7 @@ export const PRODUCTS: Product[] = [
       "Widely applicable to automotive interiors, household appliances, industrial machinery, coffee machines, and printers.",
     description:
       "The RD-T025 gear damper is a versatile general-purpose rotary damper with Φ10.4 size and screw-fit mounting. Suitable for automotive, appliance, office equipment, coffee machine, and printer applications.",
-    image: "/images/products/gear-damper/GearDamperSingle.png",
+    image: "/images/products/gear-damper/GearDamperSingle.webp",
     images: [],
     tech_params: { teeth_count: 10, module: 0.8, outer_diameter: "Φ10.4", pressure_angle: 20 },
     specifications: {
@@ -319,7 +319,7 @@ export const PRODUCTS: Product[] = [
     summary: "Linear motion damper for push-pull and sliding applications.",
     description:
       "The TAD-18 axial damper provides controlled linear motion for applications requiring push-pull damping. Ideal for glove box doors, center console lids, and sliding mechanisms.",
-    image: "/images/products/axial-damper/AxialDamperSingle.png",
+    image: "/images/products/axial-damper/AxialDamperSingle.webp",
     images: [],
     tech_params: { outer_diameter: "12MM", total_height: "15.5MM" },
     specifications: {
@@ -350,7 +350,7 @@ export const PRODUCTS: Product[] = [
     summary: "Soft-open mechanism for automotive glove boxes and storage compartments.",
     description:
       "The TGD-30 is specifically designed for automotive glove box applications, providing a premium soft-open feel. The integrated design ensures reliable performance across the vehicle's lifetime.",
-    image: "/images/products/glove-box-damper/GloveBoxDamperSingle.png",
+    image: "/images/products/glove-box-damper/GloveBoxDamperSingle.webp",
     images: [],
     tech_params: { outer_diameter: "26.7MM", total_length: "105MM" },
     specifications: {
@@ -378,7 +378,7 @@ export const PRODUCTS: Product[] = [
     summary: "Push-push latch mechanism for interior storage and access panels.",
     description:
       "The TL-12 push-push latch provides reliable lock/release functionality for automotive interior panels, storage compartments, and access doors. Designed for high-cycle durability.",
-    image: "/images/products/latch/LatchSingle.png",
+    image: "/images/products/latch/LatchSingle.webp",
     images: [],
     tech_params: { total_length: "11MM", total_width: "6.9MM", total_height: "17.6MM" },
     specifications: {
@@ -407,7 +407,7 @@ export const PRODUCTS: Product[] = [
     summary: "Application-specific damper assemblies tailored to customer requirements.",
     description:
       "The TCM series represents TEAO's custom engineering capability. Each module is designed to customer specifications including torque, mounting, damping direction, and environmental requirements.",
-    image: "/images/products/other/OthersSingle.png",
+    image: "/images/products/other/OthersSingle.webp",
     images: [],
     specifications: {
       "Torque Range": "Custom specified",
@@ -428,18 +428,18 @@ export const PRODUCTS: Product[] = [
 ];
 
 export const PARTNERS: Partner[] = [
-  { name: "BYD", logo: "/images/partners/BYD.png" },
-  { name: "Geely", logo: "/images/partners/Geely.png" },
-  { name: "Chery", logo: "/images/partners/Chery.png" },
-  { name: "SAIC", logo: "/images/partners/SAIC.png" },
-  { name: "FAW", logo: "/images/partners/FAW.png" },
-  { name: "GAC", logo: "/images/partners/GAC.png" },
-  { name: "Changan", logo: "/images/partners/Changan.png" },
-  { name: "Great Wall", logo: "/images/partners/GreatWall.png" },
-  { name: "Dongfeng", logo: "/images/partners/Dongfeng.png" },
-  { name: "NIO", logo: "/images/partners/NIO.png" },
-  { name: "XPeng", logo: "/images/partners/XPeng.png" },
-  { name: "Li Auto", logo: "/images/partners/LiAuto.png" },
+  { name: "BYD", logo: "/images/partners/BYD.webp" },
+  { name: "Geely", logo: "/images/partners/Geely.webp" },
+  { name: "Chery", logo: "/images/partners/Chery.webp" },
+  { name: "SAIC", logo: "/images/partners/SAIC.webp" },
+  { name: "FAW", logo: "/images/partners/FAW.webp" },
+  { name: "GAC", logo: "/images/partners/GAC.webp" },
+  { name: "Changan", logo: "/images/partners/Changan.webp" },
+  { name: "Great Wall", logo: "/images/partners/GreatWall.webp" },
+  { name: "Dongfeng", logo: "/images/partners/Dongfeng.webp" },
+  { name: "NIO", logo: "/images/partners/NIO.webp" },
+  { name: "XPeng", logo: "/images/partners/XPeng.webp" },
+  { name: "Li Auto", logo: "/images/partners/LiAuto.webp" },
 ];
 
 export const SITE_CONFIG = {

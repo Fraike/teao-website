@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import { SkeletonImage } from "@/components/ui/skeleton-image";
 
 export function ProductGallery({
   images,
@@ -16,11 +16,11 @@ export function ProductGallery({
   return (
     <div className="max-w-[440px]">
       <div className="relative aspect-[4/3] overflow-hidden rounded-xl border border-[#E5E7EB] bg-[#F8F9FA]">
-        <Image
+        <SkeletonImage
           src={images[safeIndex].url}
           alt={images[safeIndex].alt ?? `Product image ${safeIndex + 1}`}
           fill
-          className="object-contain p-7 transition-opacity duration-300"
+          className="object-contain p-7"
           sizes="(max-width: 1024px) 100vw, 440px"
           priority
         />
@@ -42,12 +42,13 @@ export function ProductGallery({
                     : "border-[#E5E7EB] bg-[#F8F9FA] hover:border-[#ED7606]/40"
                 }`}
               >
-                <Image
+                <SkeletonImage
                   src={img.url}
                   alt={img.alt ?? `Thumbnail ${i + 1}`}
                   fill
                   className="object-contain p-1.5"
                   sizes="56px"
+                  loading="lazy"
                 />
               </button>
             ))}

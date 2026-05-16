@@ -20,14 +20,14 @@ export const metadata: Metadata = {
     title: "News | TEAO Damper Engineering Updates & Company News",
     description:
       "Company news, engineering insights and technical resources from TEAO damper manufacturer.",
-    images: [{ url: "/images/logo-color.png", width: 512, height: 512 }],
+    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
   },
   twitter: {
     card: "summary",
     title: "News | TEAO Damper Engineering & Company Updates",
     description:
       "Company news and engineering insights from TEAO damper manufacturer.",
-    images: ["/images/logo-color.png"],
+    images: ["/images/logo-color.webp"],
   },
 };
 

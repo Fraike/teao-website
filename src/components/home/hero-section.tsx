@@ -11,7 +11,7 @@ export function HeroSection() {
           className="absolute inset-0 scale-[1.04] animate-hero-drift opacity-30"
           style={{
             background:
-              "linear-gradient(90deg, rgba(248,249,250,.96), rgba(248,249,250,.7) 46%, rgba(248,249,250,.15)), linear-gradient(0deg, rgba(248,249,250,.94), rgba(248,249,250,0) 38%), url('/images/Homepage-background-image.JPG') center / cover no-repeat, #F8F9FA",
+              "linear-gradient(90deg, rgba(248,249,250,.96), rgba(248,249,250,.7) 46%, rgba(248,249,250,.15)), linear-gradient(0deg, rgba(248,249,250,.94), rgba(248,249,250,0) 38%), url('/images/Homepage-background-image.webp') center / cover no-repeat, #F8F9FA",
           }}
         />
         <div

@@ -43,7 +43,7 @@ export default function Header() {
           <Link href="/" className="flex items-center gap-3 font-black tracking-tight shrink-0">
             <div className="relative w-[82px] h-7 lg:w-[98px] lg:h-8">
               <Image
-                src="/images/logo-color.png"
+                src="/images/logo-color.webp"
                 alt="TEAO"
                 fill
                 priority

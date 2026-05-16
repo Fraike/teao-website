@@ -4,7 +4,7 @@ import Image from "next/image";
 import { ArrowUpRight, Cog, Gauge, Ruler, Wrench } from "lucide-react";
 import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
-const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.png";
+const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
 
 function SpecPill({
   icon,

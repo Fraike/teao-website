@@ -51,6 +51,7 @@ export function PerformanceCharts({
                 fill
                 className="object-contain p-3"
                 sizes="(max-width: 1024px) 100vw, 50vw"
+                loading="lazy"
               />
             </div>
           </div>

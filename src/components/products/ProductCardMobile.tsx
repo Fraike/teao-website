@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
-const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.png";
+const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
 
 export function ProductCardMobile({ product }: { product: Product }) {
   const imgSrc = product.image || PLACEHOLDER;

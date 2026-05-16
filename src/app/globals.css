@@ -253,6 +253,28 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Image reveal animation */
+  .img-reveal {
+    animation: imgReveal 0.6s ease both;
+  }
+
+  @keyframes imgReveal {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Shimmer placeholder */
+  .img-shimmer {
+    background: linear-gradient(110deg, #F0F0F0 30%, #FAFAFA 50%, #F0F0F0 70%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+  }
+
+  @keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+  }
 }
 
 @layer utilities {

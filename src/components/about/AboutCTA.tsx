@@ -11,11 +11,12 @@ export function AboutCTA() {
       {/* Background */}
       <div className="absolute inset-0 opacity-18">
         <Image
-          src="/images/company/factory-entrance.jpg"
+          src="/images/company/factory-entrance.webp"
           alt=""
           fill
           className="object-cover"
           sizes="100vw"
+          loading="lazy"
         />
       </div>
       <div className="absolute inset-0 bg-gradient-to-r from-[#0a0b0d]/97 via-[#0a0b0d]/88 to-[#0a0b0d]/72" />
@@ -58,9 +59,9 @@ export function AboutCTA() {
             className="hidden lg:flex flex-col gap-3"
           >
             {[
-              { src: "/images/products/gear-damper/GearDamperSingle.png", label: "Custom Torque" },
-              { src: "/images/products/axial-damper/AxialDamperSingle.png", label: "Full Engineering Support" },
-              { src: "/images/products/glove-box-damper/GloveBoxDamperSingle.png", label: "Stable Mass Production" },
+              { src: "/images/products/gear-damper/GearDamperSingle.webp", label: "Custom Torque" },
+              { src: "/images/products/axial-damper/AxialDamperSingle.webp", label: "Full Engineering Support" },
+              { src: "/images/products/glove-box-damper/GloveBoxDamperSingle.webp", label: "Stable Mass Production" },
             ].map((item) => (
               <div
                 key={item.label}
@@ -73,6 +74,7 @@ export function AboutCTA() {
                     fill
                     className="object-contain p-1"
                     sizes="48px"
+                    loading="lazy"
                   />
                 </div>
                 <span className="text-white/75 text-sm font-bold">{item.label}</span>

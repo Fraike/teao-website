@@ -42,6 +42,7 @@ export function DimensionDrawing({
           height={800}
           className="w-full max-h-[360px] object-contain"
           sizes="(max-width: 1024px) 100vw, 800px"
+          loading="lazy"
         />
       </button>
 

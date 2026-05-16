@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatTorque } from "@/lib/products";
 
-const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.png";
+const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
 
 export function RelatedProducts({
   products,

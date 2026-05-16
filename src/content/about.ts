@@ -43,14 +43,14 @@ export const competencies = [
     subtitle: "Flexible Production",
     description:
       "Fully automatic, semi-automatic and manual assembly lines support flexible production needs from customized projects to volume manufacturing.",
-    image: "/images/company/automation-workshop.jpg",
+    image: "/images/company/automation-workshop.webp",
   },
   {
     title: "Engineering & Services",
     subtitle: "Custom Torque Adjustment",
     description:
       "The torque of gear dampers can be adjusted according to customer requirements, instead of using a fixed torque solution.",
-    image: "/images/company/automation-equipment-2.JPG",
+    image: "/images/company/automation-equipment-2.webp",
     highlight: true,
   },
   {
@@ -58,7 +58,7 @@ export const competencies = [
     subtitle: "Mold + Injection + Production",
     description:
       "TEAO provides complete solutions from mold design and production to plastic injection and assembly.",
-    image: "/images/company/production-workshop.JPG",
+    image: "/images/company/production-workshop.webp",
   },
 ];
 
@@ -66,12 +66,12 @@ export const systemCertificates = [
   {
     name: "IATF 16949",
     description: "Automotive quality management system certification.",
-    image: "/images/certifications/IATF16949.png",
+    image: "/images/certifications/IATF16949.webp",
   },
   {
     name: "ISO 14001",
     description: "Environmental management system certification.",
-    image: "/images/certifications/ISO14001.png",
+    image: "/images/certifications/ISO14001.webp",
   },
 ];
 
@@ -79,17 +79,17 @@ export const patentCertificates = [
   {
     name: "Hanging-rope Damper Patent",
     description: "Patent certificate for damper mechanism innovation.",
-    image: "/images/patents/RD-V109.png",
+    image: "/images/patents/RD-V109.webp",
   },
   {
     name: "Air Damper Patent",
     description: "Patent certificate covering air damping structure design.",
-    image: "/images/patents/RD-V108.jpg",
+    image: "/images/patents/RD-V108.webp",
   },
   {
     name: "Rotary Damper Patent",
     description: "Patent certificate for rotary damping component structure.",
-    image: "/images/patents/RD-T088.jpg",
+    image: "/images/patents/RD-T088.webp",
   },
 ];
 
@@ -177,7 +177,7 @@ export const youtubeVideoEmbedUrl =
 export const youtubeVideoPlaybackUrl = `${youtubeVideoEmbedUrl}${
   youtubeVideoEmbedUrl.includes("?") ? "&" : "?"
 }autoplay=1&rel=0&modestbranding=1`;
-export const videoPoster = "/images/company/automation-workshop.jpg";
+export const videoPoster = "/images/company/automation-workshop.webp";
 
 export const aboutFAQ = [
   {

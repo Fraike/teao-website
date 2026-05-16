@@ -32,7 +32,7 @@ export default function Footer() {
           <div>
             <div className="relative w-[82px] h-7 md:w-[98px] md:h-8 mb-3 md:mb-4">
               <Image
-                src="/images/logo-color.png"
+                src="/images/logo-color.webp"
                 alt="TEAO"
                 fill
                 loading="lazy"

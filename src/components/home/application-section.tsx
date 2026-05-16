@@ -3,10 +3,10 @@ import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 
 const APPLICATIONS = [
-  { title: "Automotive", description: "Glove box, armrest, cup holder, charge port and interior storage.", image: "/images/applications/automotive.png" },
-  { title: "Bathroom & Appliances", description: "Toilet seats, cabinet doors, home appliance lids and covers.", image: "/images/applications/bathroom.png" },
-  { title: "Office Equipment", description: "Printer covers, display mounts and controlled opening mechanisms.", image: "/images/applications/office.png" },
-  { title: "Home Appliances", description: "Washer lids, refrigerator flaps, cooker covers and soft-close appliance panels.", image: "/images/applications/home-appliances.png" },
+  { title: "Automotive", description: "Glove box, armrest, cup holder, charge port and interior storage.", image: "/images/applications/automotive.webp" },
+  { title: "Bathroom & Appliances", description: "Toilet seats, cabinet doors, home appliance lids and covers.", image: "/images/applications/bathroom.webp" },
+  { title: "Office Equipment", description: "Printer covers, display mounts and controlled opening mechanisms.", image: "/images/applications/office.webp" },
+  { title: "Home Appliances", description: "Washer lids, refrigerator flaps, cooker covers and soft-close appliance panels.", image: "/images/applications/home-appliances.webp" },
 ];
 
 export function ApplicationSection() {

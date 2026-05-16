@@ -46,6 +46,7 @@ export function CompanyVideoSection() {
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 896px"
+                loading="lazy"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
 

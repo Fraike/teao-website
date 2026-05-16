@@ -18,22 +18,22 @@ export const metadata: Metadata = {
     title: "Damper Applications | Automotive, Bathroom, Office & Industrial",
     description:
       "Explore TEAO damper applications across automotive, sanitary, office equipment and industrial sectors.",
-    images: [{ url: "/images/applications/automotive.png", width: 800, height: 500 }],
+    images: [{ url: "/images/applications/automotive.webp", width: 800, height: 500 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Damper Applications | TEAO",
     description:
       "TEAO dampers for automotive, bathroom, office equipment and industrial applications.",
-    images: ["/images/applications/automotive.png"],
+    images: ["/images/applications/automotive.webp"],
   },
 };
 
 const APPLICATIONS = [
-  { icon: Car, title: "Automotive", description: "Glove boxes, armrests, cup holders, charge ports, interior storage compartments and assist handles.", image: "/images/applications/automotive.png" },
-  { icon: Bath, title: "Bathroom & Sanitary", description: "Toilet seat dampers, shower door buffers, cabinet soft-close mechanisms and bidet motion control.", image: "/images/applications/bathroom.png" },
-  { icon: Monitor, title: "Office Equipment", description: "Printer covers, display mounts, scanner lids, workstation drawers and controlled opening panels.", image: "/images/applications/office.png" },
-  { icon: Cog, title: "Industrial Components", description: "Access doors, equipment enclosures, service panels, vending machine mechanisms and special motion modules.", image: "/images/applications/home-appliances.png" },
+  { icon: Car, title: "Automotive", description: "Glove boxes, armrests, cup holders, charge ports, interior storage compartments and assist handles.", image: "/images/applications/automotive.webp" },
+  { icon: Bath, title: "Bathroom & Sanitary", description: "Toilet seat dampers, shower door buffers, cabinet soft-close mechanisms and bidet motion control.", image: "/images/applications/bathroom.webp" },
+  { icon: Monitor, title: "Office Equipment", description: "Printer covers, display mounts, scanner lids, workstation drawers and controlled opening panels.", image: "/images/applications/office.webp" },
+  { icon: Cog, title: "Industrial Components", description: "Access doors, equipment enclosures, service panels, vending machine mechanisms and special motion modules.", image: "/images/applications/home-appliances.webp" },
 ];
 
 export default function ApplicationsPage() {

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Fragment } from "react";
 import { db } from "@/db";
 import { categories } from "@/db/schema";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
+import { SkeletonImage } from "@/components/ui/skeleton-image";
 
 export function ProductGrid() {
   const cats = db.select().from(categories).all().sort((a, b) => a.sortOrder - b.sortOrder);
@@ -45,7 +45,7 @@ export function ProductGrid() {
                 className="product-card"
               >
                 <div className="product-card__media">
-                  <Image
+                  <SkeletonImage
                     src={cat.image}
                     alt={cat.name}
                     fill

@@ -44,17 +44,17 @@ export function CapabilitySection() {
             <Reveal>
               <div className="grid h-full min-h-[520px] grid-cols-2 grid-rows-[1.05fr_0.95fr] gap-4">
                 <figure className="group relative col-span-2 min-h-0 rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,.04)]">
-                  <Image src="/images/company/automation-workshop.jpg" alt="TEAO automated workshop" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" />
+                  <Image src="/images/company/automation-workshop.webp" alt="TEAO automated workshop" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <figcaption className="absolute left-5 bottom-5 text-white/90 text-sm font-bold tracking-wide">Automated Assembly Line</figcaption>
                 </figure>
                 <figure className="group relative min-h-0 rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,.04)]">
-                  <Image src="/images/company/production-workshop.JPG" alt="TEAO production workshop" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" />
+                  <Image src="/images/company/production-workshop.webp" alt="TEAO production workshop" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <figcaption className="absolute left-4 bottom-4 text-white/85 text-xs font-bold tracking-wide">Production Workshop</figcaption>
                 </figure>
                 <figure className="group relative min-h-0 rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,.04)]">
-                  <Image src="/images/company/automation-equipment-2.JPG" alt="TEAO automation equipment" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" />
+                  <Image src="/images/company/automation-equipment-2.webp" alt="TEAO automation equipment" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <figcaption className="absolute left-4 bottom-4 text-white/85 text-xs font-bold tracking-wide">Injection & Tooling</figcaption>
                 </figure>
