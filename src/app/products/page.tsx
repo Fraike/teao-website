@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, products } from "@/db/schema";
 import { mapDbProduct } from "@/lib/products";
+import { JsonLdScript, collectionPageSchema } from "@/lib/structured-data";
 import type { CategoryInfo } from "@/types";
 import { CategoryHero } from "@/components/products/CategoryHero";
 import { CategoryTabs } from "@/components/products/CategoryTabs";
@@ -53,8 +54,21 @@ export default async function ProductsPage({ searchParams }: Props) {
     .filter((p) => p.isActive)
     .sort((a, b) => a.sortOrder - b.sortOrder);
 
+  const productItems = mappedProducts.map((p) => ({
+    name: `${p.model} – ${p.name}`,
+    url: `/products/${p.slug}`,
+  }));
+  const listingJsonLd = collectionPageSchema(
+    selectedCategory ? `${selectedCategory.name} Dampers` : "All Products",
+    selectedCategory
+      ? `Precision ${selectedCategory.name.toLowerCase()} for automotive and industrial applications. Custom torque available.`
+      : "Full range of precision dampers, latches and motion control components.",
+    productItems,
+  );
+
   return (
     <>
+      <JsonLdScript data={listingJsonLd} />
       <CategoryHero category={selectedCategory as CategoryInfo | undefined} />
       <CategoryTabs current={category} />
       <section className="section !pt-8 !pb-12">

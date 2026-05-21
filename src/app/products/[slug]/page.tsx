@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { products, categories } from "@/db/schema";
 import { mapDbProduct } from "@/lib/products";
-import { SITE_CONFIG } from "@/lib/constants";
+import { JsonLdScript, productSchema, breadcrumbSchema } from "@/lib/structured-data";
 import { Breadcrumb } from "@/components/products/Breadcrumb";
 import { ProductGallery } from "@/components/products/ProductGallery";
 import { CharacteristicsPills } from "@/components/products/CharacteristicsPills";
@@ -65,61 +65,19 @@ export default async function ProductDetailPage({ params }: Props) {
       ? product.images
       : [{ url: product.image, alt: product.name }];
 
-  const productJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.description,
-    sku: product.model,
-    image: galleryImages.map((img) => img.url),
-    manufacturer: {
-      "@type": "Organization",
-      name: SITE_CONFIG.fullName,
-      url: "https://www.teao-damper.com",
-    },
-    ...(product.torque && {
-      additionalProperty: [
-        {
-          "@type": "PropertyValue",
-          name: "Torque Range",
-          value: `${product.torque.min}–${product.torque.max} ${product.torque.unit}`,
-        },
-      ],
-    }),
-    offers: {
-      "@type": "Offer",
-      availability: "https://schema.org/InStock",
-      businessFunction: "https://purl.org/goodrelations/v1#ProvideService",
-      itemCondition: "https://schema.org/NewCondition",
-      seller: {
-        "@type": "Organization",
-        name: "TEAO",
-      },
-    },
-    category: categoryRow?.name ?? product.category,
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.teao-damper.com" },
-      { "@type": "ListItem", position: 2, name: "Products", item: "https://www.teao-damper.com/products" },
-      ...(categoryRow ? [{ "@type": "ListItem" as const, position: 3, name: categoryRow.name, item: `https://www.teao-damper.com/products?category=${product.category}` }] : []),
-      { "@type": "ListItem" as const, position: categoryRow ? 4 : 3, name: product.model, item: `https://www.teao-damper.com/products/${product.slug}` },
-    ],
-  };
+  const productJsonLd = productSchema(product, categoryRow?.name);
+  const breadcrumbItems = [
+    { name: "Home", url: "/" },
+    { name: "Products", url: "/products" },
+    ...(categoryRow ? [{ name: categoryRow.name, url: `/products?category=${product.category}` }] : []),
+    { name: product.model, url: `/products/${product.slug}` },
+  ];
+  const breadcrumbJsonLd = breadcrumbSchema(breadcrumbItems);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <JsonLdScript data={productJsonLd} />
+      <JsonLdScript data={breadcrumbJsonLd} />
       <section className="section pt-28 !pb-6 lg:pt-32">
         <div className="shell">
           {/* Breadcrumb */}

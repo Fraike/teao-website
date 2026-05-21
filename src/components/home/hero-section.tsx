@@ -58,10 +58,10 @@ export function HeroSection() {
             {/* Floating product images */}
             <div className="relative min-h-[580px] xl:min-h-[670px] self-stretch hidden lg:block" aria-hidden>
               {[
-                { src: CATEGORIES[0].image, pos: "float-main", style: "inset:32px 72px auto auto; width:min(620px,88%); height:min(620px,82%); background:rgba(255,255,255,.95);" },
-                { src: CATEGORIES[2].image, pos: "float-fourth", style: "left:76px; top:64px; width:210px; height:170px; background:rgba(255,255,255,.9); animation-delay:.35s;" },
-                { src: CATEGORIES[1].image, pos: "float-sub", style: "left:12px; bottom:130px; width:280px; height:280px; background:rgba(255,255,255,.95); animation-delay:.7s;" },
-                { src: CATEGORIES[3].image, pos: "float-third", style: "right:48px; bottom:34px; width:340px; height:226px; background:rgba(255,255,255,.95); animation-delay:1.2s;" },
+                { src: CATEGORIES[0].image, pos: "float-main", style: "inset:24px 88px auto auto; width:min(600px,84%); height:min(600px,80%); z-index:1; background:rgba(255,255,255,.95);" },
+                { src: CATEGORIES[2].image, pos: "float-fourth", style: "left:68px; top:56px; width:200px; height:162px; z-index:3; background:rgba(255,255,255,.9); animation-delay:.35s;" },
+                { src: CATEGORIES[1].image, pos: "float-sub", style: "left:8px; bottom:128px; width:270px; height:270px; z-index:4; background:rgba(255,255,255,.95); animation-delay:.7s;" },
+                { src: CATEGORIES[3].image, pos: "float-third", style: "right:28px; bottom:42px; width:360px; height:240px; z-index:5; background:rgba(255,255,255,.95); animation-delay:1.2s;" },
               ].map((f, i) => (
                 <figure
                   key={i}

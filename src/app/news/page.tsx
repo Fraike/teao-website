@@ -5,6 +5,7 @@ import { db } from "@/db";
 import { news } from "@/db/schema";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
+import { JsonLdScript, collectionPageSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "News | TEAO Damper Engineering Updates & Company News",
@@ -39,8 +40,19 @@ export default function NewsPage() {
     .all()
     .filter((n) => Boolean(n.isPublished));
 
+  const newsItems = articles.map((a) => ({
+    name: a.title,
+    url: `/news/${a.slug}`,
+  }));
+  const newsJsonLd = collectionPageSchema(
+    "News",
+    "TEAO company news, damper engineering insights and technical resources.",
+    newsItems,
+  );
+
   return (
     <>
+      <JsonLdScript data={newsJsonLd} />
       <section className="section pt-32">
         <div className="shell">
           <Reveal>

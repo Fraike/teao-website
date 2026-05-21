@@ -24,45 +24,20 @@ export const metadata: Metadata = {
     title: "About TEAO | 20+ Years Damper & Motion Control Manufacturer",
     description:
       "Professional damper manufacturer with IATF 16949 certification, 100M annual capacity, custom torque engineering and 20+ years of experience.",
+    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About TEAO | 20+ Years Damper Manufacturer",
+    description:
+      "Professional damper manufacturer with IATF 16949 certification, 100M annual capacity and custom torque engineering.",
+    images: ["/images/logo-color.webp"],
   },
 };
 
 export default function AboutPage() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "Dongguan TEAO Electronic Technology Co., Ltd.",
-            alternateName: "TEAO",
-            url: "https://www.teao-damper.com",
-            foundingDate: "2001",
-            description:
-              "Professional manufacturer of dampers, latches, synchronizers and motion control components with 20+ years of experience.",
-            address: {
-              "@type": "PostalAddress",
-              streetAddress:
-                "No. 2, Huangjiang North Third Street, Huangjiang Town",
-              addressLocality: "Dongguan City",
-              addressRegion: "Guangdong Province",
-              postalCode: "523750",
-              addressCountry: "CN",
-            },
-            contactPoint: {
-              "@type": "ContactPoint",
-              email: "info@teao-damper.com",
-              contactType: "sales",
-            },
-            numberOfEmployees: {
-              "@type": "QuantitativeValue",
-              minValue: 200,
-            },
-          }),
-        }}
-      />
       <AboutHero />
       <CompanyTimeline />
       <BusinessHighlights />

@@ -39,19 +39,11 @@ export const businessStats = [
 
 export const competencies = [
   {
-    title: "Assembly",
-    subtitle: "Flexible Production",
-    description:
-      "Fully automatic, semi-automatic and manual assembly lines support flexible production needs from customized projects to volume manufacturing.",
-    image: "/images/company/automation-workshop.webp",
-  },
-  {
     title: "Engineering & Services",
     subtitle: "Torque Tuning Support",
     description:
       "Engineering support covers torque tuning, sample review and application matching before mass production.",
     image: "/images/company/automation-equipment-2.webp",
-    highlight: true,
   },
   {
     title: "Plastic Injection",
@@ -59,6 +51,14 @@ export const competencies = [
     description:
       "TEAO provides complete solutions from mold design and production to plastic injection and assembly.",
     image: "/images/company/production-workshop.webp",
+    highlight: true,
+  },
+  {
+    title: "Assembly",
+    subtitle: "Flexible Production",
+    description:
+      "Fully automatic, semi-automatic and manual assembly lines support flexible production needs from customized projects to volume manufacturing.",
+    image: "/images/company/automation-workshop.webp",
   },
 ];
 
@@ -178,6 +178,7 @@ export const youtubeVideoPlaybackUrl = `${youtubeVideoEmbedUrl}${
   youtubeVideoEmbedUrl.includes("?") ? "&" : "?"
 }autoplay=1&rel=0&modestbranding=1`;
 export const videoPoster = "/images/company/automation-workshop.webp";
+export const companyVideoUrl = "/video/companyProfile.mp4";
 
 export const aboutFAQ = [
   {

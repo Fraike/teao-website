@@ -4,6 +4,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news } from "@/db/schema";
 import Link from "next/link";
+import { JsonLdScript, newsArticleSchema, breadcrumbSchema } from "@/lib/structured-data";
 
 export async function generateStaticParams() {
   const rows = db.select({ slug: news.slug }).from(news).all();
@@ -41,44 +42,26 @@ export default async function NewsDetailPage({ params }: Props) {
   const article = db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) notFound();
 
-  const articleJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "NewsArticle",
-    headline: article.title,
-    description: article.summary,
+  const articleJsonLd = newsArticleSchema({
+    slug: article.slug,
+    title: article.title,
+    summary: article.summary,
+    content: article.content,
     image: article.image,
-    datePublished: article.publishedAt,
-    publisher: {
-      "@type": "Organization",
-      name: "TEAO",
-      url: "https://www.teao-damper.com",
-    },
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": `https://www.teao-damper.com/news/${article.slug}`,
-    },
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: "https://www.teao-damper.com" },
-      { "@type": "ListItem", position: 2, name: "News", item: "https://www.teao-damper.com/news" },
-      { "@type": "ListItem", position: 3, name: article.title },
-    ],
-  };
+    category: article.category as "company" | "quality" | "engineering",
+    isPublished: Boolean(article.isPublished),
+    publishedAt: article.publishedAt,
+  });
+  const breadcrumbJsonLd = breadcrumbSchema([
+    { name: "Home", url: "/" },
+    { name: "News", url: "/news" },
+    { name: article.title },
+  ]);
 
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <JsonLdScript data={articleJsonLd} />
+      <JsonLdScript data={breadcrumbJsonLd} />
       <section className="section pt-32">
         <div className="shell max-w-3xl">
           <nav className="text-sm text-[#666666] mb-8">

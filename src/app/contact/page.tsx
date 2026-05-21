@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SITE_CONFIG } from "@/lib/constants";
+import { JsonLdScript, faqPageSchema } from "@/lib/structured-data";
 import { Mail, MapPin, Download, FileText, ChevronDown } from "lucide-react";
 import { ContactForm } from "@/components/contact/ContactForm";
 
@@ -19,6 +20,14 @@ export const metadata: Metadata = {
     title: "Contact TEAO | Send Inquiry for Custom Damper Solution",
     description:
       "Reach TEAO engineering team for damper selection, torque customization and mass production inquiries.",
+    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact TEAO | Custom Damper Inquiry",
+    description:
+      "Reach TEAO engineering team for damper selection, torque customization and mass production inquiries.",
+    images: ["/images/logo-color.webp"],
   },
 };
 
@@ -50,8 +59,11 @@ const contactFAQ = [
 ];
 
 export default function ContactPage() {
+  const contactFaqLd = faqPageSchema(contactFAQ);
+
   return (
     <>
+      <JsonLdScript data={contactFaqLd} />
       {/* ========== Hero ========== */}
       <section className="relative pt-32 lg:pt-40 pb-16 lg:pb-20 bg-[#F8F9FA] overflow-hidden">
         <div className="absolute inset-0 opacity-[0.3]"

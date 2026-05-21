@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
+import { JsonLdScript, collectionPageSchema } from "@/lib/structured-data";
 import { Car, Bath, Monitor, Cog } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -37,8 +38,19 @@ const APPLICATIONS = [
 ];
 
 export default function ApplicationsPage() {
+  const appItems = APPLICATIONS.map((app) => ({
+    name: app.title,
+    url: `/applications`,
+  }));
+  const appJsonLd = collectionPageSchema(
+    "Damper Applications",
+    "TEAO dampers serve automotive interiors, bathroom & sanitary fittings, office equipment and industrial machinery.",
+    appItems,
+  );
+
   return (
     <>
+      <JsonLdScript data={appJsonLd} />
       <section className="section pt-32">
         <div className="shell">
           <Reveal>

@@ -3,6 +3,8 @@ import Image from "next/image";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 import { Button } from "@/components/ui/button";
+import { JsonLdScript } from "@/lib/structured-data";
+import { SITE_CONFIG } from "@/lib/constants";
 import { Gauge, Eye, Shield, Thermometer, Clock, Target, Sliders, Waves } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -77,8 +79,28 @@ const LAB_GROUPS = [
 ];
 
 export default function QualityPage() {
+  const qualityJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: SITE_CONFIG.fullName,
+    url: "https://www.teao-damper.com",
+    hasCredential: [
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "IATF 16949",
+        description: "Automotive quality management system certification",
+      },
+      {
+        "@type": "EducationalOccupationalCredential",
+        name: "ISO 14001",
+        description: "Environmental management system certification",
+      },
+    ],
+  };
+
   return (
     <>
+      <JsonLdScript data={qualityJsonLd} />
       {/* ===== Hero ===== */}
       <section className="pt-28 pb-12 lg:pt-32 lg:pb-14">
         <div className="shell">

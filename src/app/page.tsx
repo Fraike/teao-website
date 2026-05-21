@@ -8,6 +8,7 @@ import { PartnerSection } from "@/components/home/partner-section";
 import { ProcessSection } from "@/components/home/process-section";
 import { NewsSection } from "@/components/home/news-section";
 import { CTASection } from "@/components/home/cta-section";
+import { JsonLdScript, websiteSchema } from "@/lib/structured-data";
 
 function ProductGridSkeleton() {
   return (
@@ -67,27 +68,7 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "TEAO",
-            url: "https://www.teao-damper.com",
-            description:
-              "IATF 16949 certified manufacturer of gear dampers, axial dampers, glove box dampers, latches and custom motion control components.",
-            potentialAction: {
-              "@type": "SearchAction",
-              target: {
-                "@type": "EntryPoint",
-                urlTemplate: "https://www.teao-damper.com/products?search={search_term_string}",
-              },
-              "query-input": "required name=search_term_string",
-            },
-          }),
-        }}
-      />
+      <JsonLdScript data={websiteSchema()} />
       <HeroSection />
       <Suspense fallback={<ProductGridSkeleton />}>
         <ProductGrid />

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import TorqueConverter from "@/components/tools/TorqueConverter";
+import { JsonLdScript, softwareApplicationSchema } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
   title: "Torque Converter | TEAO Damper Engineering Tools",
@@ -18,12 +19,21 @@ export const metadata: Metadata = {
     title: "Torque Converter | Free Engineering Tool by TEAO",
     description:
       "Instantly convert between all common torque units. Designed for damper specification and motion control engineering.",
+    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Torque Converter | Free Engineering Tool | TEAO",
+    description:
+      "Free online torque unit conversion tool for damper specification and motion control engineering.",
+    images: ["/images/logo-color.webp"],
   },
 };
 
 export default function TorqueConverterPage() {
   return (
     <>
+      <JsonLdScript data={softwareApplicationSchema()} />
       {/* Hero */}
       <section className="relative pt-32 lg:pt-40 pb-10 lg:pb-14 bg-[#F8F9FA] overflow-hidden">
         <div

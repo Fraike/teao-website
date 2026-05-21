@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { PublicChrome } from "@/components/layout/public-chrome";
 import { env } from "@/lib/env";
+import { organizationSchema, JsonLdScript } from "@/lib/structured-data";
 import "./globals.css";
 
 const inter = Inter({
@@ -57,6 +58,12 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: "#111827",
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -66,6 +73,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <link rel="icon" href="/images/favicon.ico" sizes="any" />
+        <JsonLdScript data={organizationSchema()} />
       </head>
       <body>
         <PublicChrome>{children}</PublicChrome>
