@@ -47,9 +47,9 @@ export const competencies = [
   },
   {
     title: "Engineering & Services",
-    subtitle: "Custom Torque Adjustment",
+    subtitle: "Torque Tuning Support",
     description:
-      "The torque of gear dampers can be adjusted according to customer requirements, instead of using a fixed torque solution.",
+      "Engineering support covers torque tuning, sample review and application matching before mass production.",
     image: "/images/company/automation-equipment-2.webp",
     highlight: true,
   },

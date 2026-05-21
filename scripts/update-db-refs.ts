@@ -8,8 +8,7 @@ import path from "node:path";
 const db = new Database(path.resolve(__dirname, "..", "data", "teao.db"));
 const DRY_RUN = process.argv.includes("--dry-run");
 
-function toWebp(val: string | null): string | null {
-  if (!val) return val;
+function toWebp(val: string): string {
   return val.replace(/\.(png|jpg|jpeg|JPG|JPEG|PNG)(\b|["\]}'])/g, ".webp$2");
 }
 

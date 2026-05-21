@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 
 const CAPABILITIES = [
@@ -13,14 +12,16 @@ export function CapabilitySection() {
     <section className="section bg-[#F0F2F5] overflow-hidden" id="capability">
       <div className="shell">
         <div className="grid lg:grid-cols-[minmax(320px,0.82fr)_minmax(0,1.08fr)] gap-8 lg:gap-12 items-stretch">
-          <div className="flex min-w-0 flex-col">
-            <span className="eyebrow">Manufacturing</span>
-            <h2 className="mt-2.5 lg:mt-3.5 max-w-[520px] text-[28px] sm:text-[32px] lg:text-[clamp(32px,3.35vw,48px)] leading-[1.02] lg:leading-[0.98] tracking-[-0.04em] font-extrabold text-[#111827] text-balance">
-              Built for international B2B programs.
-            </h2>
-            <p className="text-[#6B7280] text-[15px] lg:text-[17px] max-w-[520px] mt-3 lg:mt-4 leading-relaxed">
-              A focused manufacturing system for repeatable quality, clear communication and scalable delivery.
-            </p>
+          <div className="flex min-w-0 flex-col lg:min-h-[520px]">
+            <div>
+              <span className="eyebrow">Manufacturing</span>
+              <h2 className="mt-2.5 lg:mt-3.5 max-w-[520px] text-[28px] sm:text-[32px] lg:text-[clamp(32px,3.35vw,48px)] leading-[1.02] lg:leading-[0.98] tracking-[-0.04em] font-extrabold text-[#111827] text-balance">
+                Built for international B2B programs.
+              </h2>
+              <p className="text-[#6B7280] text-[15px] lg:text-[17px] max-w-[520px] mt-3 lg:mt-4 leading-relaxed">
+                A focused manufacturing system for repeatable quality, clear communication and scalable delivery.
+              </p>
+            </div>
 
             <div className="grid flex-1 content-end gap-3 lg:gap-3.5 mt-6 lg:mt-8">
               {CAPABILITIES.map((cap, i) => (
@@ -41,7 +42,7 @@ export function CapabilitySection() {
 
           {/* Factory images */}
           <div className="hidden min-w-0 lg:block">
-            <Reveal>
+            <Reveal className="h-full">
               <div className="grid h-full min-h-[520px] grid-cols-2 grid-rows-[1.05fr_0.95fr] gap-4">
                 <figure className="group relative col-span-2 min-h-0 rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,.04)]">
                   <Image src="/images/company/automation-workshop.webp" alt="TEAO automated workshop" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
@@ -54,7 +55,7 @@ export function CapabilitySection() {
                   <figcaption className="absolute left-4 bottom-4 text-white/85 text-xs font-bold tracking-wide">Production Workshop</figcaption>
                 </figure>
                 <figure className="group relative min-h-0 rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,.04)]">
-                  <Image src="/images/company/automation-equipment-2.webp" alt="TEAO automation equipment" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
+                  <Image src="/images/company/automation-equipment-2.webp" alt="TEAO automation equipment" fill className="object-cover rotate-90 scale-[1.35] transition-transform duration-[0.7s] group-hover:rotate-90 group-hover:scale-[1.4]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <figcaption className="absolute left-4 bottom-4 text-white/85 text-xs font-bold tracking-wide">Injection & Tooling</figcaption>
                 </figure>

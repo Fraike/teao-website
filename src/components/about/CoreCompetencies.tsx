@@ -28,6 +28,7 @@ export function CoreCompetencies() {
           {competencies.map((comp, i) => {
             const Icon = icons[i];
             const isHighlight = comp.highlight;
+            const shouldRotateImage = comp.image.includes("automation-equipment-2");
 
             return (
               <motion.div
@@ -43,20 +44,24 @@ export function CoreCompetencies() {
                 }`}
               >
                 {/* Image */}
-                <div className="relative aspect-[16/10]">
+                <div className="relative aspect-[16/10] overflow-hidden">
                   <Image
                     src={comp.image}
                     alt={comp.title}
                     fill
                     loading="lazy"
-                    className="object-cover transition-transform duration-[0.65s] group-hover:scale-[1.04]"
+                    className={`object-cover transition-transform duration-[0.65s] ${
+                      shouldRotateImage
+                        ? "rotate-90 scale-[1.35] group-hover:rotate-90 group-hover:scale-[1.4]"
+                        : "group-hover:scale-[1.04]"
+                    }`}
                     sizes="(max-width: 1024px) 100vw, 33vw"
                   />
                   <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white to-transparent" />
                 </div>
 
                 {/* Content */}
-                <div className="relative p-5 lg:p-6">
+                <div className="relative bg-white p-5 lg:p-6">
                   <div className="flex items-start gap-3">
                     <Icon
                       className={`w-6 h-6 mt-0.5 shrink-0 ${

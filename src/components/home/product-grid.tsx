@@ -50,6 +50,7 @@ export function ProductGrid() {
                     alt={cat.name}
                     fill
                     loading="lazy"
+                    containerClassName="absolute inset-5 lg:inset-4"
                     className="product-card__image"
                     sizes="(max-width: 520px) 100vw, (max-width: 1024px) 50vw, 20vw"
                   />

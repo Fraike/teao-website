@@ -232,7 +232,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 </p>
               </div>
             </div>
-            <ApplicationScenarios scenarios={product.application_scenarios} />
+            <ApplicationScenarios scenarios={product.application_scenarios} max={3} />
           </div>
 
           {/* Related Products */}

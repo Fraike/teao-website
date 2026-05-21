@@ -17,7 +17,7 @@ interface Props {
   max?: number;
 }
 
-export function ApplicationScenarios({ scenarios, max = 6 }: Props) {
+export function ApplicationScenarios({ scenarios, max = 3 }: Props) {
   const list = (scenarios && scenarios.length > 0 ? scenarios : DEFAULT_SCENARIOS).slice(0, max);
 
   return (

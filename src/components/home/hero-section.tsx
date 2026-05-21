@@ -4,7 +4,7 @@ import { CATEGORIES } from "@/lib/constants";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[760px] lg:min-h-svh flex items-end text-[#111827] bg-[#F8F9FA] overflow-hidden">
+    <section className="relative min-h-[700px] lg:min-h-[min(100svh,860px)] flex items-center text-[#111827] bg-[#F8F9FA] overflow-hidden">
       {/* Background layers */}
       <div className="absolute inset-0">
         <div
@@ -26,22 +26,24 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full pt-28 lg:pt-[150px] pb-6 lg:pb-9">
-        <div className="shell">
-          <div className="grid lg:grid-cols-[minmax(0,0.95fr)_minmax(360px,0.55fr)] gap-12 items-end">
+      <div className="relative z-10 w-full pt-24 lg:pt-[104px] pb-8 lg:pb-10">
+        <div className="shell max-w-[1760px]">
+          <div className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(500px,0.9fr)] xl:grid-cols-[minmax(0,0.88fr)_minmax(620px,0.9fr)] gap-10 xl:gap-[72px] items-center">
             {/* Copy */}
-            <div className="pb-0 lg:pb-[72px]">
+            <div>
               <div className="inline-flex gap-2 items-center px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-full border border-[#D1D5DB] bg-white/80 text-[#374151] text-[10px] lg:text-xs font-extrabold uppercase tracking-[0.08em] backdrop-blur-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shadow-[0_0_0_8px_rgba(237,118,6,.12)]" />
                 B2B damper manufacturer since 2001
               </div>
-              <h1 className="max-w-[860px] mt-4 lg:mt-5 mb-4 lg:mb-5 text-[40px] sm:text-[48px] lg:text-[clamp(48px,6.5vw,90px)] leading-[0.95] lg:leading-[0.88] tracking-[-0.05em] lg:tracking-[-0.06em] font-black text-[#111827]">
-                Precision dampers for{" "}
-                <strong className="text-[#ED7606] font-inherit">automotive</strong> programs.
+              <h1 className="max-w-[1060px] mt-4 lg:mt-5 mb-4 lg:mb-5 text-[38px] sm:text-[48px] lg:text-[clamp(58px,5.2vw,104px)] leading-[0.96] lg:leading-[0.9] tracking-[-0.045em] lg:tracking-[-0.055em] font-black text-[#111827] text-balance">
+                Slow down the closing.
+                <span className="block">
+                  Keep <strong className="text-[#ED7606] font-inherit">quiet</strong> in motion.
+                </span>
               </h1>
-              <p className="max-w-[610px] text-[#4B5563] text-[16px] lg:text-[clamp(16px,1.4vw,19px)] leading-relaxed">
+              <p className="max-w-[760px] text-[#4B5563] text-[16px] lg:text-[clamp(16px,1.05vw,20px)] leading-relaxed">
                 Five focused product lines for global OEM, Tier-1 and industrial assemblies.
-                Engineered for stable torque, quiet motion and repeatable mass production.
+                Engineered for stable damping, soft closing and repeatable mass production.
               </p>
               <div className="flex flex-wrap gap-2.5 lg:gap-3 mt-6 lg:mt-8">
                 <Button href="#products" variant="primary">
@@ -54,11 +56,12 @@ export function HeroSection() {
             </div>
 
             {/* Floating product images */}
-            <div className="relative min-h-[530px] self-stretch hidden lg:block" aria-hidden>
+            <div className="relative min-h-[580px] xl:min-h-[670px] self-stretch hidden lg:block" aria-hidden>
               {[
-                { src: CATEGORIES[0].image, pos: "float-main", style: "inset:84px 10px auto auto; width:min(390px,92%); height:390px; background:rgba(255,255,255,.95);" },
-                { src: CATEGORIES[1].image, pos: "float-sub", style: "left:0; bottom:86px; width:190px; height:190px; background:rgba(255,255,255,.95); animation-delay:.7s;" },
-                { src: CATEGORIES[3].image, pos: "float-third", style: "right:20px; bottom:18px; width:230px; height:158px; background:rgba(255,255,255,.95); animation-delay:1.2s;" },
+                { src: CATEGORIES[0].image, pos: "float-main", style: "inset:32px 72px auto auto; width:min(620px,88%); height:min(620px,82%); background:rgba(255,255,255,.95);" },
+                { src: CATEGORIES[2].image, pos: "float-fourth", style: "left:76px; top:64px; width:210px; height:170px; background:rgba(255,255,255,.9); animation-delay:.35s;" },
+                { src: CATEGORIES[1].image, pos: "float-sub", style: "left:12px; bottom:130px; width:280px; height:280px; background:rgba(255,255,255,.95); animation-delay:.7s;" },
+                { src: CATEGORIES[3].image, pos: "float-third", style: "right:48px; bottom:34px; width:340px; height:226px; background:rgba(255,255,255,.95); animation-delay:1.2s;" },
               ].map((f, i) => (
                 <figure
                   key={i}
@@ -79,16 +82,16 @@ export function HeroSection() {
           </div>
 
           {/* Metrics */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-6 lg:mt-8 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white/80 backdrop-blur-md">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-px mt-8 lg:mt-10 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white/80 backdrop-blur-md">
             {[
               { value: "20+", label: "Years damper expertise" },
               { value: "IATF", label: "16949 + ISO 14001" },
               { value: "Custom", label: "Torque and structure" },
               { value: "80M", label: "Annual capacity" },
             ].map((m) => (
-              <div key={m.label} className="p-3.5 lg:p-4 bg-white/60">
-                <b className="block text-[22px] lg:text-2xl tracking-[-0.03em] text-[#111827]">{m.value}</b>
-                <span className="block mt-0.5 lg:mt-1 text-[#6B7280] text-[11px] lg:text-xs font-bold">{m.label}</span>
+              <div key={m.label} className="p-3.5 lg:p-5 bg-white/60">
+                <b className="block text-[22px] lg:text-[28px] tracking-[-0.03em] text-[#111827]">{m.value}</b>
+                <span className="block mt-0.5 lg:mt-1 text-[#6B7280] text-[11px] lg:text-[13px] font-bold">{m.label}</span>
               </div>
             ))}
           </div>

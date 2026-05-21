@@ -20,6 +20,8 @@ export function ProductGallery({
           src={images[safeIndex].url}
           alt={images[safeIndex].alt ?? `Product image ${safeIndex + 1}`}
           fill
+          containerClassName="absolute inset-0"
+          shimmer={false}
           className="object-contain p-7"
           sizes="(max-width: 1024px) 100vw, 440px"
           priority
@@ -46,6 +48,8 @@ export function ProductGallery({
                   src={img.url}
                   alt={img.alt ?? `Thumbnail ${i + 1}`}
                   fill
+                  containerClassName="absolute inset-0"
+                  shimmer={false}
                   className="object-contain p-1.5"
                   sizes="56px"
                   loading="lazy"
