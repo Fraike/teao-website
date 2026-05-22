@@ -25,6 +25,7 @@ export interface Product {
   force_range?: string;
   hard_torque?: string;
   hard_force?: string;
+  sound_type?: "audible" | "silent";
 
   durability?: {
     temperature?: string;

@@ -257,7 +257,7 @@ async function seed() {
       features: JSON.stringify(["Push-push operation", "Compact form factor", "High cycle durability", "Corrosion-resistant components"]),
       techParams: JSON.stringify({ total_length: "11MM", total_width: "6.9MM", total_height: "17.6MM" }),
       specifications: JSON.stringify({ "Latch Force": "15 – 50 N", "Operating Temperature": "-30°C to +80°C", "Material": "POM / Steel spring", "Life Cycle": ">100,000 cycles" }),
-      hardForce: "6N", durability: JSON.stringify({ cycles: 50000, cycles_unit: "cycles" }),
+      hardForce: "6N", soundType: "audible", durability: JSON.stringify({ cycles: 50000, cycles_unit: "cycles" }),
       applications: JSON.stringify(["Interior storage", "Access panels", "Automotive interior panels"]),
       isActive: 1, sortOrder: 11, createdAt: new Date(), updatedAt: new Date(),
     },

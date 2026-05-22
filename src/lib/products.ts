@@ -64,6 +64,7 @@ export function mapDbProduct(row: DbProduct): Product {
     force_range: row.forceRange ?? undefined,
     hard_torque: row.hardTorque ?? undefined,
     hard_force: row.hardForce ?? undefined,
+    sound_type: (row.soundType as "audible" | "silent" | undefined) ?? undefined,
     durability: row.durability ? JSON.parse(row.durability) : undefined,
     materials: JSON.parse(row.materials || "[]"),
     characteristics: JSON.parse(row.characteristics || "[]"),

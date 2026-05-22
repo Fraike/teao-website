@@ -1,7 +1,19 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+
+const PRESET_SCENARIOS = [
+  { image: "/images/applications/applications-gif/Center console lid.gif", label: "Center Console" },
+  { image: "/images/applications/applications-gif/Glove box.gif", label: "Glove Box" },
+  { image: "/images/applications/applications-gif/Door handle.gif", label: "Door Handle" },
+  { image: "/images/applications/applications-gif/cup holder.gif", label: "Cup Holder" },
+  { image: "/images/applications/applications-gif/glasses box.gif", label: "Glasses Box" },
+  { image: "/images/applications/applications-gif/ashtray.gif", label: "Ashtray" },
+  { image: "/images/applications/applications-gif/outlet cover.gif", label: "Outlet Cover" },
+  { image: "/images/applications/applications-gif/safty handle.gif", label: "Safety Handle" },
+  { image: "/images/applications/applications-gif/toilet lid.gif", label: "Toilet Lid" },
+];
 
 type ProductData = Record<string, unknown>;
 
@@ -36,6 +48,7 @@ export default function ProductForm({ initial, isNew }: Props) {
     durability: (initial?.durability as { temperature?: string; test_method?: string; cycles?: number; cycles_unit?: string } | null) || null,
     hardTorque: (initial?.hardTorque as string) || "",
     hardForce: (initial?.hardForce as string) || "",
+    soundType: (initial?.soundType as string) || (initial?.sound_type as string) || "",
     forceRange: (initial?.forceRange as string) || "",
     materials: (initial?.materials as { part: string; material: string }[]) || [],
     characteristics: (initial?.characteristics as string[]) || [],
@@ -63,6 +76,9 @@ export default function ProductForm({ initial, isNew }: Props) {
   const [charInput, setCharInput] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
   const [galleryAlt, setGalleryAlt] = useState("");
+  const [galleryUploading, setGalleryUploading] = useState(false);
+  const [editingGalleryIdx, setEditingGalleryIdx] = useState<number | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   // Unsaved changes warning
   useEffect(() => {
@@ -90,9 +106,37 @@ export default function ProductForm({ initial, isNew }: Props) {
     setDirty(true);
   }, []);
 
+  async function compressImage(file: File, maxW = 1920, maxH = 1920, quality = 0.8): Promise<File> {
+    if (!file.type.startsWith("image/") || file.type === "image/gif" || file.type === "image/svg+xml") return file;
+    return new Promise((resolve) => {
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        if (width <= maxW && height <= maxH && file.size < 400 * 1024) return resolve(file);
+        if (width > maxW) { height = Math.round(height * (maxW / width)); width = maxW; }
+        if (height > maxH) { width = Math.round(width * (maxH / height)); height = maxH; }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (!blob) return resolve(file);
+          const compressed = new File([blob], file.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" });
+          resolve(compressed);
+        }, "image/jpeg", quality);
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  }
+
   async function uploadImage(file: File) {
+    const compressed = await compressImage(file);
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("file", compressed);
     const res = await fetch("/api/upload", { method: "POST", body: fd });
     if (!res.ok) throw new Error("Upload failed");
     const data = await res.json();
@@ -194,7 +238,11 @@ export default function ProductForm({ initial, isNew }: Props) {
           </div>
           <div>
             <label className={labelClass}>Category *</label>
-            <select className={inputClass} value={form.category} onChange={(e) => set("category", e.target.value)}>
+            <select className={inputClass} value={form.category} onChange={(e) => {
+              const cat = e.target.value;
+              set("category", cat);
+              if (cat === "latch" && !form.soundType) set("soundType", "audible");
+            }}>
               <option value="gear-damper">Gear Damper</option>
               <option value="axial-damper">Axial Damper</option>
               <option value="glove-box-damper">Glove Box Damper</option>
@@ -252,8 +300,19 @@ export default function ProductForm({ initial, isNew }: Props) {
         <h2 className="text-base font-extrabold text-[#111827] mb-5">Images</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Main Image URL</label>
-            <input className={inputClass} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="/uploads/..." />
+            <label className={labelClass}>Main Image</label>
+            <div className="flex gap-2 items-start">
+              <div className="flex-1">
+                <input className={inputClass} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="URL or /uploads/..." />
+              </div>
+              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
+                Upload
+                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              </label>
+              {form.image && (
+                <button type="button" onClick={() => set("image", "")} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
+              )}
+            </div>
             {form.image && (
               <div className="mt-2 relative w-32 h-32 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -262,12 +321,28 @@ export default function ProductForm({ initial, isNew }: Props) {
             )}
           </div>
           <div>
-            <label className={labelClass}>Upload Image</label>
-            <input type="file" accept="image/*" onChange={handleImageUpload} className="text-sm" />
-          </div>
-          <div>
-            <label className={labelClass}>Dimension Drawing URL</label>
-            <input className={inputClass} value={form.dimensionDrawing} onChange={(e) => set("dimensionDrawing", e.target.value)} placeholder="/images/..." />
+            <label className={labelClass}>Dimension Drawing</label>
+            <div className="flex gap-2 items-start">
+              <div className="flex-1">
+                <input className={inputClass} value={form.dimensionDrawing} onChange={(e) => set("dimensionDrawing", e.target.value)} placeholder="URL or /images/..." />
+              </div>
+              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
+                Upload
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const url = await uploadImage(file);
+                    set("dimensionDrawing", url);
+                    setSuccessMsg("Dimension drawing uploaded");
+                    setTimeout(() => setSuccessMsg(""), 3000);
+                  } catch { setError("Upload failed"); }
+                }} />
+              </label>
+              {form.dimensionDrawing && (
+                <button type="button" onClick={() => set("dimensionDrawing", "")} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
+              )}
+            </div>
             {form.dimensionDrawing && (
               <div className="mt-2 relative w-32 h-32 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -279,89 +354,290 @@ export default function ProductForm({ initial, isNew }: Props) {
 
         {/* Gallery images */}
         <div className="mt-4">
-          <label className={labelClass}>Gallery Images</label>
+          <div className="flex items-center justify-between mb-2">
+            <label className={labelClass + " mb-0"}>Gallery Images</label>
+            <span className="text-[10px] text-[#9CA3AF]">Drag order: left = priority</span>
+          </div>
           {form.images.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="space-y-2 mb-3">
               {form.images.map((img, i) => (
-                <div key={i} className="relative group w-20 h-20 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={img.url} alt={img.alt || ""} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                  <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[10px] px-1 truncate">{img.alt || img.url.split("/").pop()}</span>
-                  <div className="absolute top-0 inset-x-0 flex justify-between p-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    {i > 0 && (
-                      <button type="button" onClick={() => moveGalleryImage(i, -1)} className="w-5 h-5 bg-black/60 rounded text-white text-[10px]">&uarr;</button>
-                    )}
-                    {i < form.images.length - 1 && (
-                      <button type="button" onClick={() => moveGalleryImage(i, 1)} className="w-5 h-5 bg-black/60 rounded text-white text-[10px] ml-auto">&darr;</button>
-                    )}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => set("images", form.images.filter((_, j) => j !== i))}
-                    className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    &times;
-                  </button>
+                <div
+                  key={i}
+                  className={`rounded-lg border bg-white overflow-hidden transition-colors ${
+                    editingGalleryIdx === i ? "border-[#ED7606] shadow-[0_2px_8px_rgba(237,118,6,.08)]" : "border-[#E5E7EB]"
+                  }`}
+                >
+                  {editingGalleryIdx === i ? (
+                    <div className="p-3 space-y-2">
+                      <div className="flex gap-2 items-start">
+                        <div className="relative w-20 h-20 shrink-0 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={img.url} alt={img.alt || ""} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                        </div>
+                        <div className="flex-1 space-y-2">
+                          <input
+                            className={inputClass + " w-full"}
+                            value={img.url}
+                            onChange={(e) => {
+                              const next = [...form.images];
+                              next[i] = { ...next[i], url: e.target.value };
+                              set("images", next);
+                            }}
+                            placeholder="Image URL"
+                          />
+                          <input
+                            className={inputClass + " w-full"}
+                            value={img.alt || ""}
+                            onChange={(e) => {
+                              const next = [...form.images];
+                              next[i] = { ...next[i], alt: e.target.value };
+                              set("images", next);
+                            }}
+                            placeholder="Alt text"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <label className="px-2.5 h-7 rounded border border-[#E5E7EB] text-[11px] font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
+                          Upload
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+                              try {
+                                const url = await uploadImage(file);
+                                const next = [...form.images];
+                                next[i] = { ...next[i], url };
+                                set("images", next);
+                                setSuccessMsg(`Uploaded: ${url}`);
+                                setTimeout(() => setSuccessMsg(""), 5000);
+                              } catch { setError("Upload failed"); }
+                            }}
+                          />
+                        </label>
+                        <button type="button" onClick={() => setEditingGalleryIdx(null)} className="px-3 h-7 rounded bg-[#ED7606] text-white text-[11px] font-bold">Done</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 p-2.5">
+                      <div className="relative w-16 h-16 shrink-0 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={img.url} alt={img.alt || ""} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs text-[#374151] font-medium truncate">{img.alt || "Image " + (i + 1)}</div>
+                        <div className="text-[10px] text-[#9CA3AF] truncate font-mono">{img.url}</div>
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
+                        <button type="button" onClick={() => setEditingGalleryIdx(i)} className="px-2 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#374151] hover:bg-[#F8F9FA]">Edit</button>
+                        {i > 0 && (
+                          <button type="button" onClick={() => moveGalleryImage(i, -1)} className="w-7 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#6B7280] hover:bg-[#F8F9FA] hover:text-[#111827]" title="Move left">&larr;</button>
+                        )}
+                        {i < form.images.length - 1 && (
+                          <button type="button" onClick={() => moveGalleryImage(i, 1)} className="w-7 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#6B7280] hover:bg-[#F8F9FA] hover:text-[#111827]" title="Move right">&rarr;</button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => set("images", form.images.filter((_, j) => j !== i))}
+                          className="w-7 h-7 rounded border border-red-200 text-red-500 text-[11px] font-bold hover:bg-red-50"
+                          title="Delete"
+                        >
+                          &times;
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           )}
           <div className="flex gap-2">
-            <input className={inputClass + " flex-1"} placeholder="Image URL" value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} />
-            <input className={inputClass + " w-32"} placeholder="Alt text" value={galleryAlt} onChange={(e) => setGalleryAlt(e.target.value)} />
-            <button type="button" onClick={() => { if (galleryUrl) { set("images", [...form.images, { url: galleryUrl, alt: galleryAlt || form.name }]); setGalleryUrl(""); setGalleryAlt(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">Add</button>
+            <label className="px-4 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA] gap-1.5">
+              + Add Image
+              <input
+                ref={galleryInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={galleryUploading}
+                onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  setGalleryUploading(true);
+                  try {
+                    const url = await uploadImage(file);
+                    set("images", [...form.images, { url, alt: form.name }]);
+                    setSuccessMsg(`New image: ${url}`);
+                    setTimeout(() => setSuccessMsg(""), 5000);
+                    // Auto-open edit for the new image
+                    setEditingGalleryIdx(form.images.length);
+                  } catch {
+                    setError("Gallery upload failed");
+                  }
+                  setGalleryUploading(false);
+                  if (galleryInputRef.current) galleryInputRef.current.value = "";
+                }}
+              />
+              {galleryUploading ? <span className="text-[#ED7606]">Uploading...</span> : <span className="text-[#9CA3AF] text-[10px]">(select file)</span>}
+            </label>
+            <input className={inputClass + " w-48"} placeholder="Or paste URL..." value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (galleryUrl) { set("images", [...form.images, { url: galleryUrl, alt: galleryAlt || form.name }]); setGalleryUrl(""); setGalleryAlt(""); } } }} />
+            <input className={inputClass + " w-24"} placeholder="Alt" value={galleryAlt} onChange={(e) => setGalleryAlt(e.target.value)} />
           </div>
         </div>
 
         {/* Performance charts */}
         <div className="grid sm:grid-cols-2 gap-4 mt-4">
           <div>
-            <label className={labelClass}>Rotation Curve URL</label>
-            <input className={inputClass} value={form.performanceCharts?.rotation_curve || ""} onChange={(e) => set("performanceCharts", { ...form.performanceCharts, rotation_curve: e.target.value })} />
+            <label className={labelClass}>Rotation Curve</label>
+            <div className="flex gap-2 items-start">
+              <div className="flex-1">
+                <input className={inputClass} value={form.performanceCharts?.rotation_curve || ""} onChange={(e) => set("performanceCharts", { ...form.performanceCharts, rotation_curve: e.target.value })} placeholder="Image URL" />
+              </div>
+              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
+                Upload
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const url = await uploadImage(file);
+                    set("performanceCharts", { ...form.performanceCharts, rotation_curve: url });
+                    setSuccessMsg("Rotation curve uploaded");
+                    setTimeout(() => setSuccessMsg(""), 3000);
+                  } catch { setError("Upload failed"); }
+                }} />
+              </label>
+              {(form.performanceCharts?.rotation_curve) && (
+                <button type="button" onClick={() => set("performanceCharts", { ...form.performanceCharts, rotation_curve: "" })} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
+              )}
+            </div>
+            {form.performanceCharts?.rotation_curve && (
+              <div className="mt-2 relative w-40 h-28 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={form.performanceCharts.rotation_curve} alt="Rotation curve preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+              </div>
+            )}
           </div>
           <div>
-            <label className={labelClass}>Temperature Curve URL</label>
-            <input className={inputClass} value={form.performanceCharts?.temperature_curve || ""} onChange={(e) => set("performanceCharts", { ...form.performanceCharts, temperature_curve: e.target.value })} />
+            <label className={labelClass}>Temperature Curve</label>
+            <div className="flex gap-2 items-start">
+              <div className="flex-1">
+                <input className={inputClass} value={form.performanceCharts?.temperature_curve || ""} onChange={(e) => set("performanceCharts", { ...form.performanceCharts, temperature_curve: e.target.value })} placeholder="Image URL" />
+              </div>
+              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
+                Upload
+                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file) return;
+                  try {
+                    const url = await uploadImage(file);
+                    set("performanceCharts", { ...form.performanceCharts, temperature_curve: url });
+                    setSuccessMsg("Temperature curve uploaded");
+                    setTimeout(() => setSuccessMsg(""), 3000);
+                  } catch { setError("Upload failed"); }
+                }} />
+              </label>
+              {(form.performanceCharts?.temperature_curve) && (
+                <button type="button" onClick={() => set("performanceCharts", { ...form.performanceCharts, temperature_curve: "" })} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
+              )}
+            </div>
+            {form.performanceCharts?.temperature_curve && (
+              <div className="mt-2 relative w-40 h-28 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={form.performanceCharts.temperature_curve} alt="Temperature curve preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+              </div>
+            )}
           </div>
         </div>
       </section>
 
-      {/* Torque & Durability */}
+      {/* Torque & Durability — conditional per category */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Torque & Durability</h2>
-        <div className="grid sm:grid-cols-3 gap-4">
-          <div>
-            <label className={labelClass}>Torque Min</label>
-            <input
-              className={inputClass}
-              type="number"
-              value={form.torque?.min ?? ""}
-              onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: e.target.value ? Number(e.target.value) : 0, max: form.torque?.max ?? 0 })}
-            />
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">
+          {form.category === "latch" ? "Force & Durability" : "Torque & Durability"}
+        </h2>
+
+        {/* Damper: torque fields */}
+        {form.category !== "latch" && (
+          <div className="grid sm:grid-cols-3 gap-4">
+            <div>
+              <label className={labelClass}>Torque Min</label>
+              <input
+                className={inputClass}
+                type="number"
+                value={form.torque?.min ?? ""}
+                onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: e.target.value ? Number(e.target.value) : 0, max: form.torque?.max ?? 0 })}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Torque Max</label>
+              <input
+                className={inputClass}
+                type="number"
+                value={form.torque?.max ?? ""}
+                onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: form.torque?.min ?? 0, max: e.target.value ? Number(e.target.value) : 0 })}
+              />
+            </div>
+            <div>
+              <label className={labelClass}>Torque Unit</label>
+              <select
+                className={inputClass}
+                value={form.torque?.unit || "gf.cm"}
+                onChange={(e) => set("torque", { ...form.torque || { min: 0, max: 0 }, unit: e.target.value })}
+              >
+                <option value="gf.cm">gf·cm</option>
+                <option value="kgf.cm">kgf·cm</option>
+                <option value="N·m">N·m</option>
+                <option value="N">N</option>
+              </select>
+            </div>
           </div>
-          <div>
-            <label className={labelClass}>Torque Max</label>
-            <input
-              className={inputClass}
-              type="number"
-              value={form.torque?.max ?? ""}
-              onChange={(e) => set("torque", { ...form.torque || { unit: "gf.cm" }, min: form.torque?.min ?? 0, max: e.target.value ? Number(e.target.value) : 0 })}
-            />
+        )}
+
+        {/* Damper: hard torque */}
+        {form.category !== "latch" && (
+          <div className="grid sm:grid-cols-3 gap-4 mt-4">
+            <div>
+              <label className={labelClass}>Hard Torque</label>
+              <input className={inputClass} value={form.hardTorque} onChange={(e) => set("hardTorque", e.target.value)} placeholder="e.g. 50" />
+            </div>
           </div>
-          <div>
-            <label className={labelClass}>Torque Unit</label>
-            <select
-              className={inputClass}
-              value={form.torque?.unit || "gf.cm"}
-              onChange={(e) => set("torque", { ...form.torque || { min: 0, max: 0 }, unit: e.target.value })}
-            >
-              <option value="gf.cm">gf·cm</option>
-              <option value="kgf.cm">kgf·cm</option>
-              <option value="N·m">N·m</option>
-              <option value="N">N</option>
-            </select>
-          </div>
-        </div>
+        )}
+
+        {/* Latch: press force + sound type */}
+        {form.category === "latch" && (
+          <>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <div>
+                <label className={labelClass}>Hard Force (按压力)</label>
+                <input className={inputClass} value={form.hardForce} onChange={(e) => set("hardForce", e.target.value)} placeholder="e.g. 6.0" />
+              </div>
+              <div>
+                <label className={labelClass}>Force Range</label>
+                <input className={inputClass} value={form.forceRange} onChange={(e) => set("forceRange", e.target.value)} placeholder="e.g. 15 — 50 N" />
+              </div>
+              <div>
+                <label className={labelClass}>Sound Type</label>
+                <select
+                  className={inputClass}
+                  value={form.soundType}
+                  onChange={(e) => set("soundType", e.target.value)}
+                >
+                  <option value="">Not Set</option>
+                  <option value="audible">有声 (Audible)</option>
+                  <option value="silent">无声 (Silent)</option>
+                </select>
+              </div>
+            </div>
+            <div className="mt-3 px-3 py-2 rounded-lg bg-[#F3F4F6] text-[11px] text-[#6B7280] font-medium">
+              Latch products use press force instead of torque. Force range is displayed on the product page.
+            </div>
+          </>
+        )}
+
+        {/* Durability — all categories */}
         <div className="grid sm:grid-cols-3 gap-4 mt-4">
           <div>
             <label className={labelClass}>Durability Cycles</label>
@@ -379,20 +655,6 @@ export default function ProductForm({ initial, isNew }: Props) {
           <div>
             <label className={labelClass}>Test Method</label>
             <input className={inputClass} value={form.durability?.test_method || ""} onChange={(e) => set("durability", { ...form.durability || {}, test_method: e.target.value })} />
-          </div>
-        </div>
-        <div className="grid sm:grid-cols-3 gap-4 mt-4">
-          <div>
-            <label className={labelClass}>Hard Torque</label>
-            <input className={inputClass} value={form.hardTorque} onChange={(e) => set("hardTorque", e.target.value)} placeholder="e.g. 50" />
-          </div>
-          <div>
-            <label className={labelClass}>Hard Force</label>
-            <input className={inputClass} value={form.hardForce} onChange={(e) => set("hardForce", e.target.value)} placeholder="e.g. 6.0" />
-          </div>
-          <div>
-            <label className={labelClass}>Force Range</label>
-            <input className={inputClass} value={form.forceRange} onChange={(e) => set("forceRange", e.target.value)} placeholder="e.g. 6N" />
           </div>
         </div>
         <div className="grid sm:grid-cols-3 gap-4 mt-4">
@@ -513,47 +775,109 @@ export default function ProductForm({ initial, isNew }: Props) {
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
         <h2 className="text-base font-extrabold text-[#111827] mb-5">Application Scenarios</h2>
         <p className="text-xs text-[#6B7280] mb-3">
-          Upload custom scenario images for this product. Leave empty to use default scenarios.
+          Select preset scenarios for this product. Leave empty to use defaults.
         </p>
-        <div className="space-y-2 mb-3">
-          {form.applicationScenarios.map((s, i) => (
-            <div key={i} className="flex items-center gap-2">
-              <input
-                className={inputClass + " flex-1"}
-                value={s.image}
-                onChange={(e) => {
-                  const next = [...form.applicationScenarios];
-                  next[i] = { ...next[i], image: e.target.value };
-                  set("applicationScenarios", next);
-                }}
-                placeholder="Image URL or path"
-              />
-              <input
-                className={inputClass + " w-40"}
-                value={s.label}
-                onChange={(e) => {
-                  const next = [...form.applicationScenarios];
-                  next[i] = { ...next[i], label: e.target.value };
-                  set("applicationScenarios", next);
-                }}
-                placeholder="Label"
-              />
+
+        {/* Preset grid */}
+        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3 mb-5">
+          {PRESET_SCENARIOS.map((preset) => {
+            const isSelected = form.applicationScenarios.some(
+              (s) => s.image === preset.image || s.label === preset.label
+            );
+            return (
               <button
+                key={preset.label}
                 type="button"
-                onClick={() => set("applicationScenarios", form.applicationScenarios.filter((_, j) => j !== i))}
-                className="shrink-0 w-8 h-8 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50"
+                onClick={() => {
+                  if (isSelected) {
+                    set(
+                      "applicationScenarios",
+                      form.applicationScenarios.filter(
+                        (s) => s.image !== preset.image && s.label !== preset.label
+                      )
+                    );
+                  } else {
+                    set("applicationScenarios", [...form.applicationScenarios, { ...preset }]);
+                  }
+                }}
+                className={`relative rounded-lg border-2 overflow-hidden transition-all text-left ${
+                  isSelected
+                    ? "border-[#ED7606] ring-2 ring-[#ED7606]/20 shadow-[0_4px_12px_rgba(237,118,6,.12)]"
+                    : "border-[#E5E7EB] hover:border-[#D1D5DB]"
+                }`}
               >
-                &times;
+                <div className="aspect-[5/3] bg-[#F8F9FA] relative">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={preset.image}
+                    alt={preset.label}
+                    className="w-full h-full object-cover"
+                  />
+                  {isSelected && (
+                    <span className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-[#ED7606] text-white text-[11px] flex items-center justify-center font-bold">
+                      &#10003;
+                    </span>
+                  )}
+                </div>
+                <div className="px-2 py-1.5 text-[11px] font-bold text-[#374151] truncate">
+                  {preset.label}
+                </div>
               </button>
-            </div>
-          ))}
+            );
+          })}
         </div>
+
+        {/* Custom scenarios */}
+        {form.applicationScenarios.filter((s) => !PRESET_SCENARIOS.some((p) => p.image === s.image || p.label === s.label)).length > 0 && (
+          <div className="mb-3">
+            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Custom Scenarios</span>
+            <div className="space-y-2 mt-1.5">
+              {form.applicationScenarios
+                .filter((s) => !PRESET_SCENARIOS.some((p) => p.image === s.image || p.label === s.label))
+                .map((s, i) => {
+                  const origIdx = form.applicationScenarios.indexOf(s);
+                  return (
+                    <div key={origIdx} className="flex items-center gap-2">
+                      <input
+                        className={inputClass + " flex-1"}
+                        value={s.image}
+                        onChange={(e) => {
+                          const next = [...form.applicationScenarios];
+                          next[origIdx] = { ...next[origIdx], image: e.target.value };
+                          set("applicationScenarios", next);
+                        }}
+                        placeholder="Image URL or path"
+                      />
+                      <input
+                        className={inputClass + " w-32"}
+                        value={s.label}
+                        onChange={(e) => {
+                          const next = [...form.applicationScenarios];
+                          next[origIdx] = { ...next[origIdx], label: e.target.value };
+                          set("applicationScenarios", next);
+                        }}
+                        placeholder="Label"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => set("applicationScenarios", form.applicationScenarios.filter((_, j) => j !== origIdx))}
+                        className="shrink-0 w-8 h-8 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  );
+                })}
+            </div>
+          </div>
+        )}
+
         <button
           type="button"
           onClick={() => set("applicationScenarios", [...form.applicationScenarios, { image: "", label: "" }])}
-          className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold"
+          className="px-4 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] hover:bg-[#F8F9FA]"
         >
-          + Add Scenario
+          + Add Custom Scenario
         </button>
       </section>
 

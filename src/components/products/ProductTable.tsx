@@ -1,7 +1,7 @@
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Cog, Gauge, Ruler, Wrench } from "lucide-react";
+import { ArrowUpRight, Cog, Gauge, Ruler, Wrench, Volume2, VolumeX } from "lucide-react";
 import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
@@ -78,7 +78,31 @@ export function ProductTable({ products }: { products: Product[] }) {
               </div>
 
               <div className="mt-3">
-                {torqueRange ? (
+                {product.category === "latch" ? (
+                  <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#9CA3AF]">
+                        <Wrench size={13} className="text-[#ED7606]" />
+                        Press Force
+                      </span>
+                      <span className="text-[11px] font-extrabold text-[#111827] tabular-nums">
+                        {product.hard_force ? `${product.hard_force}` : "—"}
+                      </span>
+                    </div>
+                    {product.sound_type && (
+                      <div className="mt-1.5 flex items-center gap-1.5 pt-1.5 border-t border-[#F3F4F6]">
+                        {product.sound_type === "audible" ? (
+                          <Volume2 size={13} className="text-[#ED7606]" />
+                        ) : (
+                          <VolumeX size={13} className="text-[#6B7280]" />
+                        )}
+                        <span className={`text-[10px] font-bold ${product.sound_type === "audible" ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
+                          {product.sound_type === "audible" ? "Audible" : "Silent"}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : torqueRange ? (
                   <div className="rounded-xl border border-[#FFE3C2] bg-[#FFFAF5] px-3 py-2">
                     <div className="mb-1.5 flex items-center justify-between gap-3">
                       <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#9CA3AF]">

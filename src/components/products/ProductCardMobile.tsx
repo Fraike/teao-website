@@ -1,6 +1,7 @@
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
+import { Volume2, VolumeX } from "lucide-react";
 import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
@@ -50,7 +51,18 @@ export function ProductCardMobile({ product }: { product: Product }) {
             </Link>
           </div>
 
-          {torqueRange ? (
+          {product.category === "latch" ? (
+            <div className="mt-1.5 text-[11px]">
+              <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF]">Press Force </span>
+              <span className="font-extrabold text-[#111827]">{product.hard_force || "—"}</span>
+              {product.sound_type && (
+                <span className={`ml-2 inline-flex items-center gap-0.5 text-[10px] font-bold ${product.sound_type === "audible" ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
+                  {product.sound_type === "audible" ? <Volume2 size={12} /> : <VolumeX size={12} />}
+                  {product.sound_type === "audible" ? "Audible" : "Silent"}
+                </span>
+              )}
+            </div>
+          ) : torqueRange ? (
             <div className="mt-1.5">
               <div className="flex items-center justify-between mb-0.5">
                 <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF]">Torque</span>

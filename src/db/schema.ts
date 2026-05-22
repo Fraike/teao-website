@@ -29,6 +29,7 @@ export const products = sqliteTable("products", {
   forceRange: text("force_range"),
   hardTorque: text("hard_torque"),
   hardForce: text("hard_force"),
+  soundType: text("sound_type"),
   durability: text("durability"),
   materials: text("materials").default("[]"),
   characteristics: text("characteristics").default("[]"),

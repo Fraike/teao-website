@@ -1,4 +1,4 @@
-import { Repeat2, Gauge, ArrowLeftRight, Wrench, Thermometer, ArrowDownToLine } from "lucide-react";
+import { Repeat2, Gauge, ArrowLeftRight, Wrench, Thermometer, ArrowDownToLine, Volume2, VolumeX } from "lucide-react";
 import type { Product } from "@/types";
 
 function fmt(n: number) {
@@ -80,8 +80,18 @@ export function PerformanceStats({ product }: { product: Product }) {
   if (product.hard_force) {
     stats.push({
       icon: <ArrowDownToLine size={18} />,
-      label: "Hard Force",
+      label: "Press Force",
       value: `${product.hard_force} N`,
+    });
+  }
+
+  // Sound type — mainly latch products
+  if (product.sound_type) {
+    const isAudible = product.sound_type === "audible";
+    stats.push({
+      icon: isAudible ? <Volume2 size={18} /> : <VolumeX size={18} />,
+      label: "Sound Type",
+      value: isAudible ? "Audible" : "Silent",
     });
   }
 
