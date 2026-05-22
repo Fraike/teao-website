@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { Captcha, type CaptchaRef } from "@/components/ui/captcha";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -9,16 +10,29 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const captchaRef = useRef<CaptchaRef>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
 
+    if (!captchaRef.current?.validate()) {
+      setError("Verification code is incorrect.");
+      setLoading(false);
+      return;
+    }
+
+    const payload = captchaRef.current.getPayload();
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username, password }),
+      body: JSON.stringify({
+        username,
+        password,
+        captchaToken: payload.token,
+        captchaAnswer: payload.answer,
+      }),
     });
 
     if (res.ok) {
@@ -27,6 +41,7 @@ export default function LoginPage() {
     } else {
       const data = await res.json();
       setError(data.error || "Login failed");
+      captchaRef.current?.reset();
     }
     setLoading(false);
   }
@@ -59,6 +74,7 @@ export default function LoginPage() {
               className="w-full h-11 px-4 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
             />
           </div>
+          <Captcha ref={captchaRef} />
           <button
             type="submit"
             disabled={loading}

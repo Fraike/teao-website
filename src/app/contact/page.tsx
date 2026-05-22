@@ -130,7 +130,7 @@ export default function ContactPage() {
       {/* ========== Form + Download ========== */}
       <section className="py-16 lg:py-24 bg-white">
         <div className="shell">
-          <div className="grid lg:grid-cols-[1fr_0.7fr] gap-8 lg:gap-12 max-w-6xl">
+          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.78fr)] lg:gap-10 max-w-6xl">
             {/* Form */}
             <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-8 shadow-[0_4px_24px_rgba(0,0,0,.03)]">
               <h2 className="text-2xl lg:text-3xl font-black tracking-[-0.03em] text-[#111827] mb-6 lg:mb-7">
@@ -142,7 +142,7 @@ export default function ContactPage() {
             </div>
 
             {/* Sidebar */}
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-5 lg:pt-[76px]">
               {/* PDF Download */}
               <a
                 href="/remark/damper-usage-notes.pdf"

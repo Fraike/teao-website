@@ -17,6 +17,7 @@ import { DimensionDrawing } from "@/components/products/DimensionDrawing";
 import { ApplicationScenarios } from "@/components/products/ApplicationScenarios";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
+import { ShareButtons } from "@/components/products/ShareButtons";
 import { Button } from "@/components/ui/button";
 
 export async function generateStaticParams() {
@@ -120,7 +121,11 @@ export default async function ProductDetailPage({ params }: Props) {
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-3 mt-8">
+              <div className="mt-6">
+                <ShareButtons title={product.seo_title ?? product.name} summary={product.summary} />
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-6">
                 <Button
                   href={`/contact?product=${encodeURIComponent(product.model)}`}
                   variant="primary"

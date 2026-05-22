@@ -241,7 +241,10 @@ export default function ProductForm({ initial, isNew }: Props) {
             <select className={inputClass} value={form.category} onChange={(e) => {
               const cat = e.target.value;
               set("category", cat);
-              if (cat === "latch" && !form.soundType) set("soundType", "audible");
+              if (cat === "latch") {
+                if (!form.soundType) set("soundType", "audible");
+                if (!form.hardForce) set("hardForce", "6");
+              }
             }}>
               <option value="gear-damper">Gear Damper</option>
               <option value="axial-damper">Axial Damper</option>

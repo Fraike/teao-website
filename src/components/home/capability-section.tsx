@@ -55,7 +55,7 @@ export function CapabilitySection() {
                   <figcaption className="absolute left-4 bottom-4 text-white/85 text-xs font-bold tracking-wide">Production Workshop</figcaption>
                 </figure>
                 <figure className="group relative min-h-0 rounded-xl overflow-hidden border border-[#E5E7EB] shadow-[0_8px_24px_rgba(0,0,0,.04)]">
-                  <Image src="/images/company/automation-equipment-2.webp" alt="TEAO automation equipment" fill className="object-cover rotate-90 scale-[1.35] transition-transform duration-[0.7s] group-hover:rotate-90 group-hover:scale-[1.4]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
+                  <Image src="/images/company/automation-equipment-2.webp" alt="TEAO automation equipment" fill className="object-cover transition-transform duration-[0.7s] group-hover:scale-[1.03]" sizes="(max-width: 1024px) 100vw, 50vw" loading="lazy" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
                   <figcaption className="absolute left-4 bottom-4 text-white/85 text-xs font-bold tracking-wide">Injection & Tooling</figcaption>
                 </figure>

@@ -4,7 +4,7 @@ import { CATEGORIES } from "@/lib/constants";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[700px] lg:min-h-[min(100svh,860px)] flex items-center text-[#111827] bg-[#F8F9FA] overflow-hidden">
+    <section className="relative min-h-[680px] lg:min-h-[min(100svh,820px)] flex items-center text-[#111827] bg-[#F8F9FA] overflow-hidden">
       {/* Background layers */}
       <div className="absolute inset-0">
         <div
@@ -27,15 +27,15 @@ export function HeroSection() {
 
       {/* Content */}
       <div className="relative z-10 w-full pt-24 lg:pt-[104px] pb-8 lg:pb-10">
-        <div className="shell max-w-[1760px]">
-          <div className="grid lg:grid-cols-[minmax(0,0.9fr)_minmax(500px,0.9fr)] xl:grid-cols-[minmax(0,0.88fr)_minmax(620px,0.9fr)] gap-10 xl:gap-[72px] items-center">
+        <div className="shell max-w-[1500px]">
+          <div className="grid lg:grid-cols-[minmax(0,0.92fr)_minmax(430px,0.78fr)] xl:grid-cols-[minmax(0,0.9fr)_minmax(560px,0.82fr)] gap-8 xl:gap-14 items-center">
             {/* Copy */}
             <div>
               <div className="inline-flex gap-2 items-center px-3 py-1.5 lg:px-3.5 lg:py-2 rounded-full border border-[#D1D5DB] bg-white/80 text-[#374151] text-[10px] lg:text-xs font-extrabold uppercase tracking-[0.08em] backdrop-blur-md">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#ED7606] shadow-[0_0_0_8px_rgba(237,118,6,.12)]" />
                 B2B damper manufacturer since 2001
               </div>
-              <h1 className="max-w-[1060px] mt-4 lg:mt-5 mb-4 lg:mb-5 text-[38px] sm:text-[48px] lg:text-[clamp(58px,5.2vw,104px)] leading-[0.96] lg:leading-[0.9] tracking-[-0.045em] lg:tracking-[-0.055em] font-black text-[#111827] text-balance">
+              <h1 className="max-w-[760px] mt-4 lg:mt-5 mb-4 lg:mb-5 text-[38px] sm:text-[48px] lg:text-[clamp(48px,4.55vw,76px)] 2xl:text-[82px] leading-[0.98] lg:leading-[0.94] tracking-[-0.045em] lg:tracking-[-0.052em] font-black text-[#111827] text-balance">
                 Slow down the closing.
                 <span className="block">
                   Keep <strong className="text-[#ED7606] font-inherit">quiet</strong> in motion.
@@ -56,17 +56,16 @@ export function HeroSection() {
             </div>
 
             {/* Floating product images */}
-            <div className="relative min-h-[580px] xl:min-h-[670px] self-stretch hidden lg:block" aria-hidden>
+            <div className="relative min-h-[470px] xl:min-h-[560px] self-stretch hidden lg:block" aria-hidden>
               {[
-                { src: CATEGORIES[0].image, pos: "float-main", style: "inset:24px 88px auto auto; width:min(600px,84%); height:min(600px,80%); z-index:1; background:rgba(255,255,255,.95);" },
-                { src: CATEGORIES[2].image, pos: "float-fourth", style: "left:68px; top:56px; width:200px; height:162px; z-index:3; background:rgba(255,255,255,.9); animation-delay:.35s;" },
-                { src: CATEGORIES[1].image, pos: "float-sub", style: "left:8px; bottom:128px; width:270px; height:270px; z-index:4; background:rgba(255,255,255,.95); animation-delay:.7s;" },
-                { src: CATEGORIES[3].image, pos: "float-third", style: "right:28px; bottom:42px; width:360px; height:240px; z-index:5; background:rgba(255,255,255,.95); animation-delay:1.2s;" },
+                { src: CATEGORIES[0].image, style: "right:16px; top:8px; width:min(440px,72%); height:300px; z-index:2; background:rgba(255,255,255,.95);" },
+                { src: CATEGORIES[1].image, style: "left:0; bottom:112px; width:min(300px,48%); height:230px; z-index:3; background:rgba(255,255,255,.92); animation-delay:.45s;" },
+                { src: CATEGORIES[3].image, style: "right:0; bottom:20px; width:min(390px,64%); height:210px; z-index:4; background:rgba(255,255,255,.95); animation-delay:.9s;" },
               ].map((f, i) => (
                 <figure
                   key={i}
-                  className="absolute overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_16px_48px_rgba(0,0,0,.06)] animate-floaty"
-                  style={{ ...parseStyle(f.style), animationDelay: f.style.includes("animation-delay") ? undefined : "0s" }}
+                  className="absolute overflow-hidden rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_18px_54px_rgba(17,24,39,.08)] animate-floaty"
+                  style={parseStyle(f.style)}
                 >
                   <Image
                     src={f.src}

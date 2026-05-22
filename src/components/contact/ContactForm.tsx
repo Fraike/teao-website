@@ -1,18 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
-
-function createCaptcha() {
-  const a = Math.floor(Math.random() * 8) + 2;
-  const b = Math.floor(Math.random() * 7) + 3;
-  return { a, b };
-}
+import { Captcha, type CaptchaRef } from "@/components/ui/captcha";
 
 export function ContactForm() {
   const searchParams = useSearchParams();
   const initialProduct = searchParams.get("product") || "";
-  const [captcha, setCaptcha] = useState(createCaptcha);
+  const captchaRef = useRef<CaptchaRef>(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -24,7 +19,6 @@ export function ContactForm() {
     annualVolume: "",
     message: "",
     privacyAccepted: false,
-    captchaAnswer: "",
     website: "",
   });
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
@@ -40,11 +34,6 @@ export function ContactForm() {
     []
   );
 
-  const resetCaptcha = useCallback(() => {
-    setCaptcha(createCaptcha());
-    setForm((prev) => ({ ...prev, captchaAnswer: "" }));
-  }, []);
-
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -56,23 +45,23 @@ export function ContactForm() {
         return;
       }
 
-      if (Number(form.captchaAnswer) !== captcha.a + captcha.b) {
+      if (!captchaRef.current?.validate()) {
         setStatus("error");
         setErrorMsg("Verification code is incorrect. Please try again.");
-        resetCaptcha();
         return;
       }
 
       setStatus("submitting");
 
       try {
+        const payload = captchaRef.current?.getPayload();
         const res = await fetch("/api/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...form,
-            captchaA: captcha.a,
-            captchaB: captcha.b,
+            captchaToken: payload?.token,
+            captchaAnswer: payload?.answer,
           }),
         });
 
@@ -101,17 +90,16 @@ export function ContactForm() {
           annualVolume: "",
           message: "",
           privacyAccepted: false,
-          captchaAnswer: "",
           website: "",
         });
-        setCaptcha(createCaptcha());
+        captchaRef.current?.reset();
       } catch (err) {
         setStatus("error");
         setErrorMsg(err instanceof Error ? err.message : "Something went wrong. Please try again.");
-        resetCaptcha();
+        captchaRef.current?.reset();
       }
     },
-    [captcha, form, resetCaptcha]
+    [form]
   );
 
   if (status === "success") {
@@ -186,68 +174,37 @@ export function ContactForm() {
         </label>
       </div>
 
-      <div className="rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-4 lg:p-5">
-        <label className="flex items-start gap-3 text-sm leading-relaxed text-[#374151]">
+      <div className="rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-4 lg:p-5 space-y-4">
+        <label className="flex items-center gap-3 text-sm leading-relaxed text-[#374151]">
           <input
             type="checkbox"
             name="privacyAccepted"
             required
             checked={form.privacyAccepted}
             onChange={handleChange}
-            className="mt-0.5 h-4 w-4 shrink-0 rounded border-[#D1D5DB] text-[#ED7606] focus:ring-[#ED7606]"
+            className="h-4 w-4 shrink-0 rounded border-[#D1D5DB] text-[#ED7606] focus:ring-[#ED7606]"
           />
           <span>
-            I have read and agree to the{" "}
+            I agree to the{" "}
             <a href="/privacy-policy" target="_blank" className="font-bold text-[#111827] underline decoration-[#ED7606]/40 underline-offset-4 hover:text-[#ED7606]">
               Privacy Policy
-            </a>
-            . You can also{" "}
-            <a href="/remark/privacy-policy.txt" download className="font-bold text-[#ED7606] hover:underline">
-              download a copy
             </a>
             .
           </span>
         </label>
 
-        <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-end">
-          <div>
-            <label className="block text-[13px] font-bold text-[#111827] mb-1.5">
-              Verification code *
-            </label>
-            <div className="grid grid-cols-[auto_1fr_auto] items-center gap-2 rounded-lg border border-[#E5E7EB] bg-white p-2">
-              <div className="rounded-md bg-[#FFF2E5] px-3 py-2 text-sm font-black tracking-[0.08em] text-[#111827]">
-                {captcha.a} + {captcha.b}
-              </div>
-              <input
-                type="number"
-                name="captchaAnswer"
-                required
-                inputMode="numeric"
-                value={form.captchaAnswer}
-                onChange={handleChange}
-                placeholder="Enter answer"
-                className="h-10 min-w-0 bg-transparent px-2 text-sm text-[#374151] outline-none placeholder:text-[#9CA3AF]"
-              />
-              <button
-                type="button"
-                onClick={resetCaptcha}
-                className="rounded-md border border-[#E5E7EB] px-3 py-2 text-xs font-bold text-[#6B7280] transition-colors hover:border-[#ED7606]/40 hover:text-[#ED7606]"
-              >
-                Refresh
-              </button>
-            </div>
-          </div>
-          <p className="text-xs leading-relaxed text-[#6B7280] sm:max-w-[180px]">
-            This check helps reduce automated spam submissions.
-          </p>
-        </div>
+        <Captcha ref={captchaRef} />
       </div>
 
       {status === "error" && (
         <p className="text-red-600 text-sm font-medium">{errorMsg || "Submission failed. Please try again."}</p>
       )}
 
-      <button type="submit" disabled={status === "submitting"} className="btn btn-primary px-8 text-base disabled:opacity-50">
+      <button
+        type="submit"
+        disabled={status === "submitting"}
+        className="inline-flex h-12 min-w-[190px] items-center justify-center rounded-full bg-[#ED7606] px-8 text-base font-extrabold text-white shadow-[0_16px_34px_rgba(237,118,6,0.24)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#D46900] hover:shadow-[0_20px_42px_rgba(237,118,6,0.3)] disabled:translate-y-0 disabled:opacity-50"
+      >
         {status === "submitting" ? "Sending..." : "Send Inquiry →"}
       </button>
     </form>

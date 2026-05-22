@@ -6,9 +6,13 @@ import { verifyPassword, createToken, setSession, hashPassword } from "@/lib/aut
 
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json();
+    const { username, password, captchaToken, captchaAnswer } = await request.json();
     if (!username || !password) {
       return NextResponse.json({ error: "Username and password required" }, { status: 400 });
+    }
+
+    if (!captchaToken || !captchaAnswer || btoa(String(captchaAnswer).toUpperCase()) !== captchaToken) {
+      return NextResponse.json({ error: "Verification code is incorrect." }, { status: 400 });
     }
 
     let admin = await db.select().from(admins).where(eq(admins.username, username)).get();

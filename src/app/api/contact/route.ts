@@ -15,8 +15,7 @@ export async function POST(request: Request) {
       annualVolume,
       message,
       privacyAccepted,
-      captchaA,
-      captchaB,
+      captchaToken,
       captchaAnswer,
       website,
     } = body;
@@ -33,8 +32,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Please agree to the Privacy Policy before submitting." }, { status: 400 });
     }
 
-    const expectedCaptcha = Number(captchaA) + Number(captchaB);
-    if (!Number.isFinite(expectedCaptcha) || Number(captchaAnswer) !== expectedCaptcha) {
+    if (!captchaToken || !captchaAnswer || btoa(String(captchaAnswer).toUpperCase()) !== captchaToken) {
       return NextResponse.json({ error: "Verification code is incorrect." }, { status: 400 });
     }
 

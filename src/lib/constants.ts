@@ -394,6 +394,7 @@ export const PRODUCTS: Product[] = [
       "Corrosion-resistant components",
     ],
     hard_force: "6N",
+    sound_type: "audible",
     durability: { cycles: 50000, cycles_unit: "cycles" },
     applications: ["Interior storage", "Access panels", "Automotive interior panels"],
     isActive: true,
