@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import Image from "next/image";
 import { SITE_CONFIG } from "@/lib/constants";
 import { JsonLdScript, faqPageSchema } from "@/lib/structured-data";
 import { Mail, MapPin, Download, FileText, ChevronDown } from "lucide-react";
@@ -76,38 +77,49 @@ export default function ContactPage() {
         <div className="absolute w-[460px] h-[460px] -right-[120px] -bottom-[140px] rounded-full border border-[#ED7606]/12 pointer-events-none" />
 
         <div className="shell relative z-10">
-          <div className="grid lg:grid-cols-[1fr_0.7fr] gap-8 lg:gap-14 items-end">
-            <div>
+          <div className="mx-auto grid max-w-6xl items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.86fr)] lg:gap-12">
+            <div className="pt-1 lg:pt-2">
               <span className="eyebrow">Contact</span>
-              <h1 className="mt-3.5 max-w-[680px] text-[clamp(30px,4vw,54px)] leading-[0.94] tracking-[-0.05em] font-black text-[#111827]">
+              <h1 className="mt-3.5 max-w-[620px] text-[clamp(32px,3.45vw,50px)] leading-[0.98] tracking-[-0.045em] font-black text-[#111827]">
                 Start a project with TEAO engineering.
               </h1>
-              <p className="mt-4 text-[#6B7280] text-lg max-w-[580px] leading-relaxed">
+              <p className="mt-4 max-w-[560px] text-base leading-relaxed text-[#6B7280] lg:text-[17px]">
                 Share your application details, torque target and annual volume. Our team will
                 recommend a suitable damper platform or define a custom solution.
               </p>
             </div>
 
-            <div className="flex flex-col gap-3">
+            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-[0_14px_40px_rgba(17,24,39,0.05)] lg:p-6">
+              <div className="mb-5">
+                <div className="text-[11px] font-black uppercase tracking-[0.14em] text-[#ED7606]">
+                  Direct contact
+                </div>
+                <h2 className="mt-1.5 text-xl font-black tracking-[-0.03em] text-[#111827]">
+                  Engineering & commercial support
+                </h2>
+                <p className="mt-2 text-sm leading-relaxed text-[#6B7280]">
+                  Reach TEAO for drawings, samples, quotation and project review.
+                </p>
+              </div>
               <a
                 href={`mailto:${SITE_CONFIG.email}`}
-                className="flex items-center gap-3.5 p-4 rounded-xl border border-[#E5E7EB] bg-white hover:shadow-md hover:border-[#ED7606]/30 transition-all duration-300"
+                className="flex items-start gap-3.5 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-4 transition-all duration-300 hover:border-[#ED7606]/30 hover:bg-white hover:shadow-md"
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/10">
+                <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/10">
                   <Mail size={18} strokeWidth={2} className="text-[#ED7606]" />
                 </span>
-                <div>
-                  <div className="text-xs text-[#9CA3AF] font-bold">Email</div>
-                  <div className="text-sm font-semibold text-[#374151]">{SITE_CONFIG.email}</div>
+                <div className="min-w-0">
+                  <div className="text-[11px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">Email</div>
+                  <div className="mt-1 break-all text-sm font-semibold leading-relaxed text-[#374151]">{SITE_CONFIG.email}</div>
                 </div>
               </a>
-              <div className="flex items-start gap-3.5 p-4 rounded-xl border border-[#E5E7EB] bg-white">
+              <div className="mt-3 flex items-start gap-3.5 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-4">
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#ED7606]/10 mt-0.5">
                   <MapPin size={18} strokeWidth={2} className="text-[#ED7606]" />
                 </span>
-                <div>
-                  <div className="text-xs text-[#9CA3AF] font-bold">Address</div>
-                  <div className="text-sm font-semibold text-[#374151] leading-relaxed">{SITE_CONFIG.address}</div>
+                <div className="min-w-0">
+                  <div className="text-[11px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">Address</div>
+                  <div className="mt-1 text-sm font-semibold text-[#374151] leading-relaxed">{SITE_CONFIG.address}</div>
                 </div>
               </div>
             </div>
@@ -135,9 +147,22 @@ export default function ContactPage() {
               <a
                 href="/remark/damper-usage-notes.pdf"
                 download
-                className="group relative rounded-2xl overflow-hidden border border-[#ED7606]/20 bg-gradient-to-br from-[#111827] to-[#1F2937] p-6 lg:p-7 text-white hover:-translate-y-1 transition-all duration-300 shadow-[0_8px_32px_rgba(237,118,6,.08)]"
+                className="group relative overflow-hidden rounded-2xl border border-[#ED7606]/20 bg-gradient-to-br from-[#111827] to-[#1F2937] text-white shadow-[0_8px_32px_rgba(237,118,6,.08)] transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="relative z-10">
+                <div className="relative aspect-[16/9] border-b border-white/10">
+                  <Image
+                    src="/images/company/contactUs.png"
+                    alt="TEAO business communication and customer support"
+                    fill
+                    className="object-cover opacity-90"
+                    sizes="(max-width: 1024px) 100vw, 420px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/20 to-transparent" />
+                  <div className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#ED7606] shadow-sm">
+                    B2B Engineering Support
+                  </div>
+                </div>
+                <div className="relative z-10 p-6 lg:p-7">
                   <div className="flex items-center gap-2.5 mb-4">
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ED7606]/20">
                       <FileText size={20} strokeWidth={1.5} className="text-[#ED7606]" />

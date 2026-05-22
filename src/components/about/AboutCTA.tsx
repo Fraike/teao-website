@@ -62,22 +62,27 @@ export function AboutCTA() {
               { src: "/images/products/gear-damper/GearDamperSingle.webp", label: "Custom Torque" },
               { src: "/images/products/axial-damper/AxialDamperSingle.webp", label: "Full Engineering Support" },
               { src: "/images/products/glove-box-damper/GloveBoxDamperSingle.webp", label: "Stable Mass Production" },
-            ].map((item) => (
+            ].map((item, index) => (
               <div
                 key={item.label}
-                className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 backdrop-blur-sm"
+                className="flex items-center gap-4 rounded-xl border border-white/15 bg-white p-4 shadow-[0_18px_45px_rgba(0,0,0,0.18)]"
               >
-                <div className="relative w-12 h-12 shrink-0 rounded-lg bg-white/10 p-1.5">
+                <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-[#E5E7EB] bg-[#F8F9FA]">
                   <Image
                     src={item.src}
                     alt=""
                     fill
-                    className="object-contain p-1"
-                    sizes="48px"
+                    className="object-contain p-2"
+                    sizes="56px"
                     loading="lazy"
                   />
                 </div>
-                <span className="text-white/75 text-sm font-bold">{item.label}</span>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-black uppercase tracking-[0.14em] text-[#ED7606]">
+                    0{index + 1}
+                  </span>
+                  <p className="mt-0.5 text-sm font-extrabold text-[#111827]">{item.label}</p>
+                </div>
               </div>
             ))}
           </motion.div>

@@ -43,14 +43,14 @@ export const competencies = [
     subtitle: "Torque Tuning Support",
     description:
       "Engineering support covers torque tuning, sample review and application matching before mass production.",
-    image: "/images/company/automation-equipment-2.webp",
+    image: "/images/company/visual-inspection.webp",
   },
   {
     title: "Plastic Injection",
     subtitle: "Mold + Injection + Production",
     description:
       "TEAO provides complete solutions from mold design and production to plastic injection and assembly.",
-    image: "/images/company/production-workshop.webp",
+    image: "/images/company/automation-equipment-2.webp",
     highlight: true,
   },
   {

@@ -26,6 +26,26 @@ function SpecPill({
   );
 }
 
+function parseForceValue(value?: string) {
+  if (!value) return null;
+  const match = value.match(/[\d.]+/);
+  if (!match) return null;
+  return Number(match[0]);
+}
+
+function formatForceLabel(value?: string) {
+  if (!value) return null;
+  return value.replace(/\s*N$/i, " N").replace(/(\d)N$/i, "$1 N");
+}
+
+function niceForceMax(value: number) {
+  if (value <= 5) return 5;
+  if (value <= 10) return 10;
+  if (value <= 20) return 20;
+  if (value <= 50) return 50;
+  return Math.ceil(value / 50) * 50;
+}
+
 export function ProductTable({ products }: { products: Product[] }) {
   return (
     <div className="hidden lg:grid grid-cols-2 items-stretch gap-4">
@@ -37,7 +57,13 @@ export function ProductTable({ products }: { products: Product[] }) {
         const diameter = findSpecValue(product, "outer diameter");
         const mount = formatMount(product.assembly_method);
         const torqueRange = getTorqueRange(product);
-        const hasSpecs = teeth != null || diameter != null || mod != null || Boolean(mount);
+        const hasSpecs =
+          teeth != null || diameter != null || mod != null || Boolean(mount) || Boolean(product.sound_type);
+        const forceValue = parseForceValue(product.hard_force);
+        const forceScaleMax = forceValue ? niceForceMax(forceValue * 1.45) : null;
+        const forceWidth =
+          forceValue && forceScaleMax ? Math.max(10, Math.min(100, (forceValue / forceScaleMax) * 100)) : 0;
+        const forceLabel = formatForceLabel(product.hard_force);
 
         return (
           <article
@@ -79,26 +105,27 @@ export function ProductTable({ products }: { products: Product[] }) {
 
               <div className="mt-3">
                 {product.category === "latch" ? (
-                  <div className="rounded-xl border border-[#E5E7EB] bg-white px-3 py-2">
-                    <div className="flex items-center justify-between gap-3">
+                  <div className="rounded-xl border border-[#FFE3C2] bg-[#FFFAF5] px-3 py-2">
+                    <div className="mb-1.5 flex items-center justify-between gap-3">
                       <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#9CA3AF]">
                         <Wrench size={13} className="text-[#ED7606]" />
-                        Press Force
+                        Press force
                       </span>
                       <span className="text-[11px] font-extrabold text-[#111827] tabular-nums">
-                        {product.hard_force ? `${product.hard_force}` : "—"}
+                        {forceLabel ?? "—"}
                       </span>
                     </div>
-                    {product.sound_type && (
-                      <div className="mt-1.5 flex items-center gap-1.5 pt-1.5 border-t border-[#F3F4F6]">
-                        {product.sound_type === "audible" ? (
-                          <Volume2 size={13} className="text-[#ED7606]" />
-                        ) : (
-                          <VolumeX size={13} className="text-[#6B7280]" />
-                        )}
-                        <span className={`text-[10px] font-bold ${product.sound_type === "audible" ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
-                          {product.sound_type === "audible" ? "Audible" : "Silent"}
-                        </span>
+                    <div className="relative h-3 overflow-hidden rounded-full bg-white shadow-inner ring-1 ring-[#FFE3C2]">
+                      <div className="absolute inset-y-0 left-0 w-full bg-[linear-gradient(90deg,rgba(237,118,6,0.08),rgba(237,118,6,0.14))]" />
+                      <div
+                        className="absolute inset-y-1 left-0 rounded-full bg-[#ED7606] shadow-[0_0_12px_rgba(237,118,6,0.35)] transition-all duration-700"
+                        style={{ width: `${forceWidth}%` }}
+                      />
+                    </div>
+                    {forceScaleMax && (
+                      <div className="mt-1 flex justify-between text-[9px] font-semibold text-[#C9A27F]">
+                        <span>0</span>
+                        <span>{forceScaleMax} N</span>
                       </div>
                     )}
                   </div>
@@ -143,6 +170,19 @@ export function ProductTable({ products }: { products: Product[] }) {
                       <SpecPill icon={<Cog size={12} />} label="M" value={mod} />
                       <SpecPill icon={<Ruler size={12} />} label="Dia" value={diameter} />
                       <SpecPill icon={<Wrench size={12} />} label="Mount" value={mount} />
+                      {product.sound_type && (
+                        <SpecPill
+                          icon={
+                            product.sound_type === "audible" ? (
+                              <Volume2 size={12} />
+                            ) : (
+                              <VolumeX size={12} />
+                            )
+                          }
+                          label="Sound"
+                          value={product.sound_type === "audible" ? "Audible" : "Silent"}
+                        />
+                      )}
                     </div>
                   )}
                   <Link
