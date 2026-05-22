@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { db } from "@/db";
 import { products, news } from "@/db/schema";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://www.teao-damper.com";
 
   const staticRoutes = [
@@ -17,22 +17,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/torque-converter`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
   ];
 
-  const productRoutes = db
+  const productRows = await db
     .select({ slug: products.slug, updatedAt: products.updatedAt })
     .from(products)
-    .all()
-    .map((p) => ({
+    .all();
+  const productRoutes = productRows.map((p) => ({
       url: `${baseUrl}/products/${p.slug}`,
       lastModified: p.updatedAt ?? new Date(),
       changeFrequency: "monthly" as const,
       priority: 0.7 as const,
     }));
 
-  const newsRoutes = db
+  const newsRows = await db
     .select({ slug: news.slug, updatedAt: news.updatedAt })
     .from(news)
-    .all()
-    .map((n) => ({
+    .all();
+  const newsRoutes = newsRows.map((n) => ({
       url: `${baseUrl}/news/${n.slug}`,
       lastModified: n.updatedAt ?? new Date(),
       changeFrequency: "monthly" as const,

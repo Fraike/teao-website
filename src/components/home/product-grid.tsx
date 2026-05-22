@@ -6,8 +6,9 @@ import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 import { SkeletonImage } from "@/components/ui/skeleton-image";
 
-export function ProductGrid() {
-  const cats = db.select().from(categories).all().sort((a, b) => a.sortOrder - b.sortOrder);
+export async function ProductGrid() {
+  const rows = await db.select().from(categories).all();
+  const cats = rows.sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
     <section className="section scroll-mt-24 lg:scroll-mt-28" id="products">

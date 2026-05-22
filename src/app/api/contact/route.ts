@@ -43,7 +43,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
     }
 
-    db.insert(contactInquiries).values({
+    await db.insert(contactInquiries).values({
       name,
       company: company || null,
       email,

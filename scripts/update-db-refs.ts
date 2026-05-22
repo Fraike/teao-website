@@ -2,18 +2,20 @@
  * Update all image references in database from .png/.jpg/.jpeg/.JPG to .webp
  * Usage: npx tsx scripts/update-db-refs.ts [--dry-run]
  */
-import Database from "better-sqlite3";
+import { createClient } from "@libsql/client";
 import path from "node:path";
 
-const db = new Database(path.resolve(__dirname, "..", "data", "teao.db"));
+const dbPath = path.resolve(__dirname, "..", "data", "teao.db");
+const client = createClient({ url: `file:${dbPath}` });
 const DRY_RUN = process.argv.includes("--dry-run");
 
 function toWebp(val: string): string {
-  return val.replace(/\.(png|jpg|jpeg|JPG|JPEG|PNG)(\b|["\]}'])/g, ".webp$2");
+  return val.replace(/\.(png|jpg|jpeg|JPG|JPEG|PNG)(\b|["}\]'])/g, ".webp$2");
 }
 
-function updateTable(table: string, columns: string[]) {
-  const rows = db.prepare(`SELECT * FROM ${table}`).all() as any[];
+async function updateTable(table: string, columns: string[]) {
+  const rs = await client.execute(`SELECT * FROM ${table}`);
+  const rows = rs.rows;
   let updated = 0;
 
   for (const row of rows) {
@@ -31,7 +33,10 @@ function updateTable(table: string, columns: string[]) {
     if (!DRY_RUN) {
       const sets = Object.keys(changes).map((c) => `${c} = ?`).join(", ");
       const vals = Object.values(changes);
-      db.prepare(`UPDATE ${table} SET ${sets} WHERE id = ?`).run(...vals, row.id);
+      await client.execute({
+        sql: `UPDATE ${table} SET ${sets} WHERE id = ?`,
+        args: [...vals, row.id as number],
+      });
     }
     updated++;
     if (DRY_RUN) {
@@ -42,14 +47,18 @@ function updateTable(table: string, columns: string[]) {
   console.log(`  ${table}: ${updated} rows updated`);
 }
 
-console.log(DRY_RUN ? "🔍 DRY RUN\n" : "🔄 Updating DB references...\n");
+async function main() {
+  console.log(DRY_RUN ? "🔍 DRY RUN\n" : "🔄 Updating DB references...\n");
 
-updateTable("categories", ["image"]);
-updateTable("products", ["image", "images", "dimension_drawing", "performance_charts"]);
-updateTable("news", ["image"]);
+  await updateTable("categories", ["image"]);
+  await updateTable("products", ["image", "images", "dimension_drawing", "performance_charts"]);
+  await updateTable("news", ["image"]);
 
-if (!DRY_RUN) {
-  console.log("\n✅ DB references updated");
-} else {
-  console.log("\n📊 Dry run complete");
+  if (!DRY_RUN) {
+    console.log("\n✅ DB references updated");
+  } else {
+    console.log("\n📊 Dry run complete");
+  }
 }
+
+main();

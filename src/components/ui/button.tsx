@@ -27,8 +27,14 @@ export function Button({
   };
 
   if (href) {
+    const anchorProps: Record<string, string> = {};
+    for (const [key, value] of Object.entries(props)) {
+      if (key.startsWith("data-") && typeof value === "string") {
+        anchorProps[key] = value;
+      }
+    }
     return (
-      <a href={href} className={cn(base, variants[variant], className)}>
+      <a href={href} className={cn(base, variants[variant], className)} {...anchorProps}>
         {children}
       </a>
     );

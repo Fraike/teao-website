@@ -32,13 +32,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function NewsPage() {
-  const articles = db
+export default async function NewsPage() {
+  const rows = await db
     .select()
     .from(news)
     .orderBy(desc(news.publishedAt))
-    .all()
-    .filter((n) => Boolean(n.isPublished));
+    .all();
+  const articles = rows.filter((n) => Boolean(n.isPublished));
 
   const newsItems = articles.map((a) => ({
     name: a.title,

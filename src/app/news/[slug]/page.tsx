@@ -7,7 +7,7 @@ import Link from "next/link";
 import { JsonLdScript, newsArticleSchema, breadcrumbSchema } from "@/lib/structured-data";
 
 export async function generateStaticParams() {
-  const rows = db.select({ slug: news.slug }).from(news).all();
+  const rows = await db.select({ slug: news.slug }).from(news).all();
   return rows.map((r) => ({ slug: r.slug }));
 }
 
@@ -17,7 +17,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const article = db.select().from(news).where(eq(news.slug, slug)).get();
+  const article = await db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) return { title: "Article Not Found" };
   return {
     title: `${article.title} | TEAO News`,
@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = db.select().from(news).where(eq(news.slug, slug)).get();
+  const article = await db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) notFound();
 
   const articleJsonLd = newsArticleSchema({

@@ -70,6 +70,18 @@ export const admins = sqliteTable("admins", {
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+export const analyticsEvents = sqliteTable("analytics_events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  event: text("event").notNull(),
+  page: text("page").notNull(),
+  targetType: text("target_type"),
+  targetId: text("target_id"),
+  source: text("source"),
+  metadata: text("metadata"),
+  sessionId: text("session_id").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 export const contactInquiries = sqliteTable("contact_inquiries", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),

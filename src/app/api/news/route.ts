@@ -4,7 +4,7 @@ import { news } from "@/db/schema";
 import { getSession } from "@/lib/auth";
 
 export async function GET() {
-  const rows = db.select().from(news).all();
+  const rows = await db.select().from(news).all();
   return NextResponse.json(
     rows.map((n) => ({ ...n, isPublished: Boolean(n.isPublished) })),
   );
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const data = await request.json();
-  const row = db.insert(news).values({
+  const row = await db.insert(news).values({
     ...data,
     isPublished: data.isPublished ? 1 : 0,
   }).returning().get();

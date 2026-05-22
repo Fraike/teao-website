@@ -7,8 +7,8 @@ export const revalidate = 86400;
 export async function GET() {
   const BASE = env.SITE_URL;
 
-  const catRows = db.select().from(categories).all();
-  const productRows = db
+  const catRows = await db.select().from(categories).all();
+  const productRows = await db
     .select({ slug: products.slug, model: products.model, name: products.name })
     .from(products)
     .all();

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { PublicChrome } from "@/components/layout/public-chrome";
+import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { env } from "@/lib/env";
 import { organizationSchema, JsonLdScript } from "@/lib/structured-data";
 import "./globals.css";
@@ -76,7 +77,9 @@ export default function RootLayout({
         <JsonLdScript data={organizationSchema()} />
       </head>
       <body>
-        <PublicChrome>{children}</PublicChrome>
+        <AnalyticsProvider>
+          <PublicChrome>{children}</PublicChrome>
+        </AnalyticsProvider>
         {env.PLAUSIBLE_DOMAIN && (
           <script
             defer

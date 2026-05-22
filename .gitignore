@@ -1,8 +1,10 @@
 node_modules/
 .next/
+.env
 .env.local
 .env*.local
 trash_review/
 data/
 drizzle/
-.DS_Store.env
+.DS_Store
+tsconfig.tsbuildinfo

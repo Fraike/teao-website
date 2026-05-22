@@ -151,6 +151,10 @@ export function AutomotiveClient() {
                   }`}
                   style={{ left: spot.left, top: spot.top, transform: "translate(-50%, -50%)" }}
                   aria-label={spot.label}
+                  data-analytics-event="scene_click"
+                  data-analytics-target-type="scene"
+                  data-analytics-target-id={spot.id}
+                  data-analytics-source="map_hotspot"
                 >
                   <span className={`shrink-0 w-[34px] h-[34px] grid place-items-center rounded-full transition-all duration-200 ${
                     activeScene === spot.id
@@ -182,6 +186,10 @@ export function AutomotiveClient() {
                       ? "border-[#ED7606] bg-[#ED7606] text-white"
                       : "border-white/15 bg-white/8 text-white"
                   }`}
+                  data-analytics-event="scene_click"
+                  data-analytics-target-type="scene"
+                  data-analytics-target-id={spot.id}
+                  data-analytics-source="mobile_chip"
                 >
                   {String(i + 1).padStart(2, "0")} {spot.label}
                 </button>
@@ -275,6 +283,10 @@ function SceneCard({ scene, active }: { scene: ApplicationScene; active: boolean
                   className={`flex flex-col items-center justify-between gap-1.5 px-2 py-2 border-t border-r border-[#EEF1F4] text-[11px] font-extrabold text-[#111827] text-center transition-all duration-200 hover:text-[#ED7606] hover:bg-[#FFFAF5] ${
                     (i + 1) % 4 === 0 ? "border-r-0 lg:border-r" : ""
                   } ${(i + 1) % 6 === 0 ? "lg:border-r-0" : ""}`}
+                  data-analytics-event="product_click"
+                  data-analytics-target-type="product"
+                  data-analytics-target-id={prod.model.toLowerCase()}
+                  data-analytics-source="automotive_scene"
                 >
                   <div className="relative w-full h-[44px]">
                     <Image

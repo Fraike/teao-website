@@ -28,6 +28,10 @@ export function RelatedProducts({
               key={product.slug}
               href={`/products/${product.slug}`}
               className="group flex gap-3 rounded-xl border border-[#E5E7EB] bg-white p-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#ED7606]/35 hover:shadow-[0_14px_36px_rgba(237,118,6,0.08)]"
+              data-analytics-event="product_click"
+              data-analytics-target-type="product"
+              data-analytics-target-id={product.slug}
+              data-analytics-source="related_products"
             >
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-[#F8F9FA]">
                 <Image

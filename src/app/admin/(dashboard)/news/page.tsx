@@ -5,7 +5,7 @@ import { desc } from "drizzle-orm";
 import NewsListTable from "@/components/admin/NewsListTable";
 
 export default async function AdminNewsPage() {
-  const rows = db.select().from(news).orderBy(desc(news.publishedAt)).all();
+  const rows = await db.select().from(news).orderBy(desc(news.publishedAt)).all();
 
   const data = rows.map((n) => ({
     id: n.id,

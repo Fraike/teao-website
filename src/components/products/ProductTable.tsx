@@ -73,6 +73,10 @@ export function ProductTable({ products }: { products: Product[] }) {
             <Link
               href={`/products/${product.slug}`}
               className="relative h-[112px] w-[112px] shrink-0 overflow-hidden rounded-xl bg-[#F8F9FA]"
+              data-analytics-event="product_click"
+              data-analytics-target-type="product"
+              data-analytics-target-id={product.slug}
+              data-analytics-source="product_list"
             >
               <Image
                 src={imgSrc}
@@ -96,7 +100,13 @@ export function ProductTable({ products }: { products: Product[] }) {
                     </span>
                   )}
                 </div>
-                <Link href={`/products/${product.slug}`}>
+                <Link
+                  href={`/products/${product.slug}`}
+                  data-analytics-event="product_click"
+                  data-analytics-target-type="product"
+                  data-analytics-target-id={product.slug}
+                  data-analytics-source="product_list"
+                >
                   <h3 className="line-clamp-2 min-h-[34px] text-[14px] font-extrabold leading-tight text-[#111827] transition-colors group-hover:text-[#ED7606]">
                     {product.name}
                   </h3>
@@ -189,6 +199,10 @@ export function ProductTable({ products }: { products: Product[] }) {
                     href={`/products/${product.slug}`}
                     className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] text-[#111827] transition-colors hover:border-[#ED7606] hover:bg-[#ED7606] hover:text-white"
                     aria-label={`View ${product.name}`}
+                    data-analytics-event="product_click"
+                    data-analytics-target-type="product"
+                    data-analytics-target-id={product.slug}
+                    data-analytics-source="product_list"
                   >
                     <ArrowUpRight size={15} />
                   </Link>

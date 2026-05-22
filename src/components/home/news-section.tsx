@@ -5,14 +5,14 @@ import { news } from "@/db/schema";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
 
-export function NewsSection() {
-  const articles = db
+export async function NewsSection() {
+  const rows = await db
     .select()
     .from(news)
     .orderBy(desc(news.publishedAt))
     .limit(3)
-    .all()
-    .filter((n) => Boolean(n.isPublished));
+    .all();
+  const articles = rows.filter((n) => Boolean(n.isPublished));
 
   return (
     <section className="section" id="news">

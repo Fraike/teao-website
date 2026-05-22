@@ -11,15 +11,15 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Username and password required" }, { status: 400 });
     }
 
-    let admin = db.select().from(admins).where(eq(admins.username, username)).get();
+    let admin = await db.select().from(admins).where(eq(admins.username, username)).get();
 
     // Auto-create first admin if none exists
     if (!admin) {
-      const count = db.select().from(admins).all();
+      const count = await db.select().from(admins).all();
       if (count.length === 0) {
         const hash = await hashPassword(password);
-        db.insert(admins).values({ username, passwordHash: hash }).run();
-        admin = db.select().from(admins).where(eq(admins.username, username)).get();
+        await db.insert(admins).values({ username, passwordHash: hash }).run();
+        admin = await db.select().from(admins).where(eq(admins.username, username)).get();
       }
     }
 

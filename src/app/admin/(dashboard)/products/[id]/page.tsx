@@ -11,7 +11,7 @@ export default async function EditProductPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const product = db.select().from(products).where(eq(products.id, Number(id))).get();
+  const product = await db.select().from(products).where(eq(products.id, Number(id))).get();
   if (!product) notFound();
 
   return (

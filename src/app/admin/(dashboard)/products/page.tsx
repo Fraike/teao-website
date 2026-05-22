@@ -5,7 +5,7 @@ import { desc } from "drizzle-orm";
 import ProductListTable from "@/components/admin/ProductListTable";
 
 export default async function AdminProductsPage() {
-  const rows = db.select().from(products).orderBy(desc(products.updatedAt)).all();
+  const rows = await db.select().from(products).orderBy(desc(products.updatedAt)).all();
 
   const data = rows.map((p) => ({
     id: p.id,

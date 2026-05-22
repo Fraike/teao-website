@@ -12,8 +12,8 @@ export async function GET(
   const { id } = await params;
   // Try numeric id first, then slug
   const byId = Number.isNaN(Number(id))
-    ? db.select().from(products).where(eq(products.slug, id)).get()
-    : db.select().from(products).where(eq(products.id, Number(id))).get();
+    ? await db.select().from(products).where(eq(products.slug, id)).get()
+    : await db.select().from(products).where(eq(products.id, Number(id))).get();
 
   if (!byId) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json(serializeProduct(byId));
@@ -31,12 +31,12 @@ export async function PUT(
   const numId = Number(id);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  db.update(products)
+  await db.update(products)
     .set({ ...deserializeProduct(data), updatedAt: new Date() } as any)
     .where(eq(products.id, numId))
     .run();
 
-  const updated = db.select().from(products).where(eq(products.id, numId)).get();
+  const updated = await db.select().from(products).where(eq(products.id, numId)).get();
   return NextResponse.json(serializeProduct(updated!));
 }
 
@@ -48,6 +48,6 @@ export async function DELETE(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  db.delete(products).where(eq(products.id, Number(id))).run();
+  await db.delete(products).where(eq(products.id, Number(id))).run();
   return NextResponse.json({ success: true });
 }

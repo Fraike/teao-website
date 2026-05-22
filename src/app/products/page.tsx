@@ -18,7 +18,7 @@ type Props = {
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { category } = await searchParams;
   const catRows = category
-    ? db.select().from(categories).where(eq(categories.slug, category)).all()
+    ? await db.select().from(categories).where(eq(categories.slug, category)).all()
     : [];
 
   if (catRows.length > 0) {
@@ -40,14 +40,14 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 export default async function ProductsPage({ searchParams }: Props) {
   const { category } = await searchParams;
 
-  const allCategories = db.select().from(categories).all();
+  const allCategories = await db.select().from(categories).all();
   const selectedCategory = category
     ? allCategories.find((c) => c.slug === category) ?? null
     : null;
 
   const productRows = category
-    ? db.select().from(products).where(eq(products.category, category)).all()
-    : db.select().from(products).all();
+    ? await db.select().from(products).where(eq(products.category, category)).all()
+    : await db.select().from(products).all();
 
   const mappedProducts = productRows
     .map(mapDbProduct)

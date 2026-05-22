@@ -21,6 +21,10 @@ export function ProductCardMobile({ product }: { product: Product }) {
         <Link
           href={`/products/${product.slug}`}
           className="relative w-[80px] h-[60px] sm:w-[100px] sm:h-[75px] rounded-lg bg-[#F8F9FA] overflow-hidden shrink-0"
+          data-analytics-event="product_click"
+          data-analytics-target-type="product"
+          data-analytics-target-id={product.slug}
+          data-analytics-source="product_list"
         >
           <Image
             src={imgSrc}
@@ -44,7 +48,13 @@ export function ProductCardMobile({ product }: { product: Product }) {
                 </span>
               )}
             </div>
-            <Link href={`/products/${product.slug}`}>
+            <Link
+              href={`/products/${product.slug}`}
+              data-analytics-event="product_click"
+              data-analytics-target-type="product"
+              data-analytics-target-id={product.slug}
+              data-analytics-source="product_list"
+            >
               <h3 className="text-[13px] font-extrabold text-[#111827] leading-tight line-clamp-2">
                 {product.name}
               </h3>
@@ -114,12 +124,20 @@ export function ProductCardMobile({ product }: { product: Product }) {
               <Link
                 href={`/products/${product.slug}`}
                 className="text-[11px] font-bold text-[#111827] hover:text-[#ED7606]"
+                data-analytics-event="product_click"
+                data-analytics-target-type="product"
+                data-analytics-target-id={product.slug}
+                data-analytics-source="product_list"
               >
                 Details
               </Link>
               <Link
                 href={`/contact?product=${encodeURIComponent(product.model)}`}
                 className="text-[11px] font-bold text-[#ED7606]"
+                data-analytics-event="cta_click"
+                data-analytics-target-type="cta"
+                data-analytics-target-id={product.model}
+                data-analytics-source="mobile_card"
               >
                 Inquire
               </Link>

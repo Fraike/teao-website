@@ -1,12 +1,14 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 import { hashPassword } from "../lib/auth";
 
-const sqlite = new Database("data/teao.db");
-sqlite.pragma("journal_mode = WAL");
-sqlite.pragma("foreign_keys = ON");
-const db = drizzle(sqlite, { schema });
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoToken = process.env.TURSO_AUTH_TOKEN;
+const client = tursoUrl && tursoToken
+  ? createClient({ url: tursoUrl, authToken: tursoToken })
+  : createClient({ url: "file:data/teao.db" });
+const db = drizzle(client, { schema });
 
 async function seed() {
   console.log("Seeding database...");
@@ -50,9 +52,9 @@ async function seed() {
     },
   ];
 
-  db.delete(schema.categories).run();
+  await db.delete(schema.categories).run();
   for (const c of categoryData) {
-    db.insert(schema.categories).values(c).run();
+    await db.insert(schema.categories).values(c).run();
   }
   console.log(`  Categories: ${categoryData.length} seeded`);
 
@@ -273,15 +275,15 @@ async function seed() {
     },
   ];
 
-  db.delete(schema.products).run();
+  await db.delete(schema.products).run();
   for (const p of productData) {
-    db.insert(schema.products).values(p).run();
+    await db.insert(schema.products).values(p).run();
   }
   console.log(`  Products: ${productData.length} seeded`);
 
   // --- News ---
-  db.delete(schema.news).run();
-  db.insert(schema.news).values([
+  await db.delete(schema.news).run();
+  await db.insert(schema.news).values([
     {
       slug: "teao-expands-capacity",
       title: "TEAO expands automated damper assembly capacity.",
@@ -323,10 +325,10 @@ async function seed() {
 
   // --- Admin ---
   // Only seed admin if none exists (first run)
-  const existingAdmins = db.select().from(schema.admins).all();
+  const existingAdmins = await db.select().from(schema.admins).all();
   if (existingAdmins.length === 0) {
     const pwHash = await hashPassword("teao123");
-    db.insert(schema.admins).values({
+    await db.insert(schema.admins).values({
       username: "admin",
       passwordHash: pwHash,
       createdAt: new Date(),

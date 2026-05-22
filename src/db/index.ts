@@ -1,9 +1,12 @@
-import Database from "better-sqlite3";
-import { drizzle } from "drizzle-orm/better-sqlite3";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 import * as schema from "./schema";
 
-const sqlite = new Database("data/teao.db");
-sqlite.pragma("journal_mode = WAL");
-sqlite.pragma("foreign_keys = ON");
+const tursoUrl = process.env.TURSO_DATABASE_URL;
+const tursoToken = process.env.TURSO_AUTH_TOKEN;
 
-export const db = drizzle(sqlite, { schema });
+const client = tursoUrl && tursoToken
+  ? createClient({ url: tursoUrl, authToken: tursoToken })
+  : createClient({ url: "file:data/teao.db" });
+
+export const db = drizzle(client, { schema });

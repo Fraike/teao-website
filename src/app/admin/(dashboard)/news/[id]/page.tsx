@@ -10,7 +10,7 @@ export default async function EditNewsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const article = db.select().from(news).where(eq(news.id, Number(id))).get();
+  const article = await db.select().from(news).where(eq(news.id, Number(id))).get();
   if (!article) notFound();
 
   return (

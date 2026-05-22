@@ -20,7 +20,7 @@ import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { Button } from "@/components/ui/button";
 
 export async function generateStaticParams() {
-  const rows = db.select({ slug: products.slug }).from(products).all();
+  const rows = await db.select({ slug: products.slug }).from(products).all();
   return rows.map((r) => ({ slug: r.slug }));
 }
 
@@ -30,7 +30,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = db.select().from(products).where(eq(products.slug, slug)).get();
+  const product = await db.select().from(products).where(eq(products.slug, slug)).get();
   if (!product) return { title: "Product Not Found" };
 
   return {
@@ -50,12 +50,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
-  const row = db.select().from(products).where(eq(products.slug, slug)).get();
+  const row = await db.select().from(products).where(eq(products.slug, slug)).get();
   if (!row) notFound();
 
   const product = mapDbProduct(row);
-  const categoryRow = db.select().from(categories).where(eq(categories.slug, product.category)).get();
-  const relatedRows = db.select().from(products).where(eq(products.category, product.category)).all();
+  const categoryRow = await db.select().from(categories).where(eq(categories.slug, product.category)).get();
+  const relatedRows = await db.select().from(products).where(eq(products.category, product.category)).all();
   const related = relatedRows
     .filter((p) => p.slug !== slug)
     .map(mapDbProduct);
@@ -124,10 +124,21 @@ export default async function ProductDetailPage({ params }: Props) {
                 <Button
                   href={`/contact?product=${encodeURIComponent(product.model)}`}
                   variant="primary"
+                  data-analytics-event="cta_click"
+                  data-analytics-target-type="cta"
+                  data-analytics-target-id="request_quotation"
+                  data-analytics-source="product_detail"
                 >
                   Request Quotation
                 </Button>
-                <Button href="/contact" variant="outline">
+                <Button
+                  href="/contact"
+                  variant="outline"
+                  data-analytics-event="cta_click"
+                  data-analytics-target-type="cta"
+                  data-analytics-target-id="send_drawing"
+                  data-analytics-source="product_detail"
+                >
                   Send Your Drawing
                 </Button>
               </div>

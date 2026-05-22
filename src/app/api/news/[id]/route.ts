@@ -10,8 +10,8 @@ export async function GET(
 ) {
   const { id } = await params;
   const byId = Number.isNaN(Number(id))
-    ? db.select().from(news).where(eq(news.slug, id)).get()
-    : db.select().from(news).where(eq(news.id, Number(id))).get();
+    ? await db.select().from(news).where(eq(news.slug, id)).get()
+    : await db.select().from(news).where(eq(news.id, Number(id))).get();
 
   if (!byId) return NextResponse.json({ error: "Not found" }, { status: 404 });
   return NextResponse.json({ ...byId, isPublished: Boolean(byId.isPublished) });
@@ -27,12 +27,12 @@ export async function PUT(
   const { id } = await params;
   const data = await request.json();
 
-  db.update(news)
+  await db.update(news)
     .set({ ...data, isPublished: data.isPublished ? 1 : 0, updatedAt: new Date() })
     .where(eq(news.id, Number(id)))
     .run();
 
-  const updated = db.select().from(news).where(eq(news.id, Number(id))).get();
+  const updated = await db.select().from(news).where(eq(news.id, Number(id))).get();
   return NextResponse.json({ ...updated, isPublished: Boolean(updated!.isPublished) });
 }
 
@@ -44,6 +44,6 @@ export async function DELETE(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  db.delete(news).where(eq(news.id, Number(id))).run();
+  await db.delete(news).where(eq(news.id, Number(id))).run();
   return NextResponse.json({ success: true });
 }

@@ -9,12 +9,12 @@ export const revalidate = 86400;
 export async function GET() {
   const BASE = env.SITE_URL;
 
-  const catRows = db.select().from(categories).all();
-  const productRows = db.select().from(products).all();
-  const newsRows = db
+  const catRows = await db.select().from(categories).all();
+  const productRows = await db.select().from(products).all();
+  const newsRows = (await db
     .select()
     .from(news)
-    .all()
+    .all())
     .filter((n) => Boolean(n.isPublished));
 
   const parts: string[] = [];

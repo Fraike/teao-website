@@ -12,14 +12,14 @@ export async function GET(request: Request) {
 
   let rows;
   if (category) {
-    rows = db.select().from(products).where(eq(products.category, category)).all();
+    rows = await db.select().from(products).where(eq(products.category, category)).all();
   } else if (q) {
     const term = `%${q}%`;
-    rows = db.select().from(products).where(
+    rows = await db.select().from(products).where(
       or(like(products.model, term), like(products.name, term))
     ).all();
   } else {
-    rows = db.select().from(products).all();
+    rows = await db.select().from(products).all();
   }
 
   return NextResponse.json(rows.map(serializeProduct));
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
   const data = await request.json();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const row = db.insert(products).values(deserializeProduct(data) as any).returning().get();
+  const row = await db.insert(products).values(deserializeProduct(data) as any).returning().get();
 
   return NextResponse.json(serializeProduct(row), { status: 201 });
 }

@@ -82,6 +82,15 @@ export function ContactForm() {
         }
 
         setStatus("success");
+        window.dispatchEvent(new CustomEvent("teao:track", {
+          detail: {
+            event: "form_submit",
+            page: window.location.pathname,
+            targetType: "form",
+            targetId: form.productInterest || "general",
+            source: "contact_page",
+          },
+        }));
         setForm({
           name: "",
           company: "",
