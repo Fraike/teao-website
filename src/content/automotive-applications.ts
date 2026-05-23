@@ -46,7 +46,7 @@ function p(model: string, path: string, href?: string): ApplicationProduct {
 }
 
 export const automotiveInterior: AutomotiveZoneConfig = {
-  mapImage: `${IMG}/applications/generated/automotive-interior-map.png`,
+  mapImage: `${IMG}/applications/generated/automotive-interior-map.webp`,
   hotspots: [
     { id: "grab-handle",           label: "Grab handle",           cn: "顶棚拉手",   left: "10%", top: "15%" },
     { id: "overhead-console",      label: "Overhead console",      cn: "顶棚控制台", left: "50%", top: "18%" },
@@ -110,7 +110,7 @@ export const automotiveInterior: AutomotiveZoneConfig = {
 };
 
 export const automotiveExterior: AutomotiveZoneConfig = {
-  mapImage: `${IMG}/applications/generated/automotive-exterior-clean.png`,
+  mapImage: `${IMG}/applications/generated/automotive-exterior-clean.webp`,
   hotspots: [
     { id: "exterior-door-handle",  label: "Exterior door handle",  cn: "外门把手",     left: "32%", top: "48%" },
     { id: "charging-port-cover",   label: "Charging port cover",   cn: "充电口盖",     left: "68%", top: "42%" },

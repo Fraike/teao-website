@@ -151,7 +151,7 @@ export default function ContactPage() {
               >
                 <div className="relative aspect-[16/9] border-b border-white/10">
                   <Image
-                    src="/images/company/contactUs.png"
+                    src="/images/company/contactUs.webp"
                     alt="TEAO business communication and customer support"
                     fill
                     className="object-cover opacity-90"
