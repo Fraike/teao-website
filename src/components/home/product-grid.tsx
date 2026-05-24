@@ -11,7 +11,7 @@ export async function ProductGrid() {
   const cats = rows.sort((a, b) => a.sortOrder - b.sortOrder);
 
   return (
-    <section className="section scroll-mt-24 lg:scroll-mt-28" id="products">
+    <section className="section scroll-mt-24 lg:scroll-mt-28 bg-white" id="products">
       <div className="shell">
         <Reveal>
           <SectionHead
@@ -27,15 +27,16 @@ export async function ProductGrid() {
               {i === 4 && (
                 <Reveal delay={1} className="product-card-intro-slot">
                   <div className="product-card-intro">
-                    <span className="eyebrow">Product Lines</span>
+                    <span className="eyebrow !text-white/70">Product Lines</span>
                     <div>
-                      <h3 className="text-3xl leading-[1.02] font-extrabold">
+                      <h3 className="text-[26px] lg:text-[clamp(22px,1.6vw,30px)] leading-[1.04] font-extrabold text-white tracking-[-0.03em]">
                         Custom-ready platforms.
                       </h3>
-                      <p className="mt-3 text-sm leading-5 text-white/68">
+                      <p className="mt-3 text-sm leading-5 text-white/62">
                         Five focused families for faster sourcing and engineering review.
                       </p>
                     </div>
+                    <div className="mt-4 w-10 h-1 rounded-full bg-[#ED7606]/60" />
                   </div>
                 </Reveal>
               )}
@@ -43,7 +44,7 @@ export async function ProductGrid() {
             <Reveal delay={((i % 2) + 1) as 1 | 2}>
               <Link
                 href={`/products?category=${cat.slug}`}
-                className="product-card"
+                className="product-card group"
               >
                 <div className="product-card__media">
                   <SkeletonImage
@@ -58,10 +59,11 @@ export async function ProductGrid() {
                 </div>
 
                 <div className="product-card__copy">
-                  <small className="text-[#ED7606] font-black uppercase tracking-[0.12em] text-xs">
+                  <span className="inline-flex items-center gap-1.5 text-[#ED7606] font-black uppercase tracking-[0.14em] text-[10px] mb-1">
+                    <span className="w-1 h-1 rounded-full bg-[#ED7606]" />
                     {String(i + 1).padStart(2, "0")}
-                  </small>
-                  <h3 className="product-card__title">
+                  </span>
+                  <h3 className="product-card__title group-hover:text-[#ED7606] transition-colors duration-300">
                     {cat.name}
                   </h3>
                   <p className="product-card__description">{cat.description}</p>

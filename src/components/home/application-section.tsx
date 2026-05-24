@@ -11,7 +11,7 @@ const APPLICATIONS = [
 
 export function ApplicationSection() {
   return (
-    <section className="section" id="applications">
+    <section className="section bg-[#FAF9F6]" id="applications">
       <div className="shell">
         <Reveal>
           <SectionHead
@@ -21,7 +21,7 @@ export function ApplicationSection() {
           />
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-lg overflow-hidden border border-[#E5E5E5]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 rounded-xl overflow-hidden border border-[#E5E5E5]">
           {APPLICATIONS.map((app, i) => (
             <Reveal key={app.title} delay={i === 0 ? undefined : (Math.min(i, 3) as 1 | 2 | 3)}>
               <article
@@ -32,16 +32,16 @@ export function ApplicationSection() {
                   alt={app.title}
                   fill
                   loading="lazy"
-                  className="object-cover transition-transform duration-[0.55s] group-hover:scale-[1.06]"
+                  className="object-cover transition-transform duration-[0.55s] group-hover:scale-[1.08]"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
-                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,19,21,.55)_0%,rgba(17,19,21,.18)_38%,rgba(17,19,21,.92)_100%)]" />
-                <b className="relative z-10 text-[30px] lg:text-[42px] tracking-[-0.08em] text-white/55 font-black">
+                <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,19,21,.60)_0%,rgba(17,19,21,.16)_36%,rgba(17,19,21,.94)_100%)]" />
+                <b className="relative z-10 text-[32px] lg:text-[46px] tracking-[-0.08em] text-[#ED7606]/55 font-black">
                   {String(i + 1).padStart(2, "0")}
                 </b>
-                <div className="relative z-10 rounded-md bg-[#111315]/72 p-3 backdrop-blur-[2px]">
+                <div className="relative z-10 rounded-lg bg-[#111315]/70 p-3 backdrop-blur-sm border border-white/5">
                   <h3 className="text-xl lg:text-[22px] leading-tight font-extrabold text-white">{app.title}</h3>
-                  <p className="mt-1.5 text-white/86 text-sm leading-5">{app.description}</p>
+                  <p className="mt-1.5 text-white/82 text-sm leading-5">{app.description}</p>
                 </div>
               </article>
             </Reveal>

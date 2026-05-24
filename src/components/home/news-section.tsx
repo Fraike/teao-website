@@ -15,7 +15,7 @@ export async function NewsSection() {
   const articles = rows.filter((n) => Boolean(n.isPublished));
 
   return (
-    <section className="section" id="news">
+    <section className="section bg-[#FAF9F6]" id="news">
       <div className="shell">
         <Reveal>
           <SectionHead
@@ -25,18 +25,19 @@ export async function NewsSection() {
           />
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {articles.map((item, i) => (
             <Reveal key={item.title} delay={i === 0 ? undefined : (Math.min(i, 2) as 1 | 2)}>
-              <article className="min-h-[180px] lg:min-h-[240px] p-4 lg:p-6 flex flex-col justify-between rounded-lg border border-[#E5E5E5] bg-white hover:-translate-y-1.5 hover:shadow-[0_24px_52px_rgba(21,25,30,.1)] transition-all duration-300">
+              <article className="relative min-h-[180px] lg:min-h-[240px] p-5 lg:p-6 flex flex-col justify-between rounded-xl border border-[#E5E5E5] bg-white hover:-translate-y-1.5 hover:shadow-[0_24px_56px_rgba(237,118,6,0.06)] transition-all duration-300 overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#ED7606] to-[#ED7606]/30" />
                 <div>
-                  <time className="text-[#ED7606] text-xs font-black uppercase tracking-[0.14em]">
+                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#FFF1E3] text-[#ED7606] text-[10px] font-black uppercase tracking-[0.12em]">
                     {item.category}
-                  </time>
-                  <h3 className="mt-5 lg:mt-7 text-xl lg:text-2xl leading-[1.08] tracking-[-0.03em] font-extrabold text-[#171717]">
+                  </span>
+                  <h3 className="mt-5 lg:mt-7 text-xl lg:text-2xl leading-[1.10] tracking-[-0.03em] font-extrabold text-[#111827]">
                     {item.title}
                   </h3>
-                  <p className="mt-2 text-[#666666] text-xs lg:text-sm">{item.summary}</p>
+                  <p className="mt-2 text-[#6B7280] text-sm leading-relaxed">{item.summary}</p>
                 </div>
                 <Link href="/news" className="mt-4 lg:mt-6 text-[#ED7606] text-sm font-extrabold hover:underline">
                   Read more →
