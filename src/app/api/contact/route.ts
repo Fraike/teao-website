@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { contactInquiries } from "@/db/schema";
+import { sendInquiryNotification } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -51,6 +52,18 @@ export async function POST(request: Request) {
       annualVolume: annualVolume || null,
       message,
     }).run();
+
+    // Fire-and-forget email notification
+    sendInquiryNotification({
+      name,
+      company,
+      email,
+      phone,
+      country,
+      productInterest,
+      annualVolume,
+      message,
+    });
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {
