@@ -8,6 +8,29 @@ const TECH_PARAM_LABELS: Record<string, string> = {
   total_height: "Total Height",
 };
 
+const SPEC_LABELS: Record<string, string> = {
+  "尺寸": "Dia",
+  "内径": "Inner Dia",
+  "角度限制": "Angle",
+  "行程": "Stroke",
+  "原理类型": "Type",
+  "操作力": "Operating Force",
+  "Outer Diameter": "Outer Diameter",
+  "Inner Dia": "Inner Dia",
+  "Total Height": "Total Height",
+  "Total Length": "Total Length",
+  "Total Width": "Total Width",
+  "Clip Width": "Clip Width",
+  "Teeth Outer Diameter": "Teeth Outer Dia",
+  "Teeth Height": "Teeth Height",
+  "Positioning Hole": "Positioning Hole",
+  "Hard Torque": "Hard Torque",
+  "Direction": "Direction",
+  "Force": "Force",
+  "Stroke": "Stroke",
+  "Material": "Material",
+};
+
 export function TechSpecsTable({
   specifications,
   tech_params,
@@ -28,7 +51,7 @@ export function TechSpecsTable({
               i % 2 === 0 ? "bg-[#F8F9FA]" : "bg-white"
             }`}
           >
-            <span className="text-sm text-[#6B7280] font-medium">{key}</span>
+            <span className="text-sm text-[#6B7280] font-medium">{SPEC_LABELS[key] ?? key}</span>
             <span className="text-sm text-[#111827] font-bold tabular-nums">{value}</span>
           </div>
         ))}

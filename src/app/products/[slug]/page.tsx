@@ -18,6 +18,7 @@ import { ApplicationScenarios } from "@/components/products/ApplicationScenarios
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { ShareButtons } from "@/components/products/ShareButtons";
+import { DownloadPDFButton } from "@/components/products/DownloadPDFButton";
 import { Button } from "@/components/ui/button";
 
 export async function generateStaticParams() {
@@ -79,7 +80,7 @@ export default async function ProductDetailPage({ params }: Props) {
     <>
       <JsonLdScript data={productJsonLd} />
       <JsonLdScript data={breadcrumbJsonLd} />
-      <section className="section pt-28 !pb-6 lg:pt-32">
+      <section className="section pt-28 !pb-6 lg:pt-32" id="product-detail-content">
         <div className="shell">
           {/* Breadcrumb */}
           <div className="mb-8">
@@ -136,16 +137,7 @@ export default async function ProductDetailPage({ params }: Props) {
                 >
                   Request Quotation
                 </Button>
-                <Button
-                  href="/contact"
-                  variant="outline"
-                  data-analytics-event="cta_click"
-                  data-analytics-target-type="cta"
-                  data-analytics-target-id="send_drawing"
-                  data-analytics-source="product_detail"
-                >
-                  Send Your Drawing
-                </Button>
+                <DownloadPDFButton model={product.model} />
               </div>
             </div>
           </div>
