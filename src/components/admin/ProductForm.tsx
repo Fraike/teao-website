@@ -837,7 +837,7 @@ export default function ProductForm({ initial, isNew }: Props) {
             <div className="space-y-2 mt-1.5">
               {form.applicationScenarios
                 .filter((s) => !PRESET_SCENARIOS.some((p) => p.image === s.image || p.label === s.label))
-                .map((s, i) => {
+                .map((s, _i) => {
                   const origIdx = form.applicationScenarios.indexOf(s);
                   return (
                     <div key={origIdx} className="flex items-center gap-2">

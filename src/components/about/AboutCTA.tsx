@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { SITE_CONFIG } from "@/lib/constants";
 
 export function AboutCTA() {
   return (

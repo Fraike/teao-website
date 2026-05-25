@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { eq, like, or, and } from "drizzle-orm";
+import { eq, like, or } from "drizzle-orm";
 import { db } from "@/db";
 import { products } from "@/db/schema";
 import { getSession } from "@/lib/auth";

@@ -3,7 +3,7 @@
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-import { Volume2, VolumeX, Cog, Ruler, Wrench, CircleDot, RotateCw, MoveHorizontal, Wind, Zap } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";

@@ -19,7 +19,7 @@ export function CompanyTimeline() {
               Focused growth since 2001.
             </h2>
             <p className="mt-3 text-[#6B7280] text-sm lg:text-[15px] leading-relaxed">
-              A compact view of TEAO's development path, from foundation to automotive programs and factory expansion.
+              A compact view of TEAO&apos;s development path, from foundation to automotive programs and factory expansion.
             </p>
           </motion.div>
 

@@ -1,9 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { analyticsEvents } from "@/db/schema";
+import { getClientIP, checkRateLimit } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIP(request);
+    if (!checkRateLimit(`analytics:${ip}`, 100, 60 * 1000).allowed) {
+      return new NextResponse(null, { status: 204 });
+    }
+
     const body = await request.json();
     const { event, page, targetType, targetId, source, metadata, sessionId } = body;
     const sid = sessionId || "unknown";

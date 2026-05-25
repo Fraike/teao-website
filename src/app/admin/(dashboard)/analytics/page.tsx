@@ -11,12 +11,10 @@ export default async function AnalyticsDashboard() {
   const [allEvents] = await db.select({ count: sql<number>`count(*)` }).from(analyticsEvents).all();
   const [pageViewRow] = await db.select({ count: sql<number>`count(*)` }).from(analyticsEvents).where(sql`event = 'page_view'`).all();
   const [sessionRow] = await db.select({ count: sql<number>`count(DISTINCT session_id)` }).from(analyticsEvents).all();
-  const [formRow] = await db.select({ count: sql<number>`count(*)` }).from(contactInquiries).all();
 
   const totalEvents = allEvents?.count ?? 0;
   const totalPageViews = pageViewRow?.count ?? 0;
   const totalSessions = sessionRow?.count ?? 0;
-  const totalFormSubmits = formRow?.count ?? 0;
 
   // Last 7 days
   const [weekPV] = await db.select({ count: sql<number>`count(*)` }).from(analyticsEvents)

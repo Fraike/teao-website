@@ -8,3 +8,4 @@ data/
 drizzle/
 .DS_Store
 tsconfig.tsbuildinfo
+public/images/video-source/

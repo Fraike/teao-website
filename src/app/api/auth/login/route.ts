@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { admins } from "@/db/schema";
-import { verifyPassword, createToken, setSession, hashPassword } from "@/lib/auth";
+import { verifyPassword, createToken, setSession } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
@@ -15,17 +15,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Verification code is incorrect." }, { status: 400 });
     }
 
-    let admin = await db.select().from(admins).where(eq(admins.username, username)).get();
-
-    // Auto-create first admin if none exists
-    if (!admin) {
-      const count = await db.select().from(admins).all();
-      if (count.length === 0) {
-        const hash = await hashPassword(password);
-        await db.insert(admins).values({ username, passwordHash: hash }).run();
-        admin = await db.select().from(admins).where(eq(admins.username, username)).get();
-      }
-    }
+    const admin = await db.select().from(admins).where(eq(admins.username, username)).get();
 
     if (!admin || !(await verifyPassword(password, admin.passwordHash))) {
       return NextResponse.json({ error: "Invalid credentials" }, { status: 401 });

@@ -30,7 +30,6 @@ export async function PUT(
   const data = await request.json();
   const numId = Number(id);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   await db.update(products)
     .set({ ...deserializeProduct(data), updatedAt: new Date() } as any)
     .where(eq(products.id, numId))
