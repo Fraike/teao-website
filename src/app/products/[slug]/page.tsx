@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { products, categories } from "@/db/schema";
@@ -28,7 +28,6 @@ export async function generateStaticParams() {
 
 interface Props {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ canonicalCategory?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -51,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProductDetailPage({ params, searchParams }: Props) {
+export default async function ProductDetailPage({ params }: Props) {
   const { slug } = await params;
   const row = await db.select().from(products).where(eq(products.slug, slug)).get();
   if (!row) notFound();
@@ -59,10 +58,6 @@ export default async function ProductDetailPage({ params, searchParams }: Props)
   const product = mapDbProduct(row);
   const categoryRow = await db.select().from(categories).where(eq(categories.slug, product.category)).get();
 
-  const { canonicalCategory } = await searchParams;
-  if (canonicalCategory !== product.category) {
-    permanentRedirect(getProductUrl(product));
-  }
   const relatedRows = await db.select().from(products).where(eq(products.category, product.category)).all();
   const related = relatedRows
     .filter((p) => p.slug !== slug)
