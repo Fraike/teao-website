@@ -42,7 +42,7 @@ export default async function NewsPage() {
 
   const newsItems = articles.map((a) => ({
     name: a.title,
-    url: `/news/${a.slug}`,
+    url: `/news/${a.slug}.html`,
   }));
   const newsJsonLd = collectionPageSchema(
     "News",
@@ -67,7 +67,7 @@ export default async function NewsPage() {
             {articles.map((item, i) => (
               <Reveal key={item.slug} delay={(Math.min(i, 2) + 1) as 1 | 2 | 3}>
                 <Link
-                  href={`/news/${item.slug}`}
+                  href={`/news/${item.slug}.html`}
                   className="group min-h-[260px] p-6 flex flex-col justify-between rounded-xl border border-[#E5E5E5] bg-white hover:-translate-y-1.5 hover:shadow-[0_24px_52px_rgba(21,25,30,.1)] transition-all duration-300"
                 >
                   <div>

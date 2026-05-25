@@ -7,7 +7,7 @@ import {
   ArrowUpRight, Cog, Gauge, Ruler, Wrench, Volume2, VolumeX,
   RotateCw, CircleDot, MoveHorizontal, Wind, Zap,
 } from "lucide-react";
-import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
+import { formatTorque, getTorqueRange, formatMount, findSpecValue, getProductUrl } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
 
@@ -33,8 +33,8 @@ function SpecPill({
       }`}
     >
       <span className={accent ? "text-[#ED7606]" : "text-[#9CA3AF]"}>{icon}</span>
-      <span className="shrink-0 text-[10px] font-black uppercase tracking-[0.08em] text-[#9CA3AF]">{label}</span>
-      <span className="truncate text-[12px] font-extrabold text-[#111827]">{String(value)}</span>
+      <span className="shrink-0 text-[10px] font-normal uppercase tracking-[0.04em] text-[#9CA3AF]">{label}</span>
+      <span className="truncate text-[12px] font-normal text-[#6B7280]">{String(value)}</span>
     </span>
   );
 }
@@ -91,7 +91,7 @@ export function ProductTable({ products }: { products: Product[] }) {
           >
             {/* Image */}
             <Link
-              href={`/products/${product.slug}`}
+              href={getProductUrl(product)}
               className="relative h-[120px] w-[120px] shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#F8F9FA] to-[#FFF]"
               data-analytics-event="product_click"
               data-analytics-target-type="product"
@@ -113,18 +113,18 @@ export function ProductTable({ products }: { products: Product[] }) {
               {/* Header */}
               <div>
                 <Link
-                  href={`/products/${product.slug}`}
+                  href={getProductUrl(product)}
                   data-analytics-event="product_click"
                   data-analytics-target-type="product"
                   data-analytics-target-id={product.slug}
                   data-analytics-source="product_list"
                 >
-                  <h3 className="line-clamp-2 text-[14px] font-extrabold leading-tight text-[#111827] transition-colors group-hover:text-[#ED7606]">
+                  <h3 className="line-clamp-2 text-[14px] font-bold leading-tight text-[#111827] transition-colors group-hover:text-[#ED7606]">
                     {product.name}
                   </h3>
                 </Link>
                 {product.series && (
-                  <span className="mt-1 inline-block rounded-full bg-[#F3F4F6] px-2 py-0.5 text-[9px] font-semibold text-[#9CA3AF]">
+                  <span className="mt-1 inline-block rounded-full bg-[#F3F4F6] px-2 py-0.5 text-[9px] font-normal text-[#9CA3AF]">
                     {product.series}
                   </span>
                 )}
@@ -135,11 +135,11 @@ export function ProductTable({ products }: { products: Product[] }) {
                 {product.category === "latch" ? (
                   <div className="rounded-xl border border-[#FFE3C2] bg-gradient-to-br from-[#FFFAF5] to-[#FFF7ED] px-3.5 py-2.5">
                     <div className="mb-1.5 flex items-center justify-between gap-3">
-                      <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#9CA3AF]">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.06em] text-[#9CA3AF]">
                         <Wrench size={13} className="text-[#ED7606]" />
                         Press force
                       </span>
-                      <span className="text-[11px] font-extrabold text-[#111827] tabular-nums">
+                      <span className="text-[11px] font-semibold text-[#111827] tabular-nums">
                         {forceLabel ?? "—"}
                       </span>
                     </div>
@@ -151,7 +151,7 @@ export function ProductTable({ products }: { products: Product[] }) {
                       />
                     </div>
                     {forceScaleMax && (
-                      <div className="mt-1 flex justify-between text-[9px] font-semibold text-[#C9A27F]">
+                      <div className="mt-1 flex justify-between text-[9px] font-normal text-[#C9A27F]">
                         <span>0</span>
                         <span>{forceScaleMax} N</span>
                       </div>
@@ -160,11 +160,11 @@ export function ProductTable({ products }: { products: Product[] }) {
                 ) : torqueRange ? (
                   <div className="rounded-xl border border-[#FFE3C2] bg-gradient-to-br from-[#FFFAF5] to-[#FFF7ED] px-3.5 py-2.5">
                     <div className="mb-1.5 flex items-center justify-between gap-3">
-                      <span className="inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.1em] text-[#9CA3AF]">
+                      <span className="inline-flex items-center gap-1.5 text-[10px] font-medium uppercase tracking-[0.06em] text-[#9CA3AF]">
                         <Gauge size={13} className="text-[#ED7606]" />
                         Adjustable torque
                       </span>
-                      <span className="text-[11px] font-extrabold text-[#111827] tabular-nums">
+                      <span className="text-[11px] font-semibold text-[#111827] tabular-nums">
                         {torqueLabel}
                       </span>
                     </div>
@@ -178,13 +178,13 @@ export function ProductTable({ products }: { products: Product[] }) {
                         }}
                       />
                     </div>
-                    <div className="mt-1 flex justify-between text-[9px] font-semibold text-[#C9A27F]">
+                    <div className="mt-1 flex justify-between text-[9px] font-normal text-[#C9A27F]">
                       <span>0</span>
                       <span>{torqueRange.scaleMax} {product.torque?.unit}</span>
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-xl border border-dashed border-[#E5E7EB] bg-[#F8F9FA] px-3.5 py-2.5 text-[11px] font-semibold text-[#CBD5E1]">
+                  <div className="rounded-xl border border-dashed border-[#E5E7EB] bg-[#F8F9FA] px-3.5 py-2.5 text-[11px] font-normal text-[#CBD5E1]">
                     Custom torque range
                   </div>
                 )}
@@ -243,7 +243,7 @@ export function ProductTable({ products }: { products: Product[] }) {
                   </div>
 
                   <Link
-                    href={`/products/${product.slug}`}
+                    href={getProductUrl(product)}
                     className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] text-[#111827] transition-all hover:border-[#ED7606] hover:bg-[#ED7606] hover:text-white hover:shadow-lg hover:shadow-[#ED7606]/20"
                     aria-label={`View ${product.name}`}
                     data-analytics-event="product_click"

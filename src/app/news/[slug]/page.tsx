@@ -81,9 +81,10 @@ export default async function NewsDetailPage({ params }: Props) {
             </h1>
             <p className="mt-4 text-lg text-[#666666]">{article.summary}</p>
 
-            <div className="mt-10 prose prose-lg max-w-none text-[#333333] leading-relaxed">
-              <p>{article.content}</p>
-            </div>
+            <div
+              className="mt-10 prose prose-lg max-w-none text-[#333333] leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: article.content }}
+            />
 
             <div className="mt-12 pt-8 border-t border-[#E5E5E5]">
               <Link href="/news" className="text-[#ED7606] font-extrabold hover:underline">

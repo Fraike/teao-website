@@ -23,7 +23,7 @@ export function Breadcrumb({
         <>
           <span className="text-[#D1D5DB]">/</span>
           <Link
-            href={`/products?category=${cat.slug}`}
+            href={`/${cat.slug}`}
             className="hover:text-[#ED7606] transition-colors"
           >
             {cat.name}

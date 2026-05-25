@@ -177,7 +177,7 @@ export function newsArticleSchema(article: NewsItem) {
     },
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": toUrl(`/news/${article.slug}`),
+      "@id": toUrl(`/news/${article.slug}.html`),
     },
   };
 }

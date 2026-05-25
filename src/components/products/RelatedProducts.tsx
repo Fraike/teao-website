@@ -1,7 +1,7 @@
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-import { formatTorque } from "@/lib/products";
+import { formatTorque, getProductUrl } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
 
@@ -26,7 +26,7 @@ export function RelatedProducts({
           return (
             <Link
               key={product.slug}
-              href={`/products/${product.slug}`}
+              href={getProductUrl(product)}
               className="group flex gap-3 rounded-xl border border-[#E5E7EB] bg-white p-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#ED7606]/35 hover:shadow-[0_14px_36px_rgba(237,118,6,0.08)]"
               data-analytics-event="product_click"
               data-analytics-target-type="product"

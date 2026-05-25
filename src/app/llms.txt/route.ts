@@ -9,21 +9,21 @@ export async function GET() {
 
   const catRows = await db.select().from(categories).all();
   const productRows = await db
-    .select({ slug: products.slug, model: products.model, name: products.name })
+    .select({ slug: products.slug, category: products.category, model: products.model, name: products.name })
     .from(products)
     .all();
 
   const categoryLinks = catRows
     .map(
       (c) =>
-        `- [${c.name} Dampers](${BASE}/products?category=${c.slug}): ${c.description}`
+        `- [${c.name} Dampers](${BASE}/${c.slug}): ${c.description}`
     )
     .join("\n");
 
   const productLinks = productRows
     .map(
       (p) =>
-        `- [${p.model} – ${p.name}](${BASE}/products/${p.slug})`
+        `- [${p.model} – ${p.name}](${BASE}/${p.category}/${p.slug})`
     )
     .join("\n");
 

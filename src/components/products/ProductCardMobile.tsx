@@ -4,7 +4,7 @@ import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Volume2, VolumeX } from "lucide-react";
-import { formatTorque, getTorqueRange, formatMount, findSpecValue } from "@/lib/products";
+import { formatTorque, getTorqueRange, formatMount, findSpecValue, getProductUrl } from "@/lib/products";
 
 const PLACEHOLDER = "/images/products/gear-damper/GearDamperSingle.webp";
 
@@ -28,7 +28,7 @@ export function ProductCardMobile({ product }: { product: Product }) {
       <div className="flex gap-3 items-center">
         {/* Image */}
         <Link
-          href={`/products/${product.slug}`}
+          href={getProductUrl(product)}
           className="relative w-[88px] h-[66px] sm:w-[100px] sm:h-[75px] rounded-xl bg-gradient-to-br from-[#F8F9FA] to-[#FFF] overflow-hidden shrink-0"
           data-analytics-event="product_click"
           data-analytics-target-type="product"
@@ -49,18 +49,18 @@ export function ProductCardMobile({ product }: { product: Product }) {
           {/* Header */}
           <div>
             <Link
-              href={`/products/${product.slug}`}
+              href={getProductUrl(product)}
               data-analytics-event="product_click"
               data-analytics-target-type="product"
               data-analytics-target-id={product.slug}
               data-analytics-source="product_list"
             >
-              <h3 className="text-[13px] font-extrabold text-[#111827] leading-tight line-clamp-2">
+              <h3 className="text-[13px] font-bold text-[#111827] leading-tight line-clamp-2">
                 {product.name}
               </h3>
             </Link>
             {product.series && (
-              <span className="mt-0.5 inline-block text-[9px] font-semibold text-[#9CA3AF] bg-[#F3F4F6] px-1.5 py-0.5 rounded-full leading-none">
+              <span className="mt-0.5 inline-block text-[9px] font-normal text-[#9CA3AF] bg-[#F3F4F6] px-1.5 py-0.5 rounded-full leading-none">
                 {product.series}
               </span>
             )}
@@ -69,10 +69,10 @@ export function ProductCardMobile({ product }: { product: Product }) {
           {/* Torque / Force bar */}
           {product.category === "latch" ? (
             <div className="mt-1.5 text-[11px] flex items-center gap-2">
-              <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF]">Force</span>
-              <span className="font-extrabold text-[#111827]">{product.hard_force || "—"}</span>
+              <span className="text-[9px] font-medium uppercase tracking-[0.06em] text-[#9CA3AF]">Force</span>
+              <span className="font-semibold text-[#111827]">{product.hard_force || "—"}</span>
               {product.sound_type && (
-                <span className={`inline-flex items-center gap-0.5 text-[10px] font-bold ${product.sound_type === "audible" ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
+                <span className={`inline-flex items-center gap-0.5 text-[10px] font-medium ${product.sound_type === "audible" ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
                   {product.sound_type === "audible" ? <Volume2 size={12} /> : <VolumeX size={12} />}
                   {product.sound_type === "audible" ? "Audible" : "Silent"}
                 </span>
@@ -81,8 +81,8 @@ export function ProductCardMobile({ product }: { product: Product }) {
           ) : torqueRange ? (
             <div className="mt-1.5">
               <div className="flex items-center justify-between mb-0.5">
-                <span className="text-[9px] font-bold uppercase tracking-[0.08em] text-[#9CA3AF]">Torque</span>
-                <span className="text-[11px] font-extrabold text-[#111827]">{torqueLabel}</span>
+                <span className="text-[9px] font-medium uppercase tracking-[0.06em] text-[#9CA3AF]">Torque</span>
+                <span className="text-[11px] font-semibold text-[#111827]">{torqueLabel}</span>
               </div>
               <div className="relative h-2.5 rounded-full bg-[#F3F4F6] overflow-hidden">
                 <div
@@ -128,7 +128,7 @@ export function ProductCardMobile({ product }: { product: Product }) {
                   {product.sound_type && (
                     <span className={`inline-flex items-center gap-1 ${product.sound_type === "audible" ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
                       {product.sound_type === "audible" ? <Volume2 size={11} /> : <VolumeX size={11} />}
-                      <span className="font-semibold">{product.sound_type === "audible" ? "Audible" : "Silent"}</span>
+                      <span className="font-normal">{product.sound_type === "audible" ? "Audible" : "Silent"}</span>
                     </span>
                   )}
                   {operatingForce && <MobileSpec label="Force" value={operatingForce} />}
@@ -147,8 +147,8 @@ export function ProductCardMobile({ product }: { product: Product }) {
             </div>
             <div className="flex items-center gap-2 shrink-0">
               <Link
-                href={`/products/${product.slug}`}
-                className="text-[11px] font-bold text-[#111827] hover:text-[#ED7606]"
+                href={getProductUrl(product)}
+                className="text-[11px] font-medium text-[#111827] hover:text-[#ED7606]"
                 data-analytics-event="product_click"
                 data-analytics-target-type="product"
                 data-analytics-target-id={product.slug}
@@ -158,7 +158,7 @@ export function ProductCardMobile({ product }: { product: Product }) {
               </Link>
               <Link
                 href={`/contact?product=${encodeURIComponent(product.model)}`}
-                className="text-[11px] font-bold text-[#ED7606]"
+                className="text-[11px] font-medium text-[#ED7606]"
                 data-analytics-event="cta_click"
                 data-analytics-target-type="cta"
                 data-analytics-target-id={product.model}
@@ -177,8 +177,8 @@ export function ProductCardMobile({ product }: { product: Product }) {
 function MobileSpec({ label, value, accent }: { label: string; value: string | number; accent?: boolean }) {
   return (
     <span className="inline-flex items-center gap-1">
-      <span className="text-[#9CA3AF] font-medium">{label}</span>
-      <span className={`font-semibold ${accent ? "text-[#ED7606]" : "text-[#374151]"}`}>
+      <span className="text-[#9CA3AF] font-normal">{label}</span>
+      <span className={`font-normal ${accent ? "text-[#ED7606]" : "text-[#6B7280]"}`}>
         {typeof value === "number" ? String(value) : value}
       </span>
     </span>

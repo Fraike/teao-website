@@ -72,7 +72,7 @@ ${p.assembly_method ? `- **Assembly Method:** ${p.assembly_method}` : ""}
 ${p.characteristics?.length ? `- **Characteristics:** ${p.characteristics.join(", ")}` : ""}
 ${p.materials?.length ? `- **Materials:** ${p.materials.map((m) => `${m.part}: ${m.material}`).join("; ")}` : ""}
 ${p.applications?.length ? `- **Applications:** ${p.applications.join(", ")}` : ""}
-- **URL:** ${BASE}/products/${p.slug}
+- **URL:** ${BASE}/${p.category}/${p.slug}
 `);
   }
 
@@ -125,7 +125,7 @@ Our professional development team has sufficient experience with top brands. We 
 - **Category:** ${article.category}
 - **Date:** ${article.publishedAt}
 - **Summary:** ${article.summary}
-- **URL:** ${BASE}/news/${article.slug}
+- **URL:** ${BASE}/news/${article.slug}.html
 `);
     }
   }

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { products, categories } from "@/db/schema";
-import { mapDbProduct } from "@/lib/products";
+import { mapDbProduct, getProductUrl } from "@/lib/products";
 import { JsonLdScript, productSchema, breadcrumbSchema } from "@/lib/structured-data";
 import { Breadcrumb } from "@/components/products/Breadcrumb";
 import { ProductGallery } from "@/components/products/ProductGallery";
@@ -28,6 +28,7 @@ export async function generateStaticParams() {
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ canonicalCategory?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -50,13 +51,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProductDetailPage({ params }: Props) {
+export default async function ProductDetailPage({ params, searchParams }: Props) {
   const { slug } = await params;
   const row = await db.select().from(products).where(eq(products.slug, slug)).get();
   if (!row) notFound();
 
   const product = mapDbProduct(row);
   const categoryRow = await db.select().from(categories).where(eq(categories.slug, product.category)).get();
+
+  const { canonicalCategory } = await searchParams;
+  if (canonicalCategory !== product.category) {
+    permanentRedirect(getProductUrl(product));
+  }
   const relatedRows = await db.select().from(products).where(eq(products.category, product.category)).all();
   const related = relatedRows
     .filter((p) => p.slug !== slug)
@@ -71,8 +77,8 @@ export default async function ProductDetailPage({ params }: Props) {
   const breadcrumbItems = [
     { name: "Home", url: "/" },
     { name: "Products", url: "/products" },
-    ...(categoryRow ? [{ name: categoryRow.name, url: `/products?category=${product.category}` }] : []),
-    { name: product.model, url: `/products/${product.slug}` },
+    ...(categoryRow ? [{ name: categoryRow.name, url: `/${product.category}` }] : []),
+    { name: product.model, url: getProductUrl(product) },
   ];
   const breadcrumbJsonLd = breadcrumbSchema(breadcrumbItems);
 

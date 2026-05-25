@@ -216,3 +216,7 @@ export function getAllAttachments(products: Product[]): string[] {
   }
   return Array.from(attachments).sort();
 }
+
+export function getProductUrl(product: { slug: string; category: string }): string {
+  return `/${product.category}/${product.slug}`;
+}
