@@ -132,7 +132,7 @@ const Captcha = forwardRef<CaptchaRef, CaptchaProps>(function Captcha(
         Verification code *
       </label>
       <div className="rounded-lg border border-[#E5E7EB] bg-white p-3">
-        <div className="flex gap-2.5 items-stretch">
+        <div className="flex flex-col gap-2.5 min-[390px]:flex-row min-[390px]:items-stretch">
           <div className="overflow-hidden rounded-md border border-[#E5E7EB] bg-[#F8F9FA] shrink-0">
             <canvas
               ref={canvasRef}

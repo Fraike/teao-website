@@ -54,14 +54,14 @@ export function CTASection() {
             </Link>
             <div className="flex flex-wrap gap-2.5 mt-4">
               {[
-                { label: "LinkedIn", href: SITE_CONFIG.social.linkedin },
-                { label: "YouTube", href: SITE_CONFIG.social.youtube },
                 { label: "Facebook", href: SITE_CONFIG.social.facebook },
-                { label: "Alibaba", href: SITE_CONFIG.social.alibaba },
+                { label: "Instagram", href: SITE_CONFIG.social.instagram },
+                { label: "YouTube", href: SITE_CONFIG.social.youtube },
+                { label: "X", href: SITE_CONFIG.social.x },
               ].map((s) => (
-                <Link key={s.label} href={s.href} className="w-[calc(50%-5px)] py-2.5 px-3 flex justify-center rounded-full border border-white/10 text-white/70 text-[13px] font-extrabold hover:bg-white/8 hover:text-white hover:border-white/20 transition-all">
+                <a key={s.label} href={s.href} target="_blank" rel="noopener noreferrer" className="w-[calc(50%-5px)] py-2.5 px-3 flex justify-center rounded-full border border-white/10 text-white/70 text-[13px] font-extrabold hover:bg-white/8 hover:text-white hover:border-white/20 transition-all">
                   {s.label}
-                </Link>
+                </a>
               ))}
             </div>
           </aside>

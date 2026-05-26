@@ -18,6 +18,7 @@ export function serializeProduct(row: DbProduct): Record<string, unknown> {
     performanceCharts: row.performanceCharts ? JSON.parse(row.performanceCharts) : undefined,
     applications: JSON.parse(row.applications || "[]"),
     applicationScenarios: row.applicationScenarios ? JSON.parse(row.applicationScenarios) : undefined,
+    variants: row.variants ? JSON.parse(row.variants) : undefined,
     tags: JSON.parse(row.tags || "[]"),
     isActive: Boolean(row.isActive),
   };
@@ -80,6 +81,7 @@ export function mapDbProduct(row: DbProduct): Product {
     status: (row.status as "active" | "inactive" | "draft" | undefined) ?? "active",
     isActive: Boolean(row.isActive),
     sortOrder: row.sortOrder,
+    variants: row.variants ? JSON.parse(row.variants) : undefined,
   };
 }
 

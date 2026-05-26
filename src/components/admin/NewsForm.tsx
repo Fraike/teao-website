@@ -2,11 +2,30 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import RichTextEditor from "./RichTextEditor";
+import { ProductSelector } from "./ProductSelector";
+import {
+  CalendarDays,
+  CheckCircle2,
+  Eye,
+  FileText,
+  ImageIcon,
+  LinkIcon,
+  Search,
+  Sparkles,
+} from "lucide-react";
 
 interface Props {
   initial?: Record<string, unknown>;
   isNew?: boolean;
 }
+
+const ARTICLE_TYPES = [
+  { value: "article", label: "Article" },
+  { value: "guide", label: "Guide" },
+  { value: "faq", label: "FAQ" },
+  { value: "news", label: "News" },
+];
 
 export default function NewsForm({ initial, isNew }: Props) {
   const router = useRouter();
@@ -19,10 +38,20 @@ export default function NewsForm({ initial, isNew }: Props) {
   const [form, setForm] = useState({
     slug: (initial?.slug as string) || "",
     title: (initial?.title as string) || "",
+    seoTitle: (initial?.seoTitle as string) || "",
+    keywords: (initial?.keywords as string) || "",
     summary: (initial?.summary as string) || "",
     content: (initial?.content as string) || "",
     image: (initial?.image as string) || "",
     category: (initial?.category as string) || "company",
+    articleType: (initial?.articleType as string) || "article",
+    relatedProducts: Array.isArray(initial?.relatedProducts)
+      ? (initial.relatedProducts as string[])
+      : typeof initial?.relatedProducts === "string"
+        ? (() => {
+            try { return JSON.parse(initial.relatedProducts as string); } catch { return []; }
+          })()
+        : [],
     isPublished: initial ? (initial.isPublished !== false) : true,
     publishedAt: (initial?.publishedAt as string) || new Date().toISOString().slice(0, 10),
   });
@@ -51,9 +80,6 @@ export default function NewsForm({ initial, isNew }: Props) {
     setForm((prev) => ({ ...prev, title: val, slug: prev.slug || slug }));
     setDirty(true);
   }
-
-  const inputClass = "w-full h-10 px-3 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10";
-  const labelClass = "block text-xs font-bold text-[#374151] mb-1";
 
   async function handleSubmit(e: React.FormEvent, redirectAfter = true) {
     e.preventDefault();
@@ -100,81 +126,278 @@ export default function NewsForm({ initial, isNew }: Props) {
     }
   }
 
+  const inputClass =
+    "w-full h-10 px-3 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10";
+  const labelClass = "block text-xs font-bold text-[#374151] mb-1";
+  const publicUrl = form.slug ? `/news/${form.slug}.html` : "";
+  const summaryLength = form.summary.trim().length;
+  const titleLength = (form.seoTitle || form.title).trim().length;
+  const keywordCount = form.keywords.split(",").map((k) => k.trim()).filter(Boolean).length;
+  const contentText = form.content.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const wordCount = contentText ? contentText.split(/\s+/).length : 0;
+  const heroPreviewImage = form.image.endsWith("/main.webp")
+    ? form.image.replace("/main.webp", "/photo_1.webp")
+    : form.image;
+
   return (
     <form onSubmit={(e) => handleSubmit(e, true)} className="space-y-6">
-      {error && <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs font-medium">{error}</div>}
-      {successMsg && <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs font-medium">{successMsg}</div>}
+      {error && (
+        <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-600 text-xs font-medium">{error}</div>
+      )}
+      {successMsg && (
+        <div className="p-3 rounded-lg bg-green-50 border border-green-200 text-green-700 text-xs font-medium">{successMsg}</div>
+      )}
 
-      <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Article Info</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div>
-            <label className={labelClass}>Title *</label>
-            <input className={inputClass} value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required />
-          </div>
-          <div>
-            <label className={labelClass}>Slug *</label>
-            <input className={inputClass} value={form.slug} onChange={(e) => update("slug", e.target.value)} required />
-          </div>
-          <div>
-            <label className={labelClass}>Category</label>
-            <select className={inputClass} value={form.category} onChange={(e) => update("category", e.target.value)}>
-              <option value="company">Company</option>
-              <option value="quality">Quality</option>
-              <option value="engineering">Engineering</option>
-            </select>
-          </div>
-          <div>
-            <label className={labelClass}>Date</label>
-            <input className={inputClass} type="date" value={form.publishedAt} onChange={(e) => update("publishedAt", e.target.value)} />
-          </div>
-        </div>
-        <div className="flex items-center gap-2 mt-4">
-          <input type="checkbox" id="isPublished" checked={form.isPublished} onChange={(e) => update("isPublished", e.target.checked)} />
-          <label htmlFor="isPublished" className="text-xs font-bold text-[#374151]">Published</label>
-        </div>
-        <div className="mt-4">
-          <label className={labelClass}>Image URL</label>
-          <input className={inputClass} value={form.image} onChange={(e) => update("image", e.target.value)} />
-          {form.image && (
-            <div className="mt-2 relative w-32 h-20 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={form.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+      <div className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="space-y-6 min-w-0">
+          {/* Basic Info */}
+          <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.03)]">
+            <div className="mb-5 flex items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-[#ED7606]">
+                  <FileText size={14} />
+                  Article Setup
+                </div>
+                <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-[#111827]">Publishing information</h2>
+              </div>
+              <span className={`rounded-full px-3 py-1 text-[11px] font-black ${form.isPublished ? "bg-green-50 text-green-700 border border-green-200" : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]"}`}>
+                {form.isPublished ? "Published" : "Draft"}
+              </span>
             </div>
-          )}
-        </div>
-        <div className="mt-4">
-          <label className={labelClass}>Summary</label>
-          <textarea className={inputClass + " h-20 py-2"} value={form.summary} onChange={(e) => update("summary", e.target.value)} />
-        </div>
-        <div className="mt-4">
-          <label className={labelClass}>Content</label>
-          <textarea className={inputClass + " h-48 py-2"} value={form.content} onChange={(e) => update("content", e.target.value)} />
-        </div>
-      </section>
 
-      <div className="flex justify-between items-center">
+            <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.8fr)]">
+              <div>
+                <label className={labelClass}>Title *</label>
+                <input className={inputClass + " h-12 text-base font-bold"} value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required />
+              </div>
+              <div>
+                <label className={labelClass}>Slug *</label>
+                <div className="relative">
+                  <LinkIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                  <input className={inputClass + " pl-9"} value={form.slug} onChange={(e) => update("slug", e.target.value)} required />
+                </div>
+                {publicUrl && <div className="mt-1 truncate text-[11px] text-[#9CA3AF]">{publicUrl}</div>}
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <div>
+                <label className={labelClass}>Category</label>
+                <select className={inputClass} value={form.category} onChange={(e) => update("category", e.target.value)}>
+                  <option value="company">Company</option>
+                  <option value="quality">Quality</option>
+                  <option value="engineering">Engineering</option>
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Article Type</label>
+                <select
+                  className={inputClass}
+                  value={form.articleType}
+                  onChange={(e) => update("articleType", e.target.value)}
+                >
+                  {ARTICLE_TYPES.map((t) => (
+                    <option key={t.value} value={t.value}>{t.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className={labelClass}>Date</label>
+                <div className="relative">
+                  <CalendarDays size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                  <input className={inputClass + " pl-9"} type="date" value={form.publishedAt} onChange={(e) => update("publishedAt", e.target.value)} />
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-4">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.isPublished}
+                  onChange={(e) => update("isPublished", e.target.checked)}
+                  className="w-4 h-4 rounded border-[#E5E7EB] text-[#ED7606] focus:ring-[#ED7606]"
+                />
+                <span className="text-sm font-bold text-[#374151]">Publish this article on the public site</span>
+              </label>
+            </div>
+          </section>
+
+          {/* SEO + Summary */}
+          <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.03)]">
+            <div className="mb-5 flex items-center gap-2">
+              <Search size={16} className="text-[#ED7606]" />
+              <h2 className="text-base font-extrabold text-[#111827]">SEO, summary and article context</h2>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className={labelClass}>SEO Title</label>
+                <input
+                  className={inputClass}
+                  value={form.seoTitle}
+                  onChange={(e) => update("seoTitle", e.target.value)}
+                  placeholder="Leave empty to use article title"
+                />
+                <div className="mt-1 text-[11px] text-[#9CA3AF]">{titleLength}/60 recommended</div>
+              </div>
+              <div>
+                <label className={labelClass}>Keywords</label>
+                <input
+                  className={inputClass}
+                  value={form.keywords}
+                  onChange={(e) => update("keywords", e.target.value)}
+                  placeholder="keyword1, keyword2, keyword3"
+                />
+                <div className="mt-1 text-[11px] text-[#9CA3AF]">{keywordCount} keyword{keywordCount === 1 ? "" : "s"}</div>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <label className={labelClass}>Summary</label>
+              <textarea
+                className={inputClass + " h-28 py-3 leading-relaxed"}
+                value={form.summary}
+                onChange={(e) => update("summary", e.target.value)}
+                placeholder="Short public summary shown below the title and in search previews."
+              />
+              <div className="mt-1 text-[11px] text-[#9CA3AF]">{summaryLength}/160 recommended</div>
+            </div>
+
+            <div className="mt-4">
+              <label className={labelClass}>Related Products</label>
+              <ProductSelector
+                selected={form.relatedProducts}
+                onChange={(slugs) => update("relatedProducts", slugs)}
+              />
+            </div>
+          </section>
+
+          {/* Hero Image */}
+          <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.03)]">
+            <div className="mb-5 flex items-center gap-2">
+              <ImageIcon size={16} className="text-[#ED7606]" />
+              <h2 className="text-base font-extrabold text-[#111827]">Article hero image</h2>
+            </div>
+            <label className={labelClass}>Image URL</label>
+            <input className={inputClass} value={form.image} onChange={(e) => update("image", e.target.value)} placeholder="/images/news/example.webp" />
+            <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
+              The public news page uses this as a premium product display. If the URL ends in <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/main.webp</code>, the detail page will prefer <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/photo_1.webp</code> when available.
+            </p>
+            {form.image && (
+              <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[radial-gradient(circle_at_24%_20%,rgba(237,118,6,0.10),transparent_34%),linear-gradient(135deg,#FFFFFF_0%,#F4F7FA_100%)] p-4">
+                <div className="relative h-56 rounded-xl bg-white/70">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={heroPreviewImage}
+                    alt="Article hero preview"
+                    className="h-full w-full object-contain p-4"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = form.image;
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* Content Editor */}
+          <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.03)]">
+            <div className="mb-5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <Sparkles size={16} className="text-[#ED7606]" />
+                <h2 className="text-base font-extrabold text-[#111827]">Article body</h2>
+              </div>
+              <span className="text-xs font-bold text-[#9CA3AF]">{wordCount} words</span>
+            </div>
+            <RichTextEditor
+              value={form.content}
+              onChange={(html) => update("content", html)}
+            />
+          </section>
+        </div>
+
+        <aside className="space-y-5 2xl:sticky 2xl:top-20 self-start">
+          <section className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_32px_rgba(17,24,39,0.05)]">
+            <div className="mb-4 flex items-center gap-2">
+              <Eye size={16} className="text-[#ED7606]" />
+              <h2 className="text-sm font-black text-[#111827]">Public preview</h2>
+            </div>
+            <div className="rounded-2xl border border-[#E5E7EB] bg-[linear-gradient(180deg,#F8F9FA,#FFFFFF)] p-4">
+              <div className="mb-3 flex flex-wrap gap-2">
+                <span className="rounded-full bg-[#111827] px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.12em] text-white">{form.category}</span>
+                <span className="rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-[10px] font-bold text-[#6B7280]">{form.publishedAt}</span>
+              </div>
+              <h3 className="text-xl font-black leading-[1.03] tracking-[-0.04em] text-[#111827]">
+                {form.title || "Article title"}
+              </h3>
+              <p className="mt-3 line-clamp-4 text-xs leading-relaxed text-[#6B7280]">
+                {form.summary || "Article summary will appear here."}
+              </p>
+            </div>
+            {publicUrl && (
+              <a
+                href={publicUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex h-9 w-full items-center justify-center rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606]"
+              >
+                Open public page
+              </a>
+            )}
+          </section>
+
+          <section className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_32px_rgba(17,24,39,0.05)]">
+            <h2 className="mb-4 text-sm font-black text-[#111827]">Readiness</h2>
+            <StatusItem ok={Boolean(form.title)} label="Title is set" />
+            <StatusItem ok={Boolean(form.slug)} label="URL slug is set" />
+            <StatusItem ok={summaryLength >= 80 && summaryLength <= 180} label="Summary length is reasonable" />
+            <StatusItem ok={Boolean(form.image)} label="Hero image is set" />
+            <StatusItem ok={keywordCount >= 2} label="Keywords added" />
+            <StatusItem ok={wordCount >= 250} label="Body has enough content" />
+          </section>
+        </aside>
+      </div>
+
+      {/* Actions */}
+      <div className="sticky bottom-0 z-20 flex flex-col gap-3 rounded-xl border border-[#E5E7EB] bg-white/92 p-3 shadow-[0_-14px_40px_rgba(17,24,39,0.08)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
         <div>
-          {!isNew && (
-            confirmDelete ? (
+          {!isNew &&
+            (confirmDelete ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-red-600 font-medium">Are you sure?</span>
-                <button type="button" onClick={handleDelete} disabled={saving} className="px-3 h-9 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 disabled:opacity-50">
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={saving}
+                  className="px-3 h-9 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 disabled:opacity-50"
+                >
                   {saving ? "Deleting..." : "Yes, delete"}
                 </button>
-                <button type="button" onClick={() => setConfirmDelete(false)} className="px-3 h-9 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151]">
+                <button
+                  type="button"
+                  onClick={() => setConfirmDelete(false)}
+                  className="px-3 h-9 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151]"
+                >
                   Cancel
                 </button>
               </div>
             ) : (
-              <button type="button" onClick={handleDelete} className="px-4 h-10 rounded-lg border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors">
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 h-10 rounded-lg border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors"
+              >
                 Delete Article
               </button>
-            )
-          )}
+            ))}
         </div>
-        <div className="flex gap-3">
-          <button type="button" onClick={() => router.back()} className="px-6 h-11 rounded-lg border border-[#E5E7EB] text-sm font-bold text-[#374151]">
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="px-6 h-11 rounded-lg border border-[#E5E7EB] text-sm font-bold text-[#374151]"
+          >
             Cancel
           </button>
           <button
@@ -185,11 +408,24 @@ export default function NewsForm({ initial, isNew }: Props) {
           >
             {saving ? "Saving..." : "Save & Continue"}
           </button>
-          <button type="submit" disabled={saving} className="px-6 h-11 rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors">
+          <button
+            type="submit"
+            disabled={saving}
+            className="px-6 h-11 rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors"
+          >
             {saving ? "Saving..." : isNew ? "Create Article" : "Save Changes"}
           </button>
         </div>
       </div>
     </form>
+  );
+}
+
+function StatusItem({ ok, label }: { ok: boolean; label: string }) {
+  return (
+    <div className="flex items-center gap-2 py-1.5 text-xs font-semibold text-[#374151]">
+      <CheckCircle2 size={14} className={ok ? "text-green-600" : "text-[#D1D5DB]"} />
+      <span className={ok ? "" : "text-[#9CA3AF]"}>{label}</span>
+    </div>
   );
 }

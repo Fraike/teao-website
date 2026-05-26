@@ -14,7 +14,11 @@ export async function GET(
     : await db.select().from(news).where(eq(news.id, Number(id))).get();
 
   if (!byId) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  return NextResponse.json({ ...byId, isPublished: Boolean(byId.isPublished) });
+  return NextResponse.json({
+    ...byId,
+    isPublished: Boolean(byId.isPublished),
+    relatedProducts: JSON.parse(byId.relatedProducts || "[]"),
+  });
 }
 
 export async function PUT(
@@ -27,13 +31,26 @@ export async function PUT(
   const { id } = await params;
   const data = await request.json();
 
+  const updateData = {
+    ...data,
+    relatedProducts: Array.isArray(data.relatedProducts) ? JSON.stringify(data.relatedProducts) : (data.relatedProducts || "[]"),
+    isPublished: data.isPublished ? 1 : 0,
+    updatedAt: new Date(),
+  };
+  // Don't pass id in set
+  delete updateData.id;
+
   await db.update(news)
-    .set({ ...data, isPublished: data.isPublished ? 1 : 0, updatedAt: new Date() })
+    .set(updateData)
     .where(eq(news.id, Number(id)))
     .run();
 
   const updated = await db.select().from(news).where(eq(news.id, Number(id))).get();
-  return NextResponse.json({ ...updated, isPublished: Boolean(updated!.isPublished) });
+  return NextResponse.json({
+    ...updated,
+    isPublished: Boolean(updated!.isPublished),
+    relatedProducts: JSON.parse(updated!.relatedProducts || "[]"),
+  });
 }
 
 export async function DELETE(

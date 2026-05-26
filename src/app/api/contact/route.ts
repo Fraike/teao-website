@@ -63,17 +63,22 @@ export async function POST(request: Request) {
       message,
     }).run();
 
-    // Fire-and-forget email notification
-    sendInquiryNotification({
-      name,
-      company,
-      email,
-      phone,
-      country,
-      productInterest,
-      annualVolume,
-      message,
-    });
+    // Send email notification (await to catch errors)
+    try {
+      await sendInquiryNotification({
+        name,
+        company,
+        email,
+        phone,
+        country,
+        productInterest,
+        annualVolume,
+        message,
+      });
+    } catch (emailError) {
+      console.error("Email notification failed:", emailError);
+      // Still return success — inquiry is saved to DB
+    }
 
     return NextResponse.json({ success: true }, { status: 201 });
   } catch (error) {

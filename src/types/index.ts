@@ -57,6 +57,12 @@ export interface Product {
   /** Custom application scenario images per product */
   application_scenarios?: { image: string; label: string }[];
 
+  /** Variant comparison table for gear/axial families */
+  variants?: {
+    variants: string[];
+    rows: { param: string; values: string[] }[];
+  };
+
   seo_title?: string;
   seo_description?: string;
 
@@ -83,10 +89,14 @@ export interface CategoryInfo {
 export interface NewsItem {
   slug: string;
   title: string;
+  seoTitle?: string;
+  keywords?: string;
   summary: string;
   content: string;
   image: string;
   category: "company" | "quality" | "engineering";
+  articleType?: "article" | "guide" | "faq" | "news";
+  relatedProducts?: string[];
   isPublished: boolean;
   publishedAt: string;
 }

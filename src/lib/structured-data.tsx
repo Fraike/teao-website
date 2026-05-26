@@ -28,6 +28,8 @@ export function organizationSchema() {
     env.LINKEDIN_URL,
     env.YOUTUBE_URL,
     env.FACEBOOK_URL,
+    env.INSTAGRAM_URL,
+    env.X_URL,
     env.ALIBABA_URL,
   ].filter((url) => url && url !== "#");
 
@@ -162,7 +164,7 @@ export function faqPageSchema(questions: { q: string; a: string }[]) {
   };
 }
 
-export function newsArticleSchema(article: NewsItem) {
+export function newsArticleSchema(article: NewsItem & { keywords?: string }) {
   return {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
@@ -170,6 +172,10 @@ export function newsArticleSchema(article: NewsItem) {
     description: article.summary,
     image: article.image || undefined,
     datePublished: article.publishedAt,
+    dateModified: article.publishedAt,
+    keywords: article.keywords?.split(",").map((k: string) => k.trim()) || undefined,
+    articleBody: article.content?.replace(/<[^>]+>/g, "").slice(0, 5000) || undefined,
+    about: article.keywords?.split(",").map((k: string) => ({ "@type": "Thing", name: k.trim() })) || undefined,
     publisher: {
       "@type": "Organization",
       name: SITE_CONFIG.name,
@@ -179,6 +185,21 @@ export function newsArticleSchema(article: NewsItem) {
       "@type": "WebPage",
       "@id": toUrl(`/news/${article.slug}.html`),
     },
+    isAccessibleForFree: true,
+  };
+}
+
+export function speakableSchema({ title, summary }: { title: string; summary: string }) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    speakable: {
+      "@type": "SpeakableSpecification",
+      cssSelector: [".article-title", ".article-summary"],
+    },
+    name: title,
+    description: summary,
+    url: undefined, // Will be inferred by search engines
   };
 }
 

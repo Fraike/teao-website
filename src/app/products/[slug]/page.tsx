@@ -13,6 +13,7 @@ import { PerformanceStats } from "@/components/products/PerformanceStats";
 import { TechSpecsTable } from "@/components/products/TechSpecsTable";
 import { MaterialsTable } from "@/components/products/MaterialsTable";
 import { PerformanceCharts } from "@/components/products/PerformanceCharts";
+import { VariantComparisonTable } from "@/components/products/VariantComparisonTable";
 import { DimensionDrawing } from "@/components/products/DimensionDrawing";
 import { ApplicationScenarios } from "@/components/products/ApplicationScenarios";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
@@ -179,6 +180,11 @@ export default async function ProductDetailPage({ params }: Props) {
               <MaterialsTable materials={product.materials} />
             )}
           </div>
+
+          {/* Variant Comparison Table */}
+          {product.variants && product.variants.variants.length > 0 && (
+            <VariantComparisonTable variants={product.variants} />
+          )}
 
           {/* Performance Charts */}
           {product.performance_charts && (

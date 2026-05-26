@@ -455,6 +455,8 @@ export const SITE_CONFIG = {
     linkedin: env.LINKEDIN_URL,
     youtube: env.YOUTUBE_URL,
     facebook: env.FACEBOOK_URL,
+    instagram: env.INSTAGRAM_URL,
+    x: env.X_URL,
     alibaba: env.ALIBABA_URL,
   },
 };

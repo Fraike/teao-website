@@ -65,7 +65,11 @@ export function HeroSection() {
                 <Button href="#products" variant="primary">
                   Explore Products
                 </Button>
-                <Button href="/contact" variant="ghost">
+                <Button
+                  href="/contact"
+                  variant="outline"
+                  className="border-[#ED7606] bg-white text-[#C85D00] shadow-[0_12px_28px_rgba(237,118,6,0.16)] hover:bg-[#FFF7ED] hover:text-[#B45309] hover:shadow-[0_16px_34px_rgba(237,118,6,0.22)]"
+                >
                   Send Your Drawing
                 </Button>
               </div>

@@ -63,7 +63,7 @@ export default function ContactPage() {
   const contactFaqLd = faqPageSchema(contactFAQ);
 
   return (
-    <>
+    <div className="overflow-x-hidden">
       <JsonLdScript data={contactFaqLd} />
       {/* ========== Hero ========== */}
       <section className="relative pt-32 lg:pt-40 pb-16 lg:pb-20 bg-[#F8F9FA] overflow-hidden">
@@ -74,11 +74,11 @@ export default function ContactPage() {
             maskImage: "linear-gradient(180deg, #000, transparent 88%)",
           }}
         />
-        <div className="absolute w-[460px] h-[460px] -right-[120px] -bottom-[140px] rounded-full border border-[#ED7606]/12 pointer-events-none" />
+        <div className="pointer-events-none absolute -right-[120px] -bottom-[140px] hidden h-[460px] w-[460px] rounded-full border border-[#ED7606]/12 sm:block" />
 
         <div className="shell relative z-10">
-          <div className="mx-auto grid max-w-6xl items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.86fr)] lg:gap-12">
-            <div className="pt-1 lg:pt-2">
+          <div className="mx-auto grid max-w-6xl min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.86fr)] lg:gap-12">
+            <div className="min-w-0 pt-1 lg:pt-2">
               <span className="eyebrow">Contact</span>
               <h1 className="mt-3.5 max-w-[620px] text-[clamp(32px,3.45vw,50px)] leading-[0.98] tracking-[-0.045em] font-black text-[#111827]">
                 Start a project with TEAO engineering.
@@ -89,7 +89,7 @@ export default function ContactPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-[0_14px_40px_rgba(17,24,39,0.05)] lg:p-6">
+            <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-[0_14px_40px_rgba(17,24,39,0.05)] lg:p-6">
               <div className="mb-5">
                 <div className="text-[11px] font-black uppercase tracking-[0.14em] text-[#ED7606]">
                   Direct contact
@@ -128,11 +128,11 @@ export default function ContactPage() {
       </section>
 
       {/* ========== Form + Download ========== */}
-      <section className="py-16 lg:py-24 bg-white">
+      <section className="overflow-hidden bg-white py-16 lg:py-24">
         <div className="shell">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.78fr)] lg:gap-10 max-w-6xl">
+          <div className="grid max-w-6xl min-w-0 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(360px,0.78fr)] lg:gap-10">
             {/* Form */}
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-8 shadow-[0_4px_24px_rgba(0,0,0,.03)]">
+            <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_24px_rgba(0,0,0,.03)] sm:p-6 lg:p-8">
               <h2 className="text-2xl lg:text-3xl font-black tracking-[-0.03em] text-[#111827] mb-6 lg:mb-7">
                 Send an inquiry
               </h2>
@@ -142,12 +142,12 @@ export default function ContactPage() {
             </div>
 
             {/* Sidebar */}
-            <div className="flex flex-col gap-5 lg:pt-[76px]">
+            <div className="flex min-w-0 flex-col gap-5 lg:pt-[76px]">
               {/* PDF Download */}
               <a
                 href="/remark/damper-usage-notes.pdf"
                 download
-                className="group relative overflow-hidden rounded-2xl border border-[#ED7606]/20 bg-gradient-to-br from-[#111827] to-[#1F2937] text-white shadow-[0_8px_32px_rgba(237,118,6,.08)] transition-all duration-300 hover:-translate-y-1"
+                className="group relative block w-full max-w-full overflow-hidden rounded-2xl border border-[#ED7606]/20 bg-gradient-to-br from-[#111827] to-[#1F2937] text-white shadow-[0_8px_32px_rgba(237,118,6,.08)] transition-all duration-300 hover:-translate-y-1"
               >
                 <div className="relative aspect-[16/9] border-b border-white/10">
                   <Image
@@ -158,7 +158,7 @@ export default function ContactPage() {
                     sizes="(max-width: 1024px) 100vw, 420px"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#111827] via-[#111827]/20 to-transparent" />
-                  <div className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.12em] text-[#ED7606] shadow-sm">
+                  <div className="absolute left-3 right-3 top-3 max-w-[calc(100%-1.5rem)] rounded-full bg-white/95 px-3 py-1.5 text-center text-[10px] font-black uppercase tracking-[0.08em] text-[#ED7606] shadow-sm sm:left-4 sm:right-auto sm:top-4 sm:max-w-none sm:tracking-[0.12em]">
                     B2B Engineering Support
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export default function ContactPage() {
                   <p className="mt-2 text-white/50 text-sm leading-relaxed">
                     Download the key handling, installation and storage guidelines for TEAO damper products.
                   </p>
-                  <span className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-full bg-[#ED7606] text-white text-sm font-bold group-hover:bg-[#D46900] transition-colors shadow-[0_14px_32px_rgba(237,118,6,.25)]">
+                  <span className="mt-5 inline-flex max-w-full items-center gap-2 rounded-full bg-[#ED7606] px-5 py-2.5 text-sm font-bold text-white shadow-[0_14px_32px_rgba(237,118,6,.25)] transition-colors group-hover:bg-[#D46900]">
                     <Download size={16} strokeWidth={2.5} />
                     Download PDF
                   </span>
@@ -185,7 +185,7 @@ export default function ContactPage() {
               </a>
 
               {/* Quick info */}
-              <div className="rounded-2xl border border-[#E5E7EB] bg-white p-6 lg:p-7 shadow-[0_4px_24px_rgba(0,0,0,.03)]">
+              <div className="min-w-0 rounded-2xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,.03)] lg:p-7">
                 <h3 className="text-lg font-black tracking-[-0.02em] text-[#111827] mb-4">
                   What happens next?
                 </h3>
@@ -211,7 +211,7 @@ export default function ContactPage() {
       </section>
 
       {/* ========== FAQ ========== */}
-      <section className="py-16 lg:py-24 bg-[#F0F2F5]">
+      <section className="overflow-hidden bg-[#F0F2F5] py-16 lg:py-24">
         <div className="shell">
           <div className="text-center mb-8 lg:mb-12">
             <span className="eyebrow">FAQ</span>
@@ -240,6 +240,6 @@ export default function ContactPage() {
           </div>
         </div>
       </section>
-    </>
+    </div>
   );
 }

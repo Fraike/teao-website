@@ -17,11 +17,16 @@ export async function POST(request: Request) {
   const data = await request.json();
   const row = await db.insert(news).values({
     ...data,
+    relatedProducts: Array.isArray(data.relatedProducts) ? JSON.stringify(data.relatedProducts) : (data.relatedProducts || "[]"),
     isPublished: data.isPublished ? 1 : 0,
   }).returning().get();
 
   return NextResponse.json(
-    { ...row, isPublished: Boolean(row.isPublished) },
+    {
+      ...row,
+      isPublished: Boolean(row.isPublished),
+      relatedProducts: JSON.parse(row.relatedProducts || "[]"),
+    },
     { status: 201 },
   );
 }

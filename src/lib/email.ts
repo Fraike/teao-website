@@ -35,9 +35,12 @@ export async function sendInquiryNotification(inquiry: InquiryEmailParams) {
     .map(([k, v]) => `<p style="margin:4px 0"><strong>${k}:</strong> ${v}</p>`)
     .join("");
 
+  const fromDomain = process.env.RESEND_DOMAIN || "teao-damper.com";
+  const from = `TEAO Website <notify@${fromDomain}>`;
+
   try {
-    await resend.emails.send({
-      from: `TEAO Website <notify@${process.env.RESEND_DOMAIN || "teao-damper.com"}>`,
+    const result = await resend.emails.send({
+      from,
       to: [NOTIFY_EMAIL],
       subject: `New Inquiry: ${inquiry.productInterest || "General"} from ${inquiry.name}`,
       html: `
@@ -53,7 +56,14 @@ export async function sendInquiryNotification(inquiry: InquiryEmailParams) {
         </div>
       `,
     });
+    console.log(`Inquiry email sent to ${NOTIFY_EMAIL}, Resend ID: ${result.data?.id || "unknown"}`);
   } catch (err) {
-    console.error("Failed to send inquiry email:", err);
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Failed to send inquiry email:", message);
+    console.error("  From:", from);
+    console.error("  To:", NOTIFY_EMAIL);
+    console.error("  Resend Domain:", fromDomain);
+    // Re-throw to let the API route log it
+    throw err;
   }
 }

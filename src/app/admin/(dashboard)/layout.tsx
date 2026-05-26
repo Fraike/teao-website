@@ -40,7 +40,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           </button>
         </form>
       </nav>
-      <main className="p-6 max-w-6xl mx-auto">{children}</main>
+      <main className="w-full max-w-[1760px] mx-auto p-4 sm:p-6 2xl:px-8">{children}</main>
     </div>
   );
 }
