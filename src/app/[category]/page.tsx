@@ -4,12 +4,13 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { categories, products } from "@/db/schema";
 import { mapDbProduct, getProductUrl } from "@/lib/products";
-import { JsonLdScript, collectionPageSchema, breadcrumbSchema } from "@/lib/structured-data";
+import { JsonLdScript, collectionPageSchema, breadcrumbSchema, faqPageSchema } from "@/lib/structured-data";
 import type { CategoryInfo } from "@/types";
 import { CategoryHero } from "@/components/products/CategoryHero";
 import { CategoryTabs } from "@/components/products/CategoryTabs";
 import { ProductListClient } from "@/components/products/ProductListClient";
 import { ApplicationContent } from "@/components/products/ApplicationContent";
+import { CategoryExplainer } from "@/components/products/CategoryExplainer";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
 
 const VALID_CATEGORIES = ["gear-damper", "axial-damper", "glove-box-damper", "latch", "other"];
@@ -78,10 +79,26 @@ export default async function CategoryPage({ params }: Props) {
     { name: categoryInfo.name },
   ]);
 
+  const categoryFAQ = [
+    {
+      q: `What are ${categoryInfo.name.toLowerCase()}?`,
+      a: `${categoryInfo.name} are ${categoryInfo.description.toLowerCase()}`,
+    },
+    {
+      q: `What applications use ${categoryInfo.name.toLowerCase()}?`,
+      a: `${categoryInfo.name} are used across automotive interiors, household appliances, bathroom fittings, medical equipment, and industrial machinery.`,
+    },
+    {
+      q: `Does TEAO customize ${categoryInfo.name.toLowerCase()}?`,
+      a: `Yes. TEAO provides custom torque values, mounting configurations, and material options for ${categoryInfo.name.toLowerCase()}. Engineering support covers torque tuning, sample review, and application matching.`,
+    },
+  ];
+
   return (
     <>
       <JsonLdScript data={listingJsonLd} />
       <JsonLdScript data={breadcrumbJsonLd} />
+      <JsonLdScript data={faqPageSchema(categoryFAQ)} />
       <CategoryHero category={categoryInfo} />
       <CategoryTabs current={category} />
       <section className="section !pt-8 !pb-12">
@@ -89,6 +106,7 @@ export default async function CategoryPage({ params }: Props) {
           <ProductListClient products={mappedProducts} category={categoryInfo} />
         </div>
       </section>
+      <CategoryExplainer category={categoryInfo} />
       <ApplicationContent category={categoryInfo} />
       <InquiryCTA />
     </>

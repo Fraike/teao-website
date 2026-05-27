@@ -88,15 +88,14 @@ export default async function NewsPage() {
                     >
                       {/* Thumbnail */}
                       {item.image && (
-                        <div className="relative w-full h-48 overflow-hidden bg-[#F8F9FA]">
+                        <div className="relative w-full aspect-[16/10] overflow-hidden bg-gradient-to-br from-[#F8F9FA] to-[#EEF0F3]">
                           <SafeImage
                             src={item.image}
                             alt={item.title}
                             fill
-                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent" />
                         </div>
                       )}
 
