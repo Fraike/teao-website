@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "info@teao-damper.com";
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "info@chinateao.com";
 
 interface InquiryEmailParams {
   name: string;

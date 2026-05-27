@@ -83,7 +83,7 @@ export default function QualityPage() {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: SITE_CONFIG.fullName,
-    url: "https://www.teao-damper.com",
+    url: "https://teao-damper.com",
     hasCredential: [
       {
         "@type": "EducationalOccupationalCredential",

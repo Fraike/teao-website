@@ -55,11 +55,11 @@ export function DownloadPDFButton({ model }: { model: string }) {
       // Resolve oklch/oklab colors to RGB via computed styles
       resolveColors(clone);
 
-      // Off-screen render
+      // Off-screen render — use 1024px to match lg breakpoint
       clone.style.position = "fixed";
       clone.style.left = "-9999px";
       clone.style.top = "0";
-      clone.style.width = "900px";
+      clone.style.width = "1024px";
       clone.style.zIndex = "-1";
       document.body.appendChild(clone);
 
@@ -68,7 +68,7 @@ export function DownloadPDFButton({ model }: { model: string }) {
         useCORS: true,
         backgroundColor: "#ffffff",
         logging: false,
-        width: 900,
+        width: 1024,
       });
 
       document.body.removeChild(clone);
@@ -86,7 +86,8 @@ export function DownloadPDFButton({ model }: { model: string }) {
       pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
       heightLeft -= pageHeight;
 
-      while (heightLeft > 0) {
+      // 最后一页剩余高度小于 30px 时不再新建页面（避免几乎全空的页面）
+      while (heightLeft > 30) {
         position -= pageHeight;
         pdf.addPage();
         pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);

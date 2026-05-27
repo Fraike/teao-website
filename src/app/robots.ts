@@ -5,6 +5,6 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       { userAgent: "*", allow: "/", disallow: ["/admin", "/api/"] },
     ],
-    sitemap: "https://www.teao-damper.com/sitemap.xml",
+    sitemap: "https://teao-damper.com/sitemap.xml",
   };
 }

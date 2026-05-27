@@ -3,7 +3,7 @@ import { getSession } from "@/lib/auth";
 import { readdir, unlink, stat } from "fs/promises";
 import path from "path";
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp", "image/svg+xml"];
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
 export async function GET() {
@@ -20,7 +20,7 @@ export async function GET() {
 
   const items = await Promise.all(
     files
-      .filter((f) => /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(f))
+      .filter((f) => /\.(jpg|jpeg|png|gif|webp)$/i.test(f))
       .map(async (name) => {
         const filePath = path.join(uploadDir, name);
         const info = await stat(filePath);

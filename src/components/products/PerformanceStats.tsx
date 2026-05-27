@@ -19,7 +19,7 @@ function StatCard({ icon, label, value }: StatCardProps) {
         <div className="text-[10px] font-black uppercase tracking-[0.1em] text-[#9CA3AF] mb-0.5">
           {label}
         </div>
-        <div className="text-sm font-extrabold text-[#111827] tabular-nums truncate">
+        <div className="text-sm font-extrabold text-[#111827] tabular-nums break-words">
           {value}
         </div>
       </div>

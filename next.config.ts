@@ -52,6 +52,31 @@ const nextConfig: NextConfig = {
         { key: "Cache-Control", value: "no-store, no-cache, must-revalidate" },
       ],
     },
+    // ── Dynamic content pages — override Next.js default s-maxage=31536000 ──
+    {
+      source: "/news/:path*",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=1800, stale-while-revalidate=86400" },
+      ],
+    },
+    {
+      source: "/products/:path*",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" },
+      ],
+    },
+    {
+      source: "/(gear-damper|axial-damper|glove-box-damper|latch|other)/:slug",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=3600, stale-while-revalidate=86400" },
+      ],
+    },
+    {
+      source: "/",
+      headers: [
+        { key: "Cache-Control", value: "public, s-maxage=86400, stale-while-revalidate=86400" },
+      ],
+    },
     {
       source: "/(.*)",
       headers: [
@@ -60,8 +85,7 @@ const nextConfig: NextConfig = {
         { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
         { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
         { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
-        { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" },
-        { key: "CDN-Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
+        { key: "Content-Security-Policy", value: "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" },
       ],
     },
   ],

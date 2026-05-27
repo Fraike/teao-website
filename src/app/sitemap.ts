@@ -3,7 +3,7 @@ import { db } from "@/db";
 import { products, news, categories } from "@/db/schema";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://www.teao-damper.com";
+  const baseUrl = "https://teao-damper.com";
 
   const staticRoutes = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 1 },

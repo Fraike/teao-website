@@ -1,5 +1,5 @@
 export const env = {
-  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://www.teao-damper.com",
+  SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "https://teao-damper.com",
   API_URL: process.env.NEXT_PUBLIC_API_URL || "",
   API_KEY: process.env.API_KEY || "",
 

@@ -101,7 +101,14 @@ export default function Header() {
 
           {/* Actions */}
           <div className="flex items-center gap-2.5">
-            <span className="hidden lg:inline text-xs font-bold text-[#9CA3AF]">EN</span>
+            <a
+              href="https://www.chinateao.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:inline text-xs font-bold text-[#9CA3AF] hover:text-[#ED7606] transition-colors"
+            >
+              中文
+            </a>
             <Link
               href="/torque-converter"
               className="hidden sm:inline-flex items-center h-[38px] px-4 text-xs font-bold rounded-full border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606] transition-colors"
@@ -146,6 +153,15 @@ export default function Header() {
             >
               Torque Converter
             </Link>
+            <a
+              href="https://www.chinateao.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="py-3 text-center text-sm font-bold rounded-full bg-[#F8F9FA] text-[#374151]"
+            >
+              中文
+            </a>
           </div>
         </div>
       )}
