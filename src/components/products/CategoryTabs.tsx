@@ -18,7 +18,7 @@ export function CategoryTabs({ current }: { current?: string }) {
         {CATEGORIES.map((cat) => (
           <Link
             key={cat.slug}
-            href={`/${cat.slug}`}
+            href={`/products?category=${cat.slug}`}
             className={`shrink-0 px-5 py-2 rounded-full text-sm font-bold transition-colors ${
               current === cat.slug
                 ? "bg-[#ED7606] text-white"
