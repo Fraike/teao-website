@@ -110,7 +110,7 @@ TEAO serves automotive (OEM and Tier-1), bathroom and sanitary, home appliances,
 Yes. Provide your target torque value (N·m, gf·cm, or kgf·cm) and tolerance band. Engineering will adjust silicone oil viscosity and internal geometry to match or improve your current specification.
 
 ### How do I request a quotation?
-Send your drawing and requirements (application, torque target, annual volume) to info@teao-damper.com or use the contact form. Our team typically responds within 24 hours.
+Send your drawing and requirements (application, torque target, annual volume) to info@chinateao.com or use the contact form. Our team typically responds within 24 hours.
 
 ### Can you fully realize our design?
 Our professional development team has sufficient experience with top brands. We work according to your specification and implement it as a prototype.

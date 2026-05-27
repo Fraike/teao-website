@@ -131,7 +131,7 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "How do I request a quotation?",
-    a: "Send your drawing and requirements (application, torque target, annual volume) to info@teao-damper.com or use the contact form. Our team typically responds within 24 hours.",
+    a: "Send your drawing and requirements (application, torque target, annual volume) to info@chinateao.com or use the contact form. Our team typically responds within 24 hours.",
   },
   {
     q: "What information should I provide to get the fastest quotation?",

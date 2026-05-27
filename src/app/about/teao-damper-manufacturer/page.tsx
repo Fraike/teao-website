@@ -123,7 +123,7 @@ const manufacturerFAQ = [
   },
   {
     q: "How can I request a quotation from TEAO?",
-    a: "Contact info@teao-damper.com or use the contact form at teao-damper.com/contact. TEAO's team responds within 24 hours and delivers a technical proposal within 2-3 working days. Include your application requirements, torque target, estimated annual volume, and drawing for the fastest response.",
+    a: "Contact info@chinateao.com or use the contact form at teao-damper.com/contact. TEAO's team responds within 24 hours and delivers a technical proposal within 2-3 working days. Include your application requirements, torque target, estimated annual volume, and drawing for the fastest response.",
   },
   {
     q: "Where is TEAO located?",
@@ -667,7 +667,7 @@ export default function ManufacturerFactsPage() {
 
           <H3>Commercial Terms</H3>
           <dl className={dlGridClass}>
-            <DlCard term="Contact Email" desc="info@teao-damper.com" />
+            <DlCard term="Contact Email" desc="info@chinateao.com" />
             <DlCard term="WhatsApp" desc="+86 188 1393 5128" />
             <DlCard term="Response Time" desc="Within 24 hours" />
             <DlCard

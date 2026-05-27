@@ -447,7 +447,7 @@ export const SITE_CONFIG = {
   name: "TEAO",
   fullName: "Dongguan TEAO Electronic Technology Co., Ltd.",
   founded: 2001,
-  email: "info@teao-damper.com",
+  email: "info@chinateao.com",
   address:
     "No. 2, Huangjiang North Third Street, Huangjiang Town, Dongguan City, Guangdong Province (523750)",
   phone: "",
