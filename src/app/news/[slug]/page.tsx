@@ -13,10 +13,7 @@ import { getProductUrl } from "@/lib/products";
 import { ShareButtons } from "@/components/products/ShareButtons";
 import { env } from "@/lib/env";
 
-export async function generateStaticParams() {
-  const rows = await db.select({ slug: news.slug }).from(news).all();
-  return rows.map((r) => ({ slug: r.slug }));
-}
+export const dynamic = "force-dynamic";
 
 interface Props {
   params: Promise<{ slug: string }>;
