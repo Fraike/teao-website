@@ -30,6 +30,7 @@ src/
       media/                    # GET/POST/DELETE - file upload management
       news/ news/[id]/          # CRUD - news articles
       products/ products/[id]/  # CRUD - product catalog
+      search/                   # GET - global search across products/articles
       upload/                   # POST - single file upload
       categories/               # GET - category list
     admin/                      # Admin panel (auth-guarded)
@@ -49,6 +50,7 @@ src/
     home/                       # Homepage sections
     about/                      # About page sections
     products/                   # Product display components
+    search/                     # Global search modal
     contact/                    # ContactForm
     layout/                     # Header, Footer, PublicChrome
     admin/                      # ProductForm, NewsForm, list tables
@@ -153,7 +155,9 @@ npm run db:seed      # Seed database
 | `cta_click` | CTA button click | targetId, source |
 | `scene_click` | Automotive hotspot click | targetId (scene name) |
 | `category_click` | Category card click | targetId |
+| `search_open` | Global search modal open | source |
 | `search` | Search input | targetId (query) |
+| `search_result_click` | Global search result click | targetId (URL), metadata (query/type) |
 | `form_submit` | Contact form success | targetId (product interest) |
 
 ### Admin Dashboard

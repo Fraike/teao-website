@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "event and page are required" }, { status: 400 });
     }
 
-    const allowed = ["page_view", "product_click", "scene_click", "cta_click", "category_click", "search", "form_submit"];
+    const allowed = ["page_view", "product_click", "scene_click", "cta_click", "category_click", "search", "search_open", "search_result_click", "form_submit"];
     if (!allowed.includes(event)) {
       return NextResponse.json({ error: "invalid event type" }, { status: 400 });
     }

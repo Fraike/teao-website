@@ -5,6 +5,7 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { CATEGORIES } from "@/lib/constants";
 import Link from "next/link";
 import Image from "next/image";
+import { GlobalSearch } from "@/components/search/GlobalSearch";
 
 const NAV_ITEMS = [
   { label: "Products", href: "/products", mega: true },
@@ -109,6 +110,7 @@ export default function Header() {
             >
               中文
             </a>
+            <GlobalSearch />
             <Link
               href="/torque-converter"
               className="hidden sm:inline-flex items-center h-[38px] px-4 text-xs font-bold rounded-full border border-[#E5E7EB] bg-white text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606] transition-colors"

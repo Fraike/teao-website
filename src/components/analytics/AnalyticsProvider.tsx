@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
 
 const SESSION_KEY = "teao_sid";
-const EVENTS = ["product_click", "scene_click", "cta_click", "category_click", "search", "form_submit"] as const;
+const EVENTS = ["product_click", "scene_click", "cta_click", "category_click", "search", "search_open", "search_result_click", "form_submit"] as const;
 
 function getSessionId(): string {
   if (typeof window === "undefined") return "";
