@@ -1,40 +1,107 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { readdir, unlink, stat } from "fs/promises";
+import type { Dirent } from "fs";
 import path from "path";
+import { existsSync } from "fs";
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+const ALLOWED_TYPES = [
+  "image/jpeg", "image/png", "image/gif", "image/webp",
+  "video/mp4", "video/webm", "video/quicktime",
+];
+const MEDIA_EXT = /\.(jpg|jpeg|png|gif|webp|mp4|webm|mov)$/i;
 const MAX_SIZE = 5 * 1024 * 1024; // 5MB
 
-export async function GET() {
+interface MediaItem {
+  name: string;
+  url: string;
+  size: number;
+  modified: string;
+  source: "project" | "uploads";
+}
+
+async function scanDirRecursive(
+  baseDir: string,
+  baseUrl: string,
+  source: "project" | "uploads",
+  relDir = "",
+): Promise<MediaItem[]> {
+  const items: MediaItem[] = [];
+  const currentDir = path.join(baseDir, relDir);
+
+  let entries: Dirent[];
+  try {
+    entries = await readdir(currentDir, { withFileTypes: true });
+  } catch {
+    return items;
+  }
+
+  for (const entry of entries) {
+    const entryRelPath = relDir ? `${relDir}/${entry.name}` : entry.name;
+
+    if (entry.isDirectory()) {
+      // Skip some non-image directories
+      if (entry.name.startsWith(".")) continue;
+      const subItems = await scanDirRecursive(baseDir, baseUrl, source, entryRelPath);
+      items.push(...subItems);
+    } else if (entry.isFile() && MEDIA_EXT.test(entry.name)) {
+      const filePath = path.join(currentDir, entry.name);
+      try {
+        const info = await stat(filePath);
+        items.push({
+          name: entry.name,
+          url: `${baseUrl}/${entryRelPath}`,
+          size: info.size,
+          modified: info.mtime.toISOString(),
+          source,
+        });
+      } catch {
+        // skip unreadable files
+      }
+    }
+  }
+
+  return items;
+}
+
+export async function GET(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const uploadDir = path.join(process.cwd(), "public", "uploads");
-  let files: string[] = [];
-  try {
-    files = await readdir(uploadDir);
-  } catch {
-    return NextResponse.json([]);
+  const { searchParams } = new URL(request.url);
+  const sourceFilter = searchParams.get("source") || "all"; // "all" | "project" | "uploads"
+  const q = searchParams.get("q")?.toLowerCase() || "";
+
+  const publicDir = path.join(process.cwd(), "public");
+  const allItems: MediaItem[] = [];
+
+  // Scan project images
+  if (sourceFilter === "all" || sourceFilter === "project") {
+    const imagesDir = path.join(publicDir, "images");
+    if (existsSync(imagesDir)) {
+      const projectItems = await scanDirRecursive(imagesDir, "/images", "project");
+      allItems.push(...projectItems);
+    }
   }
 
-  const items = await Promise.all(
-    files
-      .filter((f) => /\.(jpg|jpeg|png|gif|webp)$/i.test(f))
-      .map(async (name) => {
-        const filePath = path.join(uploadDir, name);
-        const info = await stat(filePath);
-        return {
-          name,
-          url: `/uploads/${name}`,
-          size: info.size,
-          modified: info.mtime.toISOString(),
-        };
-      }),
-  );
+  // Scan uploads
+  if (sourceFilter === "all" || sourceFilter === "uploads") {
+    const uploadDir = path.join(publicDir, "uploads");
+    if (existsSync(uploadDir)) {
+      const uploadItems = await scanDirRecursive(uploadDir, "/uploads", "uploads");
+      allItems.push(...uploadItems);
+    }
+  }
 
-  items.sort((a, b) => new Date(b.modified).getTime() - new Date(a.modified).getTime());
-  return NextResponse.json(items);
+  // Client-side search filter
+  const filtered = q
+    ? allItems.filter((item) => item.name.toLowerCase().includes(q) || item.url.toLowerCase().includes(q))
+    : allItems;
+
+  // Sort: newest first
+  filtered.sort((a, b) => new Date(b.modified).getTime() - new Date(a.modified).getTime());
+
+  return NextResponse.json(filtered);
 }
 
 export async function DELETE(request: Request) {
@@ -45,9 +112,14 @@ export async function DELETE(request: Request) {
   const filename = searchParams.get("file");
   if (!filename) return NextResponse.json({ error: "Missing filename" }, { status: 400 });
 
-  // Prevent path traversal
+  // Only allow deleting from uploads (not project images)
   const safe = path.basename(filename);
   const filePath = path.join(process.cwd(), "public", "uploads", safe);
+
+  // Verify file is actually in uploads directory
+  if (!filePath.startsWith(path.join(process.cwd(), "public", "uploads"))) {
+    return NextResponse.json({ error: "Cannot delete project images" }, { status: 403 });
+  }
 
   try {
     await unlink(filePath);

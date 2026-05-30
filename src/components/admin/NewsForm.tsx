@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
+import MediaPicker from "./MediaPicker";
 import { ProductSelector } from "./ProductSelector";
 import {
   CalendarDays,
@@ -279,8 +280,12 @@ export default function NewsForm({ initial, isNew }: Props) {
               <ImageIcon size={16} className="text-[#ED7606]" />
               <h2 className="text-base font-extrabold text-[#111827]">Article hero image</h2>
             </div>
-            <label className={labelClass}>Image URL</label>
-            <input className={inputClass} value={form.image} onChange={(e) => update("image", e.target.value)} placeholder="/images/news/example.webp" />
+            <MediaPicker
+              value={form.image}
+              onChange={(url) => update("image", url)}
+              label="Image URL"
+              placeholder="/images/news/example.webp"
+            />
             <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
               The public news page uses this as a premium product display. If the URL ends in <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/main.webp</code>, the detail page will prefer <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/photo_1.webp</code> when available.
             </p>

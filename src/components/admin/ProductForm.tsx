@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import MediaPicker from "./MediaPicker";
 
 const PRESET_SCENARIOS = [
   { image: "/images/applications/applications-gif/Center console lid.gif", label: "Center Console" },
@@ -76,9 +77,7 @@ export default function ProductForm({ initial, isNew }: Props) {
   const [charInput, setCharInput] = useState("");
   const [galleryUrl, setGalleryUrl] = useState("");
   const [galleryAlt, setGalleryAlt] = useState("");
-  const [galleryUploading, setGalleryUploading] = useState(false);
   const [editingGalleryIdx, setEditingGalleryIdx] = useState<number | null>(null);
-  const galleryInputRef = useRef<HTMLInputElement>(null);
 
   // Unsaved changes warning
   useEffect(() => {
@@ -105,56 +104,6 @@ export default function ProductForm({ initial, isNew }: Props) {
     setForm((prev) => ({ ...prev, model: val, slug: prev.slug || slug }));
     setDirty(true);
   }, []);
-
-  async function compressImage(file: File, maxW = 1920, maxH = 1920, quality = 0.8): Promise<File> {
-    if (!file.type.startsWith("image/") || file.type === "image/gif" || file.type === "image/svg+xml") return file;
-    return new Promise((resolve) => {
-      const img = new Image();
-      const url = URL.createObjectURL(file);
-      img.onload = () => {
-        URL.revokeObjectURL(url);
-        let { width, height } = img;
-        if (width <= maxW && height <= maxH && file.size < 400 * 1024) return resolve(file);
-        if (width > maxW) { height = Math.round(height * (maxW / width)); width = maxW; }
-        if (height > maxH) { width = Math.round(width * (maxH / height)); height = maxH; }
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0, width, height);
-        canvas.toBlob((blob) => {
-          if (!blob) return resolve(file);
-          const compressed = new File([blob], file.name.replace(/\.\w+$/, ".jpg"), { type: "image/jpeg" });
-          resolve(compressed);
-        }, "image/jpeg", quality);
-      };
-      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
-      img.src = url;
-    });
-  }
-
-  async function uploadImage(file: File) {
-    const compressed = await compressImage(file);
-    const fd = new FormData();
-    fd.append("file", compressed);
-    const res = await fetch("/api/upload", { method: "POST", body: fd });
-    if (!res.ok) throw new Error("Upload failed");
-    const data = await res.json();
-    return data.url as string;
-  }
-
-  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    try {
-      const url = await uploadImage(file);
-      set("image", url);
-      setSuccessMsg("Image uploaded successfully");
-      setTimeout(() => setSuccessMsg(""), 3000);
-    } catch {
-      setError("Image upload failed");
-    }
-  }
 
   async function handleSubmit(e: React.FormEvent, redirectAfter = true) {
     e.preventDefault();
@@ -303,55 +252,20 @@ export default function ProductForm({ initial, isNew }: Props) {
         <h2 className="text-base font-extrabold text-[#111827] mb-5">Images</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
-            <label className={labelClass}>Main Image</label>
-            <div className="flex gap-2 items-start">
-              <div className="flex-1">
-                <input className={inputClass} value={form.image} onChange={(e) => set("image", e.target.value)} placeholder="URL or /uploads/..." />
-              </div>
-              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
-                Upload
-                <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-              </label>
-              {form.image && (
-                <button type="button" onClick={() => set("image", "")} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
-              )}
-            </div>
-            {form.image && (
-              <div className="mt-2 relative w-32 h-32 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.image} alt="Preview" className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-              </div>
-            )}
+            <MediaPicker
+              value={form.image}
+              onChange={(url) => set("image", url)}
+              label="Main Image"
+              placeholder="URL or /uploads/..."
+            />
           </div>
           <div>
-            <label className={labelClass}>Dimension Drawing</label>
-            <div className="flex gap-2 items-start">
-              <div className="flex-1">
-                <input className={inputClass} value={form.dimensionDrawing} onChange={(e) => set("dimensionDrawing", e.target.value)} placeholder="URL or /images/..." />
-              </div>
-              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
-                Upload
-                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  try {
-                    const url = await uploadImage(file);
-                    set("dimensionDrawing", url);
-                    setSuccessMsg("Dimension drawing uploaded");
-                    setTimeout(() => setSuccessMsg(""), 3000);
-                  } catch { setError("Upload failed"); }
-                }} />
-              </label>
-              {form.dimensionDrawing && (
-                <button type="button" onClick={() => set("dimensionDrawing", "")} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
-              )}
-            </div>
-            {form.dimensionDrawing && (
-              <div className="mt-2 relative w-32 h-32 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.dimensionDrawing} alt="Drawing preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-              </div>
-            )}
+            <MediaPicker
+              value={form.dimensionDrawing}
+              onChange={(url) => set("dimensionDrawing", url)}
+              label="Dimension Drawing"
+              placeholder="URL or /images/..."
+            />
           </div>
         </div>
 
@@ -401,26 +315,17 @@ export default function ProductForm({ initial, isNew }: Props) {
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <label className="px-2.5 h-7 rounded border border-[#E5E7EB] text-[11px] font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
-                          Upload
-                          <input
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
-                              try {
-                                const url = await uploadImage(file);
-                                const next = [...form.images];
-                                next[i] = { ...next[i], url };
-                                set("images", next);
-                                setSuccessMsg(`Uploaded: ${url}`);
-                                setTimeout(() => setSuccessMsg(""), 5000);
-                              } catch { setError("Upload failed"); }
-                            }}
-                          />
-                        </label>
+                        <MediaPicker
+                          value={img.url}
+                          onChange={(url) => {
+                            if (url) {
+                              const next = [...form.images];
+                              next[i] = { ...next[i], url };
+                              set("images", next);
+                            }
+                          }}
+                          placeholder="Browse..."
+                        />
                         <button type="button" onClick={() => setEditingGalleryIdx(null)} className="px-3 h-7 rounded bg-[#ED7606] text-white text-[11px] font-bold">Done</button>
                       </div>
                     </div>
@@ -457,35 +362,18 @@ export default function ProductForm({ initial, isNew }: Props) {
               ))}
             </div>
           )}
-          <div className="flex gap-2">
-            <label className="px-4 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA] gap-1.5">
-              + Add Image
-              <input
-                ref={galleryInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                disabled={galleryUploading}
-                onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setGalleryUploading(true);
-                  try {
-                    const url = await uploadImage(file);
-                    set("images", [...form.images, { url, alt: form.name }]);
-                    setSuccessMsg(`New image: ${url}`);
-                    setTimeout(() => setSuccessMsg(""), 5000);
-                    // Auto-open edit for the new image
-                    setEditingGalleryIdx(form.images.length);
-                  } catch {
-                    setError("Gallery upload failed");
-                  }
-                  setGalleryUploading(false);
-                  if (galleryInputRef.current) galleryInputRef.current.value = "";
-                }}
-              />
-              {galleryUploading ? <span className="text-[#ED7606]">Uploading...</span> : <span className="text-[#9CA3AF] text-[10px]">(select file)</span>}
-            </label>
+          <div className="flex gap-2 items-start">
+            <MediaPicker
+              value=""
+              onChange={(url) => {
+                if (url) {
+                  set("images", [...form.images, { url, alt: form.name }]);
+                  setEditingGalleryIdx(form.images.length);
+                }
+              }}
+              label=""
+              placeholder="+ Add from library or upload"
+            />
             <input className={inputClass + " w-48"} placeholder="Or paste URL..." value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (galleryUrl) { set("images", [...form.images, { url: galleryUrl, alt: galleryAlt || form.name }]); setGalleryUrl(""); setGalleryAlt(""); } } }} />
             <input className={inputClass + " w-24"} placeholder="Alt" value={galleryAlt} onChange={(e) => setGalleryAlt(e.target.value)} />
           </div>
@@ -494,64 +382,20 @@ export default function ProductForm({ initial, isNew }: Props) {
         {/* Performance charts */}
         <div className="grid sm:grid-cols-2 gap-4 mt-4">
           <div>
-            <label className={labelClass}>Rotation Curve</label>
-            <div className="flex gap-2 items-start">
-              <div className="flex-1">
-                <input className={inputClass} value={form.performanceCharts?.rotation_curve || ""} onChange={(e) => set("performanceCharts", { ...form.performanceCharts, rotation_curve: e.target.value })} placeholder="Image URL" />
-              </div>
-              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
-                Upload
-                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  try {
-                    const url = await uploadImage(file);
-                    set("performanceCharts", { ...form.performanceCharts, rotation_curve: url });
-                    setSuccessMsg("Rotation curve uploaded");
-                    setTimeout(() => setSuccessMsg(""), 3000);
-                  } catch { setError("Upload failed"); }
-                }} />
-              </label>
-              {(form.performanceCharts?.rotation_curve) && (
-                <button type="button" onClick={() => set("performanceCharts", { ...form.performanceCharts, rotation_curve: "" })} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
-              )}
-            </div>
-            {form.performanceCharts?.rotation_curve && (
-              <div className="mt-2 relative w-40 h-28 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.performanceCharts.rotation_curve} alt="Rotation curve preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-              </div>
-            )}
+            <MediaPicker
+              value={form.performanceCharts?.rotation_curve || ""}
+              onChange={(url) => set("performanceCharts", { ...form.performanceCharts, rotation_curve: url })}
+              label="Rotation Curve"
+              placeholder="Image URL"
+            />
           </div>
           <div>
-            <label className={labelClass}>Temperature Curve</label>
-            <div className="flex gap-2 items-start">
-              <div className="flex-1">
-                <input className={inputClass} value={form.performanceCharts?.temperature_curve || ""} onChange={(e) => set("performanceCharts", { ...form.performanceCharts, temperature_curve: e.target.value })} placeholder="Image URL" />
-              </div>
-              <label className="shrink-0 px-3 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] flex items-center cursor-pointer hover:bg-[#F8F9FA]">
-                Upload
-                <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  try {
-                    const url = await uploadImage(file);
-                    set("performanceCharts", { ...form.performanceCharts, temperature_curve: url });
-                    setSuccessMsg("Temperature curve uploaded");
-                    setTimeout(() => setSuccessMsg(""), 3000);
-                  } catch { setError("Upload failed"); }
-                }} />
-              </label>
-              {(form.performanceCharts?.temperature_curve) && (
-                <button type="button" onClick={() => set("performanceCharts", { ...form.performanceCharts, temperature_curve: "" })} className="shrink-0 w-8 h-10 rounded-lg border border-red-200 text-red-500 text-sm font-bold hover:bg-red-50">&times;</button>
-              )}
-            </div>
-            {form.performanceCharts?.temperature_curve && (
-              <div className="mt-2 relative w-40 h-28 rounded-lg border border-[#E5E7EB] overflow-hidden bg-[#F8F9FA]">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={form.performanceCharts.temperature_curve} alt="Temperature curve preview" className="w-full h-full object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-              </div>
-            )}
+            <MediaPicker
+              value={form.performanceCharts?.temperature_curve || ""}
+              onChange={(url) => set("performanceCharts", { ...form.performanceCharts, temperature_curve: url })}
+              label="Temperature Curve"
+              placeholder="Image URL"
+            />
           </div>
         </div>
       </section>

@@ -15,6 +15,7 @@ import {
   Table as TableIcon, Eye, Pencil,
 } from "lucide-react";
 import { useState, useCallback } from "react";
+import MediaPicker from "./MediaPicker";
 
 interface Props {
   value: string;
@@ -50,6 +51,7 @@ function ToolbarButton({
 
 export default function RichTextEditor({ value, onChange }: Props) {
   const [showPreview, setShowPreview] = useState(true);
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
 
   const editor = useEditor({
     extensions: [
@@ -87,10 +89,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
 
   const addImage = useCallback(() => {
     if (!editor) return;
-    const url = window.prompt("Image URL:");
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
+    setImagePickerOpen(true);
   }, [editor]);
 
   if (!editor) return null;
@@ -103,6 +102,20 @@ export default function RichTextEditor({ value, onChange }: Props) {
 
   return (
     <div className="rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
+      {/* Hidden MediaPicker for image insertion */}
+      <MediaPicker
+        value=""
+        onChange={(url) => {
+          if (url && editor) {
+            editor.chain().focus().setImage({ src: url }).run();
+            setImagePickerOpen(false);
+          }
+        }}
+        open={imagePickerOpen}
+        onOpenChange={setImagePickerOpen}
+        compact
+        placeholder="Select image"
+      />
       {/* Toolbar */}
       <div className="flex items-center gap-0.5 px-3 py-2 border-b border-[#E5E7EB] bg-[#F8F9FA] flex-wrap">
         <ToolbarButton

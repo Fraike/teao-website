@@ -6,6 +6,14 @@ export interface FaqItem {
 export const FAQS: FaqItem[] = [
   // ---- Product & Capability ----
   {
+    q: "Who is TEAO?",
+    a: "TEAO (Dongguan TEAO Electronic Technology Co., Ltd.) is a professional manufacturer specializing in the R&D, production, sales and OEM of dampers, buffers, door locks and motion control components. Founded in 2001 and headquartered in Dongguan, China, TEAO has 20+ years of manufacturing experience, IATF 16949 certification, 80 million units annual capacity, and serves 200+ customers worldwide across automotive, appliance, medical, and industrial sectors.",
+  },
+  {
+    q: "What can TEAO do for you?",
+    a: "TEAO provides a complete range of standard dampers and supports full custom product development from concept to mass production. Services include: engineering design and torque calculation, rapid prototyping, in-house mold making, automated assembly, 100% testing and inspection, PPAP documentation, and global logistics. Whether you need a standard platform product or a fully custom motion control solution, TEAO's engineering team can deliver.",
+  },
+  {
     q: "What types of dampers does TEAO manufacture?",
     a: "TEAO manufactures five product lines: gear dampers (rotary), axial dampers (linear), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, and mounting configuration.",
   },
@@ -36,8 +44,12 @@ export const FAQS: FaqItem[] = [
 
   // ---- Ordering & Commercial ----
   {
+    q: "How do you make our business long-term and good relationship?",
+    a: "TEAO builds long-term partnerships through: (1) consistent quality with 100% inspection and IATF 16949-oriented quality systems; (2) competitive pricing through in-house mold making, automation, and vertical integration; (3) engineering support from concept to mass production. We respect every customer as a partner and are committed to mutual growth, no matter where they come from.",
+  },
+  {
     q: "What is the minimum order quantity (MOQ) for TEAO dampers?",
-    a: "MOQ depends on the product type and customization level. Standard platform products typically start from 1,000–5,000 units. Custom tooling projects may require higher volumes. The minimum quantity can be 1,000 pieces, but differs for each product. Contact us with your volume target for a specific assessment.",
+    a: "The standard MOQ is 2,000 pieces. Actual MOQ depends on the product type and customization level — standard platform products may have lower minimums, while custom tooling projects may require higher volumes. Contact us with your volume target for a specific assessment.",
   },
   {
     q: "What payment terms does TEAO accept?",
@@ -103,7 +115,11 @@ export const FAQS: FaqItem[] = [
   // ---- Shipping & Logistics ----
   {
     q: "How does TEAO handle international shipping and logistics?",
-    a: "TEAO ships globally via sea freight (FOB Shenzhen/Guangzhou), air freight, and international express (DHL, FedEx, UPS). We support EXW, FOB, and CIF terms. Standard packaging includes individual polybag protection and export-grade cartons.",
+    a: "TEAO ships globally via sea freight (FOB Shenzhen/Guangzhou), air freight, and international express (EMS, UPS, DHL, TNT, FedEx). We support EXW, FOB, and CIF terms. Please confirm the shipping method with us before placing orders.",
+  },
+  {
+    q: "What is the packaging method for TEAO dampers?",
+    a: "Products are packed in export-grade cartons with individual polybag protection. Custom packaging and labeling are available upon request. Standard packaging ensures safe transit for international sea, air, and express shipments.",
   },
   {
     q: "What is the warranty period on TEAO dampers?",
