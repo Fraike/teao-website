@@ -22,7 +22,7 @@ const FOOTER_LINKS = {
     { label: "FAQ", href: "/faq" },
   ],
   "Global Sites": [
-    { label: "Alibaba Store", href: "https://siteadmin.alibaba.com/preview.htm?spm=a2700.siteadmin.0.0.1cc6102amGiav5&pageId=5128210104&type=pc" },
+    { label: "Alibaba Store", href: "https://teaodamper.en.alibaba.com/index.html?spm=a2700.shop_cp.88.12.295d66e8YJF94s" },
     { label: "TEAO Global", href: "https://www.teaoglobal.com/" },
   ],
 };
