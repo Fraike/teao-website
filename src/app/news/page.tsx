@@ -9,6 +9,8 @@ import { Reveal } from "@/components/ui/reveal";
 import { JsonLdScript, collectionPageSchema } from "@/lib/structured-data";
 import { getReadingTime, formatReadingTime } from "@/lib/reading-time";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "News | TEAO Damper Engineering Updates & Company News",
   description:
