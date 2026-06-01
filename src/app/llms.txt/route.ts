@@ -1,6 +1,8 @@
 import { db } from "@/db";
 import { products, categories } from "@/db/schema";
 import { env } from "@/lib/env";
+import { AUTOMOTIVE_SEO_KEYWORDS, CATEGORY_SEO, GLOBAL_SEO_KEYWORDS, getCategorySeo } from "@/lib/seo-keywords";
+import { getProductUrl } from "@/lib/products";
 
 export const revalidate = 86400;
 
@@ -14,22 +16,29 @@ export async function GET() {
     .all();
 
   const categoryLinks = catRows
-    .map(
-      (c) =>
-        `- [${c.name} Dampers](${BASE}/${c.slug}): ${c.description}`
-    )
+    .map((c) => {
+      const seo = getCategorySeo(c.slug, c.name, c.description);
+      return `- [${c.name}](${BASE}/${c.slug}): ${seo.llmsSummary}`;
+    })
     .join("\n");
 
   const productLinks = productRows
     .map(
       (p) =>
-        `- [${p.model} – ${p.name}](${BASE}/${p.category}/${p.slug})`
+        `- [${p.model} – ${p.name}](${BASE}${getProductUrl(p)})`
     )
     .join("\n");
 
   const content = `# TEAO — Automotive Damper & Latch Manufacturer
 
 > IATF 16949 certified manufacturer of gear dampers, axial dampers, glove box dampers, latches and custom motion control components. 20+ years of damper expertise, 100% torque testing, global B2B supply.
+
+## Search Terminology
+- Gear damper: also searched as rotary damper, plastic rotary damper, small rotary damper, one way damper.
+- Axial damper: also searched as barrel damper, linear motion damper, soft close axial damper.
+- Glove box damper: also searched as automotive glove box damper, soft open glove box damper, glove box shock absorber, rotary glove box damper.
+- Automotive applications: ${AUTOMOTIVE_SEO_KEYWORDS.join(", ")}.
+- Procurement searches: ${GLOBAL_SEO_KEYWORDS.join(", ")}.
 
 ## Products by Category
 ${categoryLinks}
@@ -47,6 +56,11 @@ ${productLinks}
 - [Contact](${BASE}/contact): Send inquiry with drawing and specifications
 - [About](${BASE}/about): 20+ years company history, certifications and values
 - [News](${BASE}/news): Company updates and engineering insights
+
+## Category Search Focus
+${Object.entries(CATEGORY_SEO)
+  .map(([, seo]) => `- ${seo.title}: ${seo.keywords.slice(0, 10).join(", ")}`)
+  .join("\n")}
 
 ## Company Facts
 - Name: Dongguan TEAO Electronic Technology Co., Ltd.

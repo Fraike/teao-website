@@ -41,7 +41,7 @@ export function organizationSchema() {
     url: BASE,
     foundingDate: String(SITE_CONFIG.founded),
     description:
-      "Professional manufacturer of dampers, latches and motion control components with 20+ years of experience. IATF 16949 certified.",
+      "Professional manufacturer of gear dampers, rotary dampers, axial dampers, barrel dampers, glove box dampers, latches and motion control components with 20+ years of experience. IATF 16949 certified.",
     address: {
       "@type": "PostalAddress",
       streetAddress: "No. 2, Huangjiang North Third Street, Huangjiang Town",
@@ -71,7 +71,9 @@ export function websiteSchema() {
     name: SITE_CONFIG.name,
     url: BASE,
     description:
-      "IATF 16949 certified manufacturer of gear dampers, axial dampers, glove box dampers, latches and custom motion control components.",
+      "IATF 16949 certified manufacturer of gear dampers, rotary dampers, axial dampers, barrel dampers, glove box dampers, latches and custom motion control components.",
+    keywords:
+      "gear damper, rotary damper, axial damper, barrel damper, glove box damper, automotive interior damper, motion control damper, TEAO",
     potentialAction: {
       "@type": "SearchAction",
       target: {
@@ -122,7 +124,7 @@ export function productSchema(product: Product, categoryName?: string) {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    description: product.description,
+    description: product.description || product.summary,
     sku: product.model,
     image: galleryImages.map((img) => img.url),
     brand: {
@@ -146,6 +148,10 @@ export function productSchema(product: Product, categoryName?: string) {
       },
     },
     ...(categoryName && { category: categoryName }),
+    ...(product.tags?.length && {
+      keywords: product.tags,
+      about: product.tags.map((tag) => ({ "@type": "Thing", name: tag })),
+    }),
   };
 }
 
@@ -206,14 +212,23 @@ export function speakableSchema({ title, summary }: { title: string; summary: st
 export function collectionPageSchema(
   name: string,
   description: string,
-  items: { name: string; url: string }[]
+  items: { name: string; url: string }[],
+  options?: {
+    url?: string;
+    keywords?: string[];
+    about?: string[];
+  },
 ) {
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name,
     description,
-    url: toUrl(items[0]?.url?.split("/").slice(0, -1).join("/") || "/"),
+    url: toUrl(options?.url || items[0]?.url?.split("/").slice(0, -1).join("/") || "/"),
+    ...(options?.keywords?.length && { keywords: options.keywords }),
+    ...(options?.about?.length && {
+      about: options.about.map((item) => ({ "@type": "Thing", name: item })),
+    }),
     mainEntity: {
       "@type": "ItemList",
       itemListElement: items.map((item, i) => ({

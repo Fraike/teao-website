@@ -12,6 +12,7 @@ import { ProductListClient } from "@/components/products/ProductListClient";
 import { ApplicationContent } from "@/components/products/ApplicationContent";
 import { CategoryExplainer } from "@/components/products/CategoryExplainer";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
+import { getCategorySeo } from "@/lib/seo-keywords";
 
 const VALID_CATEGORIES = ["gear-damper", "axial-damper", "glove-box-damper", "latch", "other"];
 
@@ -30,10 +31,27 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const catRow = await db.select().from(categories).where(eq(categories.slug, category)).get();
   if (!catRow) return { title: "Category Not Found" };
 
+  const seo = getCategorySeo(category, catRow.name, catRow.description);
+  const title = seo.title.replace(/\s*\|\s*TEAO$/i, "");
+
   return {
-    title: `${catRow.name} Manufacturer | Precision Dampers | TEAO`,
-    description: catRow.description,
-    keywords: [category, catRow.name.toLowerCase(), "damper", "motion control", "TEAO"],
+    title,
+    description: seo.description,
+    keywords: [...seo.keywords, ...seo.aliases, "TEAO"],
+    alternates: {
+      canonical: `/${category}`,
+    },
+    openGraph: {
+      title: seo.title,
+      description: seo.description,
+      images: [{ url: catRow.image, width: 1200, height: 800 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: seo.title,
+      description: seo.description,
+      images: [catRow.image],
+    },
   };
 }
 
@@ -51,6 +69,7 @@ export default async function CategoryPage({ params }: Props) {
     description: catRow.description,
     image: catRow.image,
   };
+  const seo = getCategorySeo(category, catRow.name, catRow.description);
 
   const productRows = await db
     .select()
@@ -69,9 +88,14 @@ export default async function CategoryPage({ params }: Props) {
   }));
 
   const listingJsonLd = collectionPageSchema(
-    `${categoryInfo.name} Dampers`,
-    categoryInfo.description,
+    seo.title.replace(" | TEAO", ""),
+    seo.description,
     productItems,
+    {
+      url: `/${category}`,
+      keywords: [...seo.keywords, ...seo.aliases],
+      about: [...seo.keywords.slice(0, 8), ...seo.aliases],
+    },
   );
 
   const breadcrumbJsonLd = breadcrumbSchema([
@@ -79,20 +103,7 @@ export default async function CategoryPage({ params }: Props) {
     { name: categoryInfo.name },
   ]);
 
-  const categoryFAQ = [
-    {
-      q: `What are ${categoryInfo.name.toLowerCase()}?`,
-      a: `${categoryInfo.name} are ${categoryInfo.description.toLowerCase()}`,
-    },
-    {
-      q: `What applications use ${categoryInfo.name.toLowerCase()}?`,
-      a: `${categoryInfo.name} are used across automotive interiors, household appliances, bathroom fittings, medical equipment, and industrial machinery.`,
-    },
-    {
-      q: `Does TEAO customize ${categoryInfo.name.toLowerCase()}?`,
-      a: `Yes. TEAO provides custom torque values, mounting configurations, and material options for ${categoryInfo.name.toLowerCase()}. Engineering support covers torque tuning, sample review, and application matching.`,
-    },
-  ];
+  const categoryFAQ = seo.faq;
 
   return (
     <>

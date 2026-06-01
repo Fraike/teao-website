@@ -9,6 +9,7 @@ import { ProcessSection } from "@/components/home/process-section";
 import { NewsSection } from "@/components/home/news-section";
 import { CTASection } from "@/components/home/cta-section";
 import { JsonLdScript, websiteSchema } from "@/lib/structured-data";
+import { AUTOMOTIVE_SEO_KEYWORDS, GLOBAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
 
 function ProductGridSkeleton() {
   return (
@@ -37,18 +38,25 @@ function ProductGridSkeleton() {
 }
 
 export const metadata: Metadata = {
-  title: "Automotive Damper & Latch Manufacturer | TEAO",
+  title: "Automotive Damper & Latch Manufacturer",
   description:
     "IATF 16949 certified manufacturer of gear dampers, axial dampers, glove box dampers, latches and custom motion control components. 20+ years of damper expertise, 100% torque testing, global B2B supply.",
   keywords: [
     "automotive damper manufacturer",
     "gear damper supplier",
     "rotary damper manufacturer",
+    "plastic rotary damper",
+    "small rotary damper",
     "glove box damper",
+    "glove box damper manufacturer",
     "axial damper",
+    "barrel damper",
+    "linear motion damper",
     "custom damper manufacturer",
     "latch mechanism supplier",
     "China damper manufacturer",
+    ...GLOBAL_SEO_KEYWORDS,
+    ...AUTOMOTIVE_SEO_KEYWORDS,
   ],
   openGraph: {
     title: "Automotive Damper & Latch Manufacturer | TEAO",

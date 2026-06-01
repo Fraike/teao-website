@@ -25,7 +25,7 @@ const DATA: Record<string, ExplainerData> = {
     applications: "Automotive interiors (cup holders, glove boxes, center console lids, door handles, ashtrays, charge port covers, sunshades, overhead consoles), household appliances (washer lids, refrigerator flaps, cooker covers), office equipment (printers, coffee machines), bathroom fittings (toilet seats), and industrial machinery.",
   },
   "axial-damper": {
-    what: "An axial damper (linear damper) is a motion control component that provides controlled resistance along a straight linear path. Unlike rotary gear dampers that control rotational motion, axial dampers manage push-pull and sliding movements through hydraulic damping, making them essential for glove box doors, center console lids, and sliding storage compartments.",
+    what: "An axial damper (barrel damper or linear damper) is a motion control component that provides controlled resistance along a straight linear path. Unlike rotary gear dampers that control rotational motion, axial dampers manage push-pull and sliding movements through hydraulic damping, making them essential for glove box doors, center console lids, grab handles, overhead consoles, and sliding storage compartments.",
     how: "Axial dampers use a piston moving through a cylinder filled with damping fluid (typically silicone oil). As the piston moves along its stroke, fluid is forced through calibrated orifices, creating controlled viscous resistance. The damping force is proportional to the velocity of movement — faster push or pull creates proportionally higher resistance. TEAO axial dampers support bidirectional damping and can be configured for specific stroke lengths and force profiles.",
     params: [
       { parameter: "Damping Force", value: "50 – 300 N" },
@@ -37,7 +37,7 @@ const DATA: Record<string, ExplainerData> = {
       { parameter: "Durability", value: "30,000+ cycles" },
     ],
     customization: "Damping force can be adjusted by changing the orifice geometry, piston design, and fluid viscosity. Custom stroke lengths, mounting configurations, end fittings, and force profiles are available through TEAO's engineering support.",
-    applications: "Automotive glove box doors, center console lids, armrest modules, grab handles, sliding storage compartments, and interior trim mechanisms requiring controlled linear motion.",
+    applications: "Automotive glove box doors, center console lids, armrest modules, grab handles, overhead consoles, cup holders, sliding storage compartments, toilet seat soft-close mechanisms, cabinet soft closers, and interior trim mechanisms requiring controlled linear motion.",
   },
   "glove-box-damper": {
     what: "A glove box damper is a specialized automotive motion control component designed to provide a premium soft-open experience for vehicle glove boxes and interior storage compartments. Unlike general-purpose dampers, it is engineered for the specific kinematics, packaging constraints, door weight, and durability requirements of automotive interior applications across the vehicle's lifetime.",

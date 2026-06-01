@@ -2,6 +2,7 @@
 
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import MarkdownIt from "markdown-it";
 import Underline from "@tiptap/extension-underline";
 import LinkExtension from "@tiptap/extension-link";
 import ImageExtension from "@tiptap/extension-image";
@@ -20,6 +21,37 @@ import MediaPicker from "./MediaPicker";
 interface Props {
   value: string;
   onChange: (html: string) => void;
+}
+
+const markdownParser = new MarkdownIt({
+  html: false,
+  linkify: true,
+  typographer: true,
+});
+
+function looksLikeMarkdown(text: string) {
+  const trimmed = text.trim();
+  if (!trimmed || !trimmed.includes("\n")) return false;
+
+  const patterns = [
+    /^#{1,6}\s+\S/m,
+    /^>\s+\S/m,
+    /^[-*+]\s+\S/m,
+    /^\d+\.\s+\S/m,
+    /^```[\s\S]*```/m,
+    /^---+$/m,
+    /\*\*[^*\n]+\*\*/,
+    /_[^_\n]+_/,
+    /!\[[^\]]*]\([^)]+\)/,
+    /\[[^\]]+]\([^)]+\)/,
+    /^\|.+\|\s*\n\|[\s:-]+\|/m,
+  ];
+
+  return patterns.some((pattern) => pattern.test(trimmed));
+}
+
+function renderMarkdown(text: string) {
+  return markdownParser.render(text);
 }
 
 function ToolbarButton({
@@ -75,6 +107,19 @@ export default function RichTextEditor({ value, onChange }: Props) {
     editorProps: {
       attributes: {
         class: "prose prose-sm max-w-none focus:outline-none min-h-[400px] px-4 py-3 text-[#374151] text-sm leading-relaxed",
+      },
+      handlePaste: (_view, event) => {
+        const clipboard = event.clipboardData;
+        if (!clipboard) return false;
+
+        const html = clipboard.getData("text/html");
+        const plainText = clipboard.getData("text/plain");
+        if (html || !looksLikeMarkdown(plainText)) return false;
+
+        event.preventDefault();
+        const rendered = renderMarkdown(plainText);
+        editor?.chain().focus().insertContent(rendered).run();
+        return true;
       },
     },
   });
@@ -258,6 +303,9 @@ export default function RichTextEditor({ value, onChange }: Props) {
       <div className={`grid ${showPreview ? "grid-cols-1 xl:grid-cols-[minmax(0,1.35fr)_minmax(360px,0.9fr)]" : "grid-cols-1"} divide-y xl:divide-y-0 xl:divide-x divide-[#E5E7EB]`}>
         {/* Editor */}
         <div className="bg-white">
+          <div className="border-b border-[#F3F4F6] px-4 py-2 text-[11px] font-medium text-[#9CA3AF]">
+            Paste Markdown to automatically convert headings, lists, links, images, code blocks and tables.
+          </div>
           <EditorContent editor={editor} />
         </div>
 

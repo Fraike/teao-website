@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { ImageIcon, Upload, X, Search, Film, Play, Folder } from "lucide-react";
+import { ImageIcon, Upload, X, Search, Film, Play, Folder, Link2 } from "lucide-react";
 
 interface MediaItem {
   name: string;
@@ -36,17 +36,19 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
   const [internalOpen, setInternalOpen] = useState(false);
   const isControlled = controlledOpen !== undefined;
   const open = isControlled ? controlledOpen : internalOpen;
-  const setOpen = (v: boolean) => {
+  const setOpen = useCallback((v: boolean) => {
     if (isControlled) controlledOnOpenChange?.(v);
     else setInternalOpen(v);
-  };
-  const [tab, setTab] = useState<"upload" | "library">("library");
+  }, [controlledOnOpenChange, isControlled]);
+  const [tab, setTab] = useState<"upload" | "library" | "url">("library");
   const [library, setLibrary] = useState<MediaItem[]>([]);
   const [search, setSearch] = useState("");
   const [sourceFilter, setSourceFilter] = useState<"all" | "project" | "uploads">("all");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const [urlPreviewError, setUrlPreviewError] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch media library when tab opens
@@ -76,8 +78,10 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
       fetchLibrary();
       setTab("library");
       setError("");
+      setUrlInput(value || "");
+      setUrlPreviewError(false);
     }
-  }, [open, fetchLibrary]);
+  }, [open, fetchLibrary, value]);
 
   // Upload new file
   const handleUpload = async (file: File) => {
@@ -120,7 +124,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [open]);
+  }, [open, setOpen]);
 
   const filtered = library.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
@@ -128,6 +132,14 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
 
   const hasValue = value && value.length > 0;
   const isValueVideo = hasValue && isVideo(value);
+  const trimmedUrlInput = urlInput.trim();
+  const isUrlInputVideo = trimmedUrlInput && isVideo(trimmedUrlInput);
+
+  const handleUrlConfirm = () => {
+    if (!trimmedUrlInput) return;
+    onChange(trimmedUrlInput);
+    setOpen(false);
+  };
 
   return (
     <>
@@ -205,6 +217,18 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                   }`}
                 >
                   Library
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setTab("url");
+                    setUrlPreviewError(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-colors ${
+                    tab === "url" ? "bg-[#ED7606] text-white" : "text-[#6B7280] hover:bg-[#F3F4F6]"
+                  }`}
+                >
+                  URL
                 </button>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="w-8 h-8 rounded-lg hover:bg-[#F3F4F6] flex items-center justify-center text-[#6B7280]">
@@ -363,6 +387,74 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       className="text-xs text-[#6B7280] hover:text-[#ED7606] font-medium"
                     >
                       Refresh library
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* URL Tab */}
+              {tab === "url" && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-[#374151]">Media URL</label>
+                    <div className="relative">
+                      <Link2 size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
+                      <input
+                        className="h-11 w-full rounded-lg border border-[#E5E7EB] pl-9 pr-3 text-sm text-[#374151] focus:border-[#ED7606] focus:outline-none focus:ring-2 focus:ring-[#ED7606]/10"
+                        placeholder="/images/news/example.webp or https://example.com/image.webp"
+                        value={urlInput}
+                        onChange={(e) => {
+                          setUrlInput(e.target.value);
+                          setUrlPreviewError(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleUrlConfirm();
+                          }
+                        }}
+                      />
+                    </div>
+                    <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
+                      Use a project path, an uploaded file path, or a full external URL.
+                    </p>
+                  </div>
+
+                  <div className="overflow-hidden rounded-xl border border-[#E5E7EB] bg-[#F8F9FA]">
+                    <div className="flex h-56 items-center justify-center">
+                      {!trimmedUrlInput ? (
+                        <div className="text-center text-sm text-[#9CA3AF]">
+                          <ImageIcon size={34} className="mx-auto mb-2 text-[#D1D5DB]" />
+                          Enter a URL to preview it here
+                        </div>
+                      ) : isUrlInputVideo ? (
+                        <div className="flex h-full w-full items-center justify-center bg-[#111827]">
+                          <Play size={36} className="text-white/75" />
+                        </div>
+                      ) : urlPreviewError ? (
+                        <div className="px-6 text-center text-sm text-[#9CA3AF]">
+                          <ImageIcon size={34} className="mx-auto mb-2 text-[#D1D5DB]" />
+                          Preview unavailable. You can still use this URL.
+                        </div>
+                      ) : (
+                        <img
+                          src={trimmedUrlInput}
+                          alt="URL preview"
+                          className="h-full w-full object-contain p-4"
+                          onError={() => setUrlPreviewError(true)}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="flex justify-end">
+                    <button
+                      type="button"
+                      onClick={handleUrlConfirm}
+                      disabled={!trimmedUrlInput}
+                      className="h-10 rounded-lg bg-[#ED7606] px-4 text-xs font-bold text-white transition-colors hover:bg-[#D46900] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      Use this URL
                     </button>
                   </div>
                 </div>

@@ -8,11 +8,26 @@ import { CategoryHero } from "@/components/products/CategoryHero";
 import { CategoryTabs } from "@/components/products/CategoryTabs";
 import { ProductListClient } from "@/components/products/ProductListClient";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
+import { AUTOMOTIVE_SEO_KEYWORDS, GLOBAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
 
 export const metadata: Metadata = {
-  title: "Products | Precision Dampers & Motion Control | TEAO",
+  title: "Products | Gear, Rotary, Axial, Barrel & Glove Box Dampers",
   description:
-    "Browse TEAO's full range of precision dampers, latches and motion control components. Gear dampers, axial dampers, glove box dampers, latches and custom solutions.",
+    "Browse TEAO precision dampers and motion control components: gear dampers, rotary dampers, axial dampers, barrel dampers, glove box dampers, latches and custom solutions.",
+  keywords: [
+    "gear damper",
+    "rotary damper",
+    "axial damper",
+    "barrel damper",
+    "glove box damper",
+    "automotive interior damper",
+    "motion control damper",
+    ...GLOBAL_SEO_KEYWORDS,
+    ...AUTOMOTIVE_SEO_KEYWORDS,
+  ],
+  alternates: {
+    canonical: "/products",
+  },
 };
 
 export default async function ProductsPage({
@@ -39,8 +54,13 @@ export default async function ProductsPage({
   }));
   const listingJsonLd = collectionPageSchema(
     categoryInfo?.name ?? "All Products",
-    "Full range of precision dampers, latches and motion control components.",
+    "Full range of precision gear dampers, rotary dampers, axial dampers, barrel dampers, glove box dampers, latches and custom motion control components.",
     productItems,
+    {
+      url: category ? `/products?category=${category}` : "/products",
+      keywords: [...GLOBAL_SEO_KEYWORDS, ...AUTOMOTIVE_SEO_KEYWORDS],
+      about: ["gear damper", "rotary damper", "axial damper", "barrel damper", "glove box damper", "automotive interior damper"],
+    },
   );
 
   return (

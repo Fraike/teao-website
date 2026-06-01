@@ -39,7 +39,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`${pathname}.html`, request.url), 301);
   }
 
-  // /products/slug → /category/slug
+  // /products/slug -> canonical legacy /category/slug product URL
   if (pathname.startsWith("/products/")) {
     const slug = pathname.split("/").pop() || "";
     const category = PRODUCT_CATEGORY_MAP[slug];
@@ -52,5 +52,8 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/news/:path*", "/products/:path*"],
+  matcher: [
+    "/news/:path*",
+    "/products/:path*",
+  ],
 };

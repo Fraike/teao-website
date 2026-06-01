@@ -36,12 +36,18 @@ export interface AutomotiveZoneConfig {
 }
 
 const IMG = "/images";
+const PRODUCT_HREFS: Record<string, string> = {
+  "rd-t015": "/gear-damper/rd-t015",
+  "rd-t021": "/gear-damper/rd-t021",
+  "rd-t029": "/gear-damper/rd-t029",
+  "rd-v109": "/glove-box-damper/rd-v109",
+};
 
 function p(model: string, path: string, href?: string): ApplicationProduct {
   return {
     model,
     image: `${IMG}/products/${path}`,
-    href: href || `/products`,
+    href: href || PRODUCT_HREFS[model.toLowerCase()] || `/products`,
   };
 }
 
@@ -61,7 +67,7 @@ export const automotiveInterior: AutomotiveZoneConfig = {
       desc: "Soft-open, soft-close and anti-slam control for center console storage lids.",
       image: `${IMG}/applications/applications-gif/Center console lid.gif`,
       groups: [
-        { title: "Axial Damper", products: [p("RD-T013B", "rd-t013b/photo_1.webp", "/products/rd-t013b"), p("RD-T012C", "rd-t012c/photo_1.webp", "/products/rd-t012c")] },
+        { title: "Axial Damper", products: [p("RD-T013B", "rd-t013b/photo_1.webp", "/axial-damper/rd-t013b"), p("RD-T012C", "rd-t012c/photo_1.webp", "/axial-damper/rd-t012c")] },
       ],
     },
     {
@@ -69,8 +75,8 @@ export const automotiveInterior: AutomotiveZoneConfig = {
       desc: "Controlled descent for reduced impact and noise in passenger vehicle interior storage.",
       image: `${IMG}/applications/applications-gif/Glove box.gif`,
       groups: [
-        { title: "Glove Box Damper", products: [p("RD-V109", "rd-v109/main.webp", "/products/rd-v109"), p("RD-V107", "rd-v107/main.webp", "/products/rd-v107"), p("RD-V129", "rd-v129/main.webp", "/products/rd-v129")] },
-        { title: "Synchronizer", products: [p("RD-T180", "rd-t180/main.webp", "/products/rd-t180")] },
+        { title: "Glove Box Damper", products: [p("RD-V109", "rd-v109/main.webp", "/glove-box-damper/rd-v109"), p("RD-V107", "rd-v107/main.webp", "/glove-box-damper/rd-v107"), p("RD-V129", "rd-v129/main.webp", "/glove-box-damper/rd-v129")] },
+        { title: "Synchronizer", products: [p("RD-T180", "rd-t180/main.webp", "/other/rd-t180")] },
       ],
     },
     {
@@ -87,7 +93,7 @@ export const automotiveInterior: AutomotiveZoneConfig = {
       desc: "Damped return buffering to eliminate snap-back impact noise on roof grab handles.",
       image: `${IMG}/applications/applications-gif/safty handle.gif`,
       groups: [
-        { title: "Axial Damper", products: [p("RD-T012A", "rd-t012a/main.webp", "/products/rd-t012a"), p("RD-T012C", "rd-t012c/photo_1.webp", "/products/rd-t012c"), p("RD-T013B", "rd-t013b/photo_1.webp", "/products/rd-t013b")] },
+        { title: "Axial Damper", products: [p("RD-T012A", "rd-t012a/main.webp", "/axial-damper/rd-t012a"), p("RD-T012C", "rd-t012c/photo_1.webp", "/axial-damper/rd-t012c"), p("RD-T013B", "rd-t013b/photo_1.webp", "/axial-damper/rd-t013b")] },
       ],
     },
     {
@@ -95,7 +101,7 @@ export const automotiveInterior: AutomotiveZoneConfig = {
       desc: "Soft open/close for overhead storage bins and glasses boxes.",
       image: `${IMG}/applications/applications-gif/glasses box.gif`,
       groups: [
-        { title: "Axial Damper", products: [p("RD-T013B", "rd-t013b/photo_1.webp", "/products/rd-t013b"), p("RD-T013C", "rd-t013c/main.webp", "/products/rd-t013c")] },
+        { title: "Axial Damper", products: [p("RD-T013B", "rd-t013b/photo_1.webp", "/axial-damper/rd-t013b"), p("RD-T013C", "rd-t013c/main.webp", "/axial-damper/rd-t013c")] },
       ],
     },
     {
@@ -103,7 +109,7 @@ export const automotiveInterior: AutomotiveZoneConfig = {
       desc: "Rotary damping for sunshade and flip-down mechanisms for smoother motion.",
       image: `${IMG}/applications/applications-gif/glasses box.gif`,
       groups: [
-        { title: "Axial Damper", products: [p("RD-T013B", "rd-t013b/photo_1.webp", "/products/rd-t013b"), p("RD-T013C", "rd-t013c/main.webp", "/products/rd-t013c")] },
+        { title: "Axial Damper", products: [p("RD-T013B", "rd-t013b/photo_1.webp", "/axial-damper/rd-t013b"), p("RD-T013C", "rd-t013c/main.webp", "/axial-damper/rd-t013c")] },
       ],
     },
   ],
@@ -121,7 +127,7 @@ export const automotiveExterior: AutomotiveZoneConfig = {
       desc: "Deployment, return and tactile control for flush and conventional exterior handles.",
       image: `${IMG}/applications/applications-gif/Door handle.gif`,
       groups: [
-        { title: "Gear / Custom Module", products: [p("RD-T015", "rd-t015/main.webp", "/products/rd-t015"), p("RD-T021", "rd-t021/main.webp", "/products/rd-t021")] },
+        { title: "Gear / Custom Module", products: [p("RD-T015", "rd-t015/main.webp", "/gear-damper/rd-t015"), p("RD-T021", "rd-t021/main.webp", "/gear-damper/rd-t021")] },
       ],
     },
     {
@@ -129,8 +135,8 @@ export const automotiveExterior: AutomotiveZoneConfig = {
       desc: "Soft open/close and anti-slam for EV charging port covers.",
       image: `${IMG}/applications/applications-gif/outlet cover.gif`,
       groups: [
-        { title: "Gear Damper", products: [p("RD-T023", "rd-t023/main.webp", "/products/rd-t023")] },
-        { title: "Axial Damper", products: [p("RD-T013C", "rd-t013c/main.webp", "/products/rd-t013c")] },
+        { title: "Gear Damper", products: [p("RD-T023", "rd-t023/main.webp", "/gear-damper/rd-t023")] },
+        { title: "Axial Damper", products: [p("RD-T013C", "rd-t013c/main.webp", "/axial-damper/rd-t013c")] },
       ],
     },
   ],

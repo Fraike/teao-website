@@ -1,8 +1,9 @@
 import { db } from "@/db";
 import { products, categories, news } from "@/db/schema";
-import { mapDbProduct } from "@/lib/products";
+import { getProductUrl, mapDbProduct } from "@/lib/products";
 import { SITE_CONFIG } from "@/lib/constants";
 import { env } from "@/lib/env";
+import { AUTOMOTIVE_SEO_KEYWORDS, CATEGORY_SEO, GLOBAL_SEO_KEYWORDS, getCategorySeo } from "@/lib/seo-keywords";
 
 export const revalidate = 86400;
 
@@ -44,16 +45,33 @@ export async function GET() {
 - Silicone oil viscosity tuning for custom torque profiles
 - Engineering review: sample matching, PPAP support, DV/PV validation
 - Annual capacity: 80 million units
+
+## Search Terminology and GEO Context
+- Gear damper is also searched as rotary damper, plastic rotary damper, small rotary damper and one way damper.
+- Axial damper is also searched as barrel damper, linear motion damper and soft close axial damper.
+- Glove box damper searches include automotive glove box damper, soft open glove box damper, glove box shock absorber, rotary glove box damper and glove box latch damper.
+- Automotive application searches include ${AUTOMOTIVE_SEO_KEYWORDS.join(", ")}.
+- Procurement and supplier searches include ${GLOBAL_SEO_KEYWORDS.join(", ")}.
 `);
 
   // Categories
   parts.push(`## Product Categories
 `);
   for (const cat of catRows) {
+    const seo = getCategorySeo(cat.slug, cat.name, cat.description);
     parts.push(`### ${cat.name} (${cat.slug})
-${cat.description}
+${seo.llmsSummary}
+
+Primary search terms: ${seo.keywords.join(", ")}.
+Alternate names: ${seo.aliases.join(", ") || "N/A"}.
 `);
   }
+
+  parts.push(`## Category Search Focus
+${Object.entries(CATEGORY_SEO)
+  .map(([, seo]) => `- ${seo.title}: ${seo.description}`)
+  .join("\n")}
+`);
 
   // Individual products with full specs
   parts.push(`## Products
@@ -64,6 +82,7 @@ ${cat.description}
 - **Category:** ${p.category}
 - **Summary:** ${p.summary}
 - **Description:** ${p.description}
+${getCategorySeo(p.category, p.category, p.summary).aliases.length ? `- **Also searched as:** ${getCategorySeo(p.category, p.category, p.summary).aliases.join(", ")}` : ""}
 ${p.torque ? `- **Torque Range:** ${p.torque.min}–${p.torque.max} ${p.torque.unit}` : ""}
 ${p.durability?.temperature ? `- **Operating Temperature:** ${p.durability.temperature}` : ""}
 ${p.durability?.cycles ? `- **Cycle Life:** ${p.durability.cycles.toLocaleString()} ${p.durability.cycles_unit || "cycles"}` : ""}
@@ -72,7 +91,7 @@ ${p.assembly_method ? `- **Assembly Method:** ${p.assembly_method}` : ""}
 ${p.characteristics?.length ? `- **Characteristics:** ${p.characteristics.join(", ")}` : ""}
 ${p.materials?.length ? `- **Materials:** ${p.materials.map((m) => `${m.part}: ${m.material}`).join("; ")}` : ""}
 ${p.applications?.length ? `- **Applications:** ${p.applications.join(", ")}` : ""}
-- **URL:** ${BASE}/${p.category}/${p.slug}
+- **URL:** ${BASE}${getProductUrl(p)}
 `);
   }
 

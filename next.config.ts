@@ -14,10 +14,6 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: "/:category(gear-damper|axial-damper|glove-box-damper|latch|other)/:slug",
-        destination: "/products/:slug?canonicalCategory=:category",
-      },
-      {
         source: "/news/:slug.html",
         destination: "/news/:slug",
       },

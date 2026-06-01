@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { products, categories } from "@/db/schema";
@@ -21,43 +21,72 @@ import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { ShareButtons } from "@/components/products/ShareButtons";
 import { DownloadPDFButton } from "@/components/products/DownloadPDFButton";
 import { Button } from "@/components/ui/button";
-
-export async function generateStaticParams() {
-  const rows = await db.select({ slug: products.slug }).from(products).all();
-  return rows.map((r) => ({ slug: r.slug }));
-}
+import { getCategorySeo } from "@/lib/seo-keywords";
+import { getProductVideos } from "@/lib/product-videos";
 
 interface Props {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ category: string; slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const rows = await db.select({ slug: products.slug, category: products.category }).from(products).all();
+  return rows.map((row) => ({ category: row.category, slug: row.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
+  const { category, slug } = await params;
   const product = await db.select().from(products).where(eq(products.slug, slug)).get();
-  if (!product) return { title: "Product Not Found" };
+  if (!product || product.category !== category) return { title: "Product Not Found" };
+
+  const categoryRow = await db.select().from(categories).where(eq(categories.slug, product.category)).get();
+  const categorySeo = getCategorySeo(product.category, categoryRow?.name ?? product.category, categoryRow?.description ?? product.summary);
+  const productTags = JSON.parse(product.tags || "[]") as string[];
+  const description = product.seoDescription ?? product.summary;
+  const image = JSON.parse(product.images || "[]")?.[0]?.url || product.image;
+  const title = (product.seoTitle ?? `${product.model} - ${product.name}`).replace(/\s*\|\s*TEAO$/i, "");
 
   return {
-    title: product.seoTitle ?? `${product.model} - ${product.name}`,
-    description: product.seoDescription ?? product.summary,
+    title,
+    description,
+    keywords: [
+      product.model,
+      product.name,
+      ...productTags,
+      ...categorySeo.keywords.slice(0, 12),
+      ...categorySeo.aliases,
+      "TEAO",
+    ],
+    alternates: {
+      canonical: getProductUrl(product),
+    },
     openGraph: {
       title: product.name,
-      description: product.summary,
-      images: JSON.parse(product.images || "[]")?.[0]?.url
-        ? [{ url: JSON.parse(product.images || "[]")[0].url, width: 800, height: 800 }]
-        : product.image
-          ? [{ url: product.image, width: 800, height: 800 }]
-          : [],
+      description,
+      images: image ? [{ url: image, width: 800, height: 800 }] : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description,
+      images: image ? [image] : [],
     },
   };
 }
 
-export default async function ProductDetailPage({ params }: Props) {
-  const { slug } = await params;
+export default async function CategoryProductDetailPage({ params }: Props) {
+  const { category, slug } = await params;
   const row = await db.select().from(products).where(eq(products.slug, slug)).get();
-  if (!row) notFound();
+  if (!row || row.category !== category) {
+    if (row && row.category !== category) {
+      // Wrong category in URL — redirect to correct canonical URL
+      redirect(getProductUrl({ slug: row.slug, category: row.category }));
+    }
+    notFound();
+  }
 
   const product = mapDbProduct(row);
   const categoryRow = await db.select().from(categories).where(eq(categories.slug, product.category)).get();
+  const categorySeo = getCategorySeo(product.category, categoryRow?.name ?? product.category, categoryRow?.description ?? product.summary);
 
   const relatedRows = await db.select().from(products).where(eq(products.category, product.category)).all();
   const related = relatedRows
@@ -68,8 +97,15 @@ export default async function ProductDetailPage({ params }: Props) {
     product.images.length > 0
       ? product.images
       : [{ url: product.image, alt: product.name }];
+  const productVideos = getProductVideos(product);
 
-  const productJsonLd = productSchema(product, categoryRow?.name);
+  const productJsonLd = productSchema(
+    {
+      ...product,
+      tags: Array.from(new Set([...(product.tags || []), ...categorySeo.keywords.slice(0, 8), ...categorySeo.aliases])),
+    },
+    categoryRow?.name,
+  );
   const breadcrumbItems = [
     { name: "Home", url: "/" },
     { name: "Products", url: "/products" },
@@ -93,7 +129,7 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="grid lg:grid-cols-[0.82fr_1.18fr] gap-8 lg:gap-12 mb-12 lg:mb-14 items-start">
             {/* Left: Gallery */}
             <div className="lg:sticky lg:top-24 lg:self-start">
-              <ProductGallery images={galleryImages} />
+              <ProductGallery images={galleryImages} videos={productVideos} />
             </div>
 
             {/* Right: Info */}

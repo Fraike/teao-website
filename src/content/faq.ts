@@ -15,7 +15,7 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "What types of dampers does TEAO manufacture?",
-    a: "TEAO manufactures five product lines: gear dampers (rotary), axial dampers (linear), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, and mounting configuration.",
+    a: "TEAO manufactures five product lines: gear dampers (rotary dampers), axial dampers (barrel dampers / linear dampers), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, force profile, stroke and mounting configuration.",
   },
   {
     q: "Can TEAO customize dampers for our specific application?",
@@ -27,7 +27,15 @@ export const FAQS: FaqItem[] = [
   },
   {
     q: "What is the difference between gear dampers and axial dampers?",
-    a: "Gear dampers (rotary dampers) provide controlled rotational motion — ideal for lids, cup holders, and storage doors. Axial dampers provide linear damping force along a straight path — used for sliding mechanisms, drawers, and push-push applications. Your application's motion type determines which damper is appropriate.",
+    a: "Gear dampers, also searched as rotary dampers, provide controlled rotational motion for lids, cup holders, armrests and storage doors. Axial dampers, also searched as barrel dampers or linear motion dampers, provide damping force along a straight stroke for grab handles, glove boxes, armrests and sliding mechanisms. Your application's motion path determines which damper is appropriate.",
+  },
+  {
+    q: "Which TEAO dampers are used in automotive interiors?",
+    a: "Automotive interior applications commonly use gear dampers / rotary dampers for cup holders, inner door handles and compact rotating mechanisms; axial dampers / barrel dampers for grab handles, armrests and overhead consoles; and glove box dampers for controlled glove box descent and soft-open motion.",
+  },
+  {
+    q: "Can TEAO support EV charging port cover dampers?",
+    a: "Yes. TEAO can review charging port cover dampers for soft opening, anti-slam closing, noise reduction, temperature stability, motion direction and available mounting space. Recommended solutions may include gear dampers, axial dampers or custom modules depending on the cover structure.",
   },
   {
     q: "How do I select the right torque value for my application?",

@@ -4,6 +4,7 @@ import { PublicChrome } from "@/components/layout/public-chrome";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { env } from "@/lib/env";
 import { organizationSchema, JsonLdScript } from "@/lib/structured-data";
+import { AUTOMOTIVE_SEO_KEYWORDS, GLOBAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
 import "./globals.css";
 
 const inter = Inter({
@@ -24,11 +25,14 @@ export const metadata: Metadata = {
   keywords: [
     "automotive damper",
     "gear damper",
-    "axial damper",
-    "glove box damper",
     "rotary damper",
+    "axial damper",
+    "barrel damper",
+    "glove box damper",
     "latch mechanism",
     "motion control",
+    ...GLOBAL_SEO_KEYWORDS,
+    ...AUTOMOTIVE_SEO_KEYWORDS,
     "TEAO",
   ],
   openGraph: {
