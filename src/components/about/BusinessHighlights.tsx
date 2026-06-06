@@ -1,10 +1,16 @@
 import { Reveal } from "@/components/ui/reveal";
 import { businessStats } from "@/content/about";
+import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
 
 export function BusinessHighlights() {
   return (
-    <section className="pt-14 pb-8 lg:pt-18 lg:pb-10 bg-[#F0F2F5]">
-      <div className="shell">
+    <section className="relative overflow-hidden pt-14 pb-8 lg:pt-18 lg:pb-10 bg-[#F0F2F5]">
+      <AboutSectionBackdrop
+        image="/images/about/bg-gear-damper-outline.svg"
+        position="left 7% top 22%"
+        size="clamp(220px, 26vw, 360px) auto"
+      />
+      <div className="shell relative z-10">
         <Reveal>
           <div className="text-center">
             <span className="eyebrow">Business Data</span>

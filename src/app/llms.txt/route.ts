@@ -54,7 +54,7 @@ ${productLinks}
 - [FAQ](${BASE}/faq): Common procurement and technical questions
 - [Torque Converter](${BASE}/torque-converter): Free engineering torque unit conversion tool
 - [Contact](${BASE}/contact): Send inquiry with drawing and specifications
-- [About](${BASE}/about): 20+ years company history, certifications and values
+- [About](${BASE}/about): 20+ years company history, certifications, values, people culture and employee growth
 - [News](${BASE}/news): Company updates and engineering insights
 
 ## Category Search Focus

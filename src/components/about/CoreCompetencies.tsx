@@ -2,13 +2,19 @@ import { Reveal } from "@/components/ui/reveal";
 import Image from "next/image";
 import { competencies } from "@/content/about";
 import { Cog, Wrench, Settings } from "lucide-react";
+import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
 
 const icons = [Settings, Wrench, Cog];
 
 export function CoreCompetencies() {
   return (
-    <section className="pt-10 pb-16 lg:pt-12 lg:pb-24 bg-[#F0F2F5]">
-      <div className="shell">
+    <section className="relative overflow-hidden pt-10 pb-16 lg:pt-12 lg:pb-24 bg-[#F0F2F5]">
+      <AboutSectionBackdrop
+        image="/images/about/bg-cylindrical-damper-outline.svg"
+        position="right 9% top 15%"
+        size="clamp(210px, 24vw, 340px) auto"
+      />
+      <div className="shell relative z-10">
         <Reveal>
           <div className="text-center">
             <span className="eyebrow">Core Competencies</span>

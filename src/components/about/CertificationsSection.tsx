@@ -1,11 +1,20 @@
 import { Reveal } from "@/components/ui/reveal";
 import Image from "next/image";
 import { patentCertificates, systemCertificates } from "@/content/about";
+import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
 
 export function CertificationsSection() {
   return (
-    <section className="pt-16 pb-8 lg:pt-24 lg:pb-10 bg-white" id="quality-certifications">
-      <div className="shell">
+    <section
+      className="relative overflow-hidden pt-16 pb-8 lg:pt-24 lg:pb-10 bg-white"
+      id="quality-certifications"
+    >
+      <AboutSectionBackdrop
+        image="/images/about/bg-glove-box-damper-outline.svg"
+        position="left 7% top 26%"
+        size="clamp(300px, 38vw, 560px) auto"
+      />
+      <div className="shell relative z-10">
         <Reveal>
           <div className="grid lg:grid-cols-[0.75fr_1fr] gap-8 lg:gap-14 items-end mb-8 lg:mb-12">
             <div>
@@ -22,9 +31,9 @@ export function CertificationsSection() {
           </div>
         </Reveal>
 
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-4 lg:gap-5">
-          <Reveal delay={1}>
-            <div className="rounded-2xl border border-[#E5E7EB] bg-white p-5 lg:p-6 shadow-[0_4px_20px_rgba(0,0,0,.03)]">
+        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-4 lg:gap-5 items-stretch">
+          <Reveal delay={1} className="h-full">
+            <div className="flex h-full flex-col rounded-2xl border border-[#E5E7EB] bg-white p-5 lg:p-6 shadow-[0_4px_20px_rgba(0,0,0,.03)]">
               <div className="flex items-start justify-between gap-5 mb-5">
                 <div>
                   <span className="text-[#ED7606] text-xs font-black uppercase tracking-[0.14em]">
@@ -46,8 +55,8 @@ export function CertificationsSection() {
             </div>
           </Reveal>
 
-          <Reveal delay={2}>
-            <div className="rounded-2xl border border-[#111827]/10 bg-[#111827] p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(0,0,0,.06)]">
+          <Reveal delay={2} className="h-full">
+            <div className="flex h-full flex-col rounded-2xl border border-[#111827]/10 bg-[#111827] p-5 lg:p-6 text-white shadow-[0_4px_20px_rgba(0,0,0,.06)]">
               <div className="flex items-start justify-between gap-5 mb-5">
                 <div>
                   <span className="text-[#FF9A3C] text-xs font-black uppercase tracking-[0.14em]">

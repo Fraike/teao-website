@@ -1,6 +1,20 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const PROTECTED_ASSET_EXTENSIONS = /\.(?:avif|gif|jpe?g|mp4|pdf|png|svg|webm|webp)$/i;
+const PROTECTED_ASSET_PATHS = ["/images/", "/video/", "/remark/"];
+const BLOCKED_CRAWLER_PATTERNS = [
+  /ahrefsbot/i,
+  /bytespider/i,
+  /dotbot/i,
+  /httrack/i,
+  /mj12bot/i,
+  /python-requests/i,
+  /scrapy/i,
+  /semrushbot/i,
+  /sitebulb/i,
+];
+
 const PRODUCT_CATEGORY_MAP: Record<string, string> = {
   "rd-t015": "gear-damper", "rd-t001": "gear-damper", "rd-t002": "gear-damper",
   "rd-t003": "gear-damper", "rd-t008": "gear-damper", "rd-t009": "gear-damper",
@@ -31,8 +45,61 @@ const PRODUCT_CATEGORY_MAP: Record<string, string> = {
   "rd-tr02": "other", "rd-tr05": "other", "rd-v112": "other",
 };
 
+function getAllowedRefererHosts(request: NextRequest) {
+  const currentHost = request.nextUrl.host;
+  const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://teao-damper.com";
+  const hosts = new Set([currentHost, "localhost:3000", "localhost:3001"]);
+
+  try {
+    const siteHost = new URL(configuredSiteUrl).host;
+    hosts.add(siteHost);
+    if (siteHost.startsWith("www.")) {
+      hosts.add(siteHost.slice(4));
+    } else {
+      hosts.add(`www.${siteHost}`);
+    }
+  } catch {
+    hosts.add("teao-damper.com");
+    hosts.add("www.teao-damper.com");
+  }
+
+  return hosts;
+}
+
+function isProtectedAsset(pathname: string) {
+  return (
+    PROTECTED_ASSET_PATHS.some((prefix) => pathname.startsWith(prefix)) &&
+    PROTECTED_ASSET_EXTENSIONS.test(pathname)
+  );
+}
+
+function isAllowedAssetReferer(request: NextRequest) {
+  const referer = request.headers.get("referer");
+  if (!referer) return true;
+
+  try {
+    const refererHost = new URL(referer).host;
+    return getAllowedRefererHosts(request).has(refererHost);
+  } catch {
+    return false;
+  }
+}
+
+function isBlockedCrawler(request: NextRequest) {
+  const userAgent = request.headers.get("user-agent") || "";
+  return BLOCKED_CRAWLER_PATTERNS.some((pattern) => pattern.test(userAgent));
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (isBlockedCrawler(request)) {
+    return new NextResponse("Automated mirroring is not allowed.", { status: 403 });
+  }
+
+  if (isProtectedAsset(pathname) && !isAllowedAssetReferer(request)) {
+    return new NextResponse("Asset hotlinking is not allowed.", { status: 403 });
+  }
 
   // /news/slug → /news/slug.html
   if (pathname.startsWith("/news/") && !pathname.endsWith(".html")) {
@@ -53,7 +120,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/news/:path*",
-    "/products/:path*",
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

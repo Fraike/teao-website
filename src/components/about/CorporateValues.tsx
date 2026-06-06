@@ -1,13 +1,19 @@
 import { Reveal } from "@/components/ui/reveal";
 import { corporateValues } from "@/content/about";
 import { BookOpen, HeartHandshake, Leaf, Building2 } from "lucide-react";
+import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
 
 const valueIcons = [BookOpen, HeartHandshake, Leaf, Building2];
 
 export function CorporateValues() {
   return (
-    <section className="pt-10 pb-16 lg:pt-12 lg:pb-24 bg-white">
-      <div className="shell">
+    <section className="relative overflow-hidden pt-10 pb-14 lg:pt-12 lg:pb-20 bg-white">
+      <AboutSectionBackdrop
+        image="/images/about/bg-latch-outline.svg"
+        position="right 9% top 16%"
+        size="clamp(220px, 25vw, 360px) auto"
+      />
+      <div className="shell relative z-10">
         <Reveal>
           <div className="grid lg:grid-cols-[0.78fr_1fr] gap-6 lg:gap-12 items-end">
             <div>

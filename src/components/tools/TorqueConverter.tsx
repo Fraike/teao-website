@@ -38,6 +38,17 @@ function formatValue(v: number): string {
   return Math.round(v).toLocaleString("en-US");
 }
 
+function normalizeInputValue(raw: string) {
+  const normalized = raw.replace(/[，。．]/g, ".").replace(/,/g, ".");
+
+  if (normalized === "") return "";
+  if (normalized === ".") return "0.";
+  if (normalized.startsWith(".")) return `0${normalized}`;
+  if (!/^\d*\.?\d{0,3}$/.test(normalized)) return null;
+
+  return normalized;
+}
+
 export default function TorqueConverter() {
   const [value, setValue] = useState<string>("1");
   const [unit, setUnit] = useState<string>("gf·cm");
@@ -68,9 +79,14 @@ export default function TorqueConverter() {
         {/* Input row */}
         <div className="flex flex-col sm:flex-row gap-3">
           <input
-            type="number"
+            type="text"
+            inputMode="decimal"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+              const nextValue = normalizeInputValue(e.target.value);
+              if (nextValue === null) return;
+              setValue(nextValue);
+            }}
             placeholder="Enter value..."
             className="flex-1 h-14 px-5 rounded-xl border border-[#E5E7EB] bg-white text-[#111827] text-lg font-semibold placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all"
           />

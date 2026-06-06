@@ -5,6 +5,7 @@ import { BusinessHighlights } from "@/components/about/BusinessHighlights";
 import { CoreCompetencies } from "@/components/about/CoreCompetencies";
 import { CertificationsSection } from "@/components/about/CertificationsSection";
 import { CorporateValues } from "@/components/about/CorporateValues";
+import { PeopleCultureSection } from "@/components/about/PeopleCultureSection";
 import { AboutCTA } from "@/components/about/AboutCTA";
 
 export const metadata: Metadata = {
@@ -44,6 +45,7 @@ export default function AboutPage() {
       <CoreCompetencies />
       <CertificationsSection />
       <CorporateValues />
+      <PeopleCultureSection />
       <AboutCTA />
     </>
   );

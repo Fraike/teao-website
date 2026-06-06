@@ -158,6 +158,36 @@ export const corporateValues = [
   },
 ];
 
+export const peopleCulture = {
+  eyebrow: "People & Culture",
+  title: "A cohesive team behind every precise motion.",
+  description:
+    "TEAO grows through people. We support employee learning, team collaboration, well-being and fair workplace practices so every member can contribute with confidence and creativity.",
+  highlights: [
+    {
+      name: "Growth & Learning",
+      description:
+        "Regular training and cross-team reviews help employees improve skills and solve customer challenges together.",
+    },
+    {
+      name: "Care & Well-being",
+      description:
+        "Team activities and a supportive workplace culture help members stay connected, healthy and engaged.",
+    },
+    {
+      name: "Respect & Responsibility",
+      description:
+        "TEAO values fair treatment, employee rights and shared responsibility across daily work and company development.",
+    },
+  ],
+  images: {
+    office: "/images/about/team/team-office-v2.webp",
+    building: "/images/about/team/team-building-v3.webp",
+    training: "/images/about/team/team-training-v2.webp",
+    employeeWork: "/images/about/team/team-interaction-v3.webp",
+  },
+};
+
 import { env } from "@/lib/env";
 
 export const trustBadges = [
@@ -177,7 +207,7 @@ export const youtubeVideoEmbedUrl =
 export const youtubeVideoPlaybackUrl = `${youtubeVideoEmbedUrl}${
   youtubeVideoEmbedUrl.includes("?") ? "&" : "?"
 }autoplay=1&rel=0&modestbranding=1`;
-export const videoPoster = "/images/company/automation-workshop.webp";
+export const videoPoster = "/images/company/factory-entrance.webp";
 export const companyVideoUrl = "/video/companyProfile.mp4";
 
 export const aboutFAQ = [

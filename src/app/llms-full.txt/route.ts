@@ -46,6 +46,11 @@ export async function GET() {
 - Engineering review: sample matching, PPAP support, DV/PV validation
 - Annual capacity: 80 million units
 
+## People and Culture
+- TEAO supports employee learning, cross-team collaboration and technical growth.
+- Team activities and workplace care help employees stay connected, healthy and engaged.
+- TEAO values fair treatment, employee rights and shared responsibility as part of long-term company development.
+
 ## Search Terminology and GEO Context
 - Gear damper is also searched as rotary damper, plastic rotary damper, small rotary damper and one way damper.
 - Axial damper is also searched as barrel damper, linear motion damper and soft close axial damper.
