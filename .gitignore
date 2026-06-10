@@ -5,6 +5,7 @@ node_modules/
 .env*.local
 trash_review/
 data/
+teao.db
 drizzle/
 .DS_Store
 tsconfig.tsbuildinfo

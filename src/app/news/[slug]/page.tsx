@@ -201,7 +201,7 @@ export default async function NewsDetailPage({ params }: Props) {
                 sizes="(max-width: 860px) 100vw, 860px"
               />
               <div className="absolute right-5 bottom-5 z-10 hidden flex-wrap justify-end gap-2 sm:flex">
-                {["Rotary damping", "Soft close", "Gear platform"].map((label) => (
+                {["Rotary damping", "Soft close", "Torque control"].map((label) => (
                   <span key={label} className="rounded-full border border-white/70 bg-white/78 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.10em] text-[#374151] shadow-sm backdrop-blur">
                     {label}
                   </span>

@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import Header from "./header";
 import Footer from "./footer";
+import { MediaProtection } from "./MediaProtection";
 
 export function PublicChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -12,6 +13,7 @@ export function PublicChrome({ children }: { children: React.ReactNode }) {
 
   return (
     <>
+      <MediaProtection />
       <Header />
       <main>{children}</main>
       <Footer />
