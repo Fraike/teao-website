@@ -476,16 +476,54 @@ pm2 restart teao-website
 ```
 
 ### ⚠️ 重要：数据库同步流程
-**永远不要**在 PM2 运行时直接替换数据库文件！必须先停掉 PM2：
+
+**永远不要**在 PM2 运行时直接替换数据库文件！必须遵循完整流程。
+
+#### 背景
+SQLite WAL 模式意味着未提交的写入存储在 `-wal` 和 `-shm` 文件中，主 `.db` 文件可能滞后。如果只 SCP 主文件而忽略 WAL，会导致：
+- **数据丢失**：WAL 中的数据未合并到主文件就被覆盖
+- **数据污染**：服务器 WAL 含旧数据，重启后回放覆盖干净 DB
+- **SQLITE_CORRUPT**：PM2 运行时替换文件可能导致损坏
+
+#### 完整同步流程
+
 ```bash
-# 正确的数据库同步流程
-pm2 stop teao-website
-# SCP 传输 data/teao.db 到服务器
-# 清理 WAL 文件 (teao.db-wal, teao.db-shm)
-pm2 start teao-website
+# === 步骤 1: 本地 Checkpoint ===
+# 在本地开发机上，将 WAL 数据合并到主文件
+node -e "
+const { createClient } = require('@libsql/client');
+const db = createClient({ url: 'file:./data/teao.db' });
+db.execute('PRAGMA wal_checkpoint(TRUNCATE)').then(r => {
+  console.log('Checkpoint done, WAL truncated');
+});
+"
+
+# === 步骤 2: 服务器停机 + 清理 ===
+ssh ubuntu@107.150.106.22 "cd /home/ubuntu/teao-website && \
+  pm2 stop teao-website && \
+  rm -f data/teao.db data/teao.db-wal data/teao.db-shm"
+
+# === 步骤 3: 传输数据库 ===
+scp data/teao.db ubuntu@107.150.106.22:/home/ubuntu/teao-website/data/teao.db
+
+# === 步骤 4: 拉取代码 + 构建 + 启动 ===
+ssh ubuntu@107.150.106.22 "cd /home/ubuntu/teao-website && \
+  git pull origin master && \
+  npm run build && \
+  pm2 restart teao-website"
 ```
 
-原因: SQLite WAL 模式下直接替换文件会导致 SQLITE_CORRUPT 错误。
+#### 只用代码部署（不涉及数据库）
+```bash
+ssh ubuntu@107.150.106.22 "cd /home/ubuntu/teao-website && \
+  pm2 stop teao-website && \
+  git pull origin master && \
+  npm run build && \
+  pm2 restart teao-website"
+```
+
+#### 为什么必须「删除」而非「保留」服务器 WAL
+即使本地 DB 干净，服务器 WAL 文件也可能包含历史脏数据。PM2 重启后 SQLite 会自动回放 WAL，导致已清理的数据重新出现。正确的做法是**彻底删除服务器端所有 DB 相关文件**后 SCP 干净副本。
 
 ### 环境变量
 生产服务器上必须设置:
@@ -581,8 +619,14 @@ npm run db:seed       # 初始化种子数据
 
 ### 数据库
 - 生产环境使用本地 SQLite，不使用 Turso 云数据库
-- 同步数据库前必须停止 PM2
+- **同步数据库必须遵循完整流程**（见 §9）：
+  1. 本地先 `wal_checkpoint(TRUNCATE)` 清空 WAL
+  2. 服务器 `pm2 stop` → 删除 `teao.db*` 全部文件
+  3. SCP 传输主文件
+  4. 重启 PM2
 - JSON 字段在前端渲染前需要 `JSON.parse()`
+- ⚠️ 只 SCP 主 `.db` 文件而忽略 WAL，会导致数据丢失或污染（WAL 含未合并数据）
+- ⚠️ 不删除服务器 WAL 文件直接替换主 DB，旧 WAL 会在重启后回放覆盖新数据
 
 ### 图片
 - 使用 `unoptimized: true`（Next.js Image optimization 关闭）
