@@ -108,7 +108,7 @@ export default function Header() {
               rel="noopener noreferrer"
               className="hidden lg:inline text-xs font-bold text-[#9CA3AF] hover:text-[#ED7606] transition-colors"
             >
-              Chinese Site
+              中文
             </a>
             <GlobalSearch />
             <Link
@@ -162,7 +162,7 @@ export default function Header() {
               onClick={() => setMobileOpen(false)}
               className="py-3 text-center text-sm font-bold rounded-full bg-[#F8F9FA] text-[#374151]"
             >
-              Chinese Site
+              中文
             </a>
           </div>
         </div>
