@@ -1,21 +1,26 @@
 import type { MetadataRoute } from "next";
 import { db } from "@/db";
+import { eq } from "drizzle-orm";
 import { products, news, categories } from "@/db/schema";
+
+const STATIC_LAST_MODIFIED = new Date("2026-06-26");
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://teao-damper.com";
 
   const staticRoutes = [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 1 },
-    { url: `${baseUrl}/about`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.9 },
-    { url: `${baseUrl}/about/teao-damper-manufacturer`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${baseUrl}/products`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.9 },
-    { url: `${baseUrl}/applications`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.8 },
-    { url: `${baseUrl}/quality`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.8 },
-    { url: `${baseUrl}/contact`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.7 },
-    { url: `${baseUrl}/faq`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
-    { url: `${baseUrl}/news`, lastModified: new Date(), changeFrequency: "weekly" as const, priority: 0.7 },
-    { url: `${baseUrl}/torque-converter`, lastModified: new Date(), changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: baseUrl, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "weekly" as const, priority: 1 },
+    { url: `${baseUrl}/about`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.9 },
+    { url: `${baseUrl}/about/teao-damper-manufacturer`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${baseUrl}/products`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "weekly" as const, priority: 0.9 },
+    { url: `${baseUrl}/applications`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.8 },
+    { url: `${baseUrl}/applications/automotive`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.8 },
+    { url: `${baseUrl}/quality`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.8 },
+    { url: `${baseUrl}/contact`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.7 },
+    { url: `${baseUrl}/faq`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${baseUrl}/news`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "weekly" as const, priority: 0.7 },
+    { url: `${baseUrl}/torque-converter`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.6 },
+    { url: `${baseUrl}/damper-torque-calculator`, lastModified: STATIC_LAST_MODIFIED, changeFrequency: "monthly" as const, priority: 0.6 },
   ];
 
   const catRows = await db.select().from(categories).all();
@@ -29,6 +34,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const productRows = await db
     .select({ slug: products.slug, category: products.category, updatedAt: products.updatedAt })
     .from(products)
+    .where(eq(products.isActive, 1))
     .all();
   const productRoutes = productRows.map((p) => ({
     url: `${baseUrl}/${p.category}/${p.slug}`,
@@ -40,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const newsRows = await db
     .select({ slug: news.slug, updatedAt: news.updatedAt })
     .from(news)
+    .where(eq(news.isPublished, 1))
     .all();
   const newsRoutes = newsRows.map((n) => ({
     url: `${baseUrl}/news/${n.slug}.html`,

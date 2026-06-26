@@ -71,6 +71,9 @@ export const metadata: Metadata = {
       "IATF 16949 certified damper manufacturer. 20+ years of expertise in gear dampers, axial dampers, latches and motion control.",
     images: ["/images/logo-color.webp"],
   },
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function Home() {

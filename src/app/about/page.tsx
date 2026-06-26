@@ -34,6 +34,9 @@ export const metadata: Metadata = {
       "Professional damper manufacturer with IATF 16949 certification, 100M annual capacity and custom torque engineering.",
     images: ["/images/logo-color.webp"],
   },
+  alternates: {
+    canonical: "/about",
+  },
 };
 
 export default function AboutPage() {

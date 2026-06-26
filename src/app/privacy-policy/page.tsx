@@ -4,6 +4,9 @@ import { SITE_CONFIG } from "@/lib/constants";
 export const metadata: Metadata = {
   title: "Privacy Policy | TEAO",
   description: "Privacy Policy for TEAO inquiry submissions and business contact information.",
+  alternates: {
+    canonical: "/privacy-policy",
+  },
 };
 
 const sections = [

@@ -30,6 +30,9 @@ export const metadata: Metadata = {
       "Reach TEAO engineering team for damper selection, torque customization and mass production inquiries.",
     images: ["/images/logo-color.webp"],
   },
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 const contactFAQ = [

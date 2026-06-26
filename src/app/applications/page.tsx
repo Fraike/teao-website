@@ -29,6 +29,9 @@ export const metadata: Metadata = {
       "TEAO dampers for automotive, bathroom, office equipment and industrial applications.",
     images: ["/images/applications/automotive.webp"],
   },
+  alternates: {
+    canonical: "/applications",
+  },
 };
 
 const APPLICATIONS = [
@@ -41,7 +44,7 @@ const APPLICATIONS = [
 export default function ApplicationsPage() {
   const appItems = APPLICATIONS.map((app) => ({
     name: app.title,
-    url: `/applications`,
+    url: app.href || "/applications",
   }));
   const appJsonLd = collectionPageSchema(
     "Damper Applications",

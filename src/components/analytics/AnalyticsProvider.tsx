@@ -5,6 +5,12 @@ import { usePathname } from "next/navigation";
 
 const SESSION_KEY = "teao_sid";
 const EVENTS = ["product_click", "scene_click", "cta_click", "category_click", "search", "search_open", "search_result_click", "form_submit"] as const;
+const EXCLUDED_PATH_PREFIXES = ["/admin", "/api"];
+
+function shouldTrackPath(pathname: string | null) {
+  if (!pathname) return false;
+  return !EXCLUDED_PATH_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
 
 function getSessionId(): string {
   if (typeof window === "undefined") return "";
@@ -37,6 +43,7 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
 
   // Page view on route change
   useEffect(() => {
+    if (!shouldTrackPath(pathname)) return;
     if (trackedRef.current && pathname === window.__teao_last_path) return;
     window.__teao_last_path = pathname;
     trackedRef.current = true;
@@ -46,6 +53,7 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   // Click delegation
   const handleClick = useCallback((e: MouseEvent) => {
     const target = e.target as HTMLElement;
+    if (!shouldTrackPath(pathname)) return;
     const el = target.closest("[data-analytics-event]") as HTMLElement | null;
     if (!el) return;
 
@@ -64,6 +72,7 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   // Custom event listener for programmatic tracking (e.g., form submissions)
   useEffect(() => {
     const handler = (e: Event) => {
+      if (!shouldTrackPath(window.location.pathname)) return;
       const detail = (e as CustomEvent).detail;
       if (detail && typeof detail === "object") {
         sendEvent(detail);

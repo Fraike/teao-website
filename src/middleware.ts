@@ -4,15 +4,12 @@ import type { NextRequest } from "next/server";
 const PROTECTED_ASSET_EXTENSIONS = /\.(?:avif|gif|jpe?g|mp4|pdf|png|svg|webm|webp)$/i;
 const PROTECTED_ASSET_PATHS = ["/images/", "/video/", "/remark/"];
 const BLOCKED_CRAWLER_PATTERNS = [
-  /ahrefsbot/i,
   /bytespider/i,
   /dotbot/i,
   /httrack/i,
   /mj12bot/i,
   /python-requests/i,
   /scrapy/i,
-  /semrushbot/i,
-  /sitebulb/i,
 ];
 
 const PRODUCT_CATEGORY_MAP: Record<string, string> = {

@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { products, categories, news } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { getProductUrl, mapDbProduct } from "@/lib/products";
 import { SITE_CONFIG } from "@/lib/constants";
 import { env } from "@/lib/env";
@@ -11,7 +12,7 @@ export async function GET() {
   const BASE = env.SITE_URL;
 
   const catRows = await db.select().from(categories).all();
-  const productRows = await db.select().from(products).all();
+  const productRows = await db.select().from(products).where(eq(products.isActive, 1)).all();
   const newsRows = (await db
     .select()
     .from(news)
@@ -57,6 +58,9 @@ export async function GET() {
 - Glove box damper searches include automotive glove box damper, soft open glove box damper, glove box shock absorber, rotary glove box damper and glove box latch damper.
 - Automotive application searches include ${AUTOMOTIVE_SEO_KEYWORDS.join(", ")}.
 - Procurement and supplier searches include ${GLOBAL_SEO_KEYWORDS.join(", ")}.
+
+## Why Automotive Dampers Matter in EV Interiors
+Electric vehicles are quieter because there is no traditional engine noise masking small mechanical sounds. In quiet EV cabins, opening a glove box, releasing an overhead glasses box, closing a center console lid or returning a grab handle can sound louder and feel less refined if the mechanism is undamped. Automotive interior dampers reduce snap-back, slow movement, control impact noise and make storage lids, handles and charging port covers feel more premium to the end user.
 `);
 
   // Categories
@@ -104,7 +108,7 @@ ${p.applications?.length ? `- **Applications:** ${p.applications.join(", ")}` : 
   parts.push(`## Frequently Asked Questions
 
 ### What types of dampers does TEAO manufacture?
-TEAO manufactures five product lines: gear dampers (rotary), axial dampers (linear), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, and mounting configuration.
+TEAO manufactures five product lines: gear dampers (also called rotary dampers), axial dampers (also called barrel dampers), glove box dampers, latches, and custom damper modules. Each can be tuned for torque, damping direction, and mounting configuration.
 
 ### Can TEAO customize dampers for our specific application?
 Yes. TEAO's core capability is custom damper development. Share your drawing, torque target, space envelope and application requirements. Our engineering team will review and recommend a standard platform or design a custom solution.

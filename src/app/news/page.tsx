@@ -35,6 +35,9 @@ export const metadata: Metadata = {
       "Company news and engineering insights from TEAO damper manufacturer.",
     images: ["/images/logo-color.webp"],
   },
+  alternates: {
+    canonical: "/news",
+  },
 };
 
 const TYPE_LABELS: Record<string, string> = {

@@ -32,6 +32,9 @@ export const metadata: Metadata = {
       "100% torque testing, visual inspection and professional laboratory validation for automotive dampers.",
     images: ["/images/company/visual-inspection.webp"],
   },
+  alternates: {
+    canonical: "/quality",
+  },
 };
 
 const ENGINEERING_CAPABILITIES = [

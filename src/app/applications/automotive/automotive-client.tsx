@@ -101,13 +101,41 @@ export function AutomotiveClient() {
             <div>
               <span className="eyebrow">Application Map</span>
               <h1 className="mt-2.5 lg:mt-3.5 text-[28px] sm:text-[32px] lg:text-[clamp(32px,4vw,44px)] leading-[1.02] tracking-[-0.04em] font-extrabold text-[#111827]">
-                Interior / Exterior
+                Automotive Interior / Exterior Dampers
               </h1>
             </div>
             <p className="text-[#6B7280] text-[15px] leading-relaxed">
               Click the orange markers on the map to jump to each application section and explore recommended damper types and models.
             </p>
           </div>
+
+          <section className="mb-7 grid gap-4 rounded-lg border border-[#E5E7EB] bg-white p-5 shadow-[0_4px_18px_rgba(17,24,39,0.035)] lg:grid-cols-[1fr_0.82fr] lg:p-6">
+            <div>
+              <h2 className="text-[20px] font-black tracking-[-0.03em] text-[#111827] lg:text-[24px]">
+                Why quiet automotive mechanisms need damping
+              </h2>
+              <p className="mt-3 text-[14px] leading-relaxed text-[#5B6472] lg:text-[15px]">
+                Electric vehicles and premium interiors are much quieter than traditional
+                engine-driven vehicles. As background noise drops, small mechanical sounds from
+                opening a glove box, releasing a glasses box, closing a center console lid or
+                returning a grab handle become easier for passengers to notice. A correctly
+                selected automotive interior damper slows the motion, reduces snap-back impact,
+                controls vibration and helps the mechanism feel more refined.
+              </p>
+            </div>
+            <div className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-1">
+              {[
+                "Lower impact noise in EV cabins",
+                "Soft-open and soft-close motion feel",
+                "More premium perceived interior quality",
+                "Controlled return for handles, lids and covers",
+              ].map((item) => (
+                <div key={item} className="rounded-lg border border-[#F1D6BD] bg-[#FFF8F2] px-3.5 py-3 text-[13px] font-extrabold leading-snug text-[#9A4A05]">
+                  {item}
+                </div>
+              ))}
+            </div>
+          </section>
 
           {/* Zone Tabs */}
           <div className="flex gap-2.5 mb-6">

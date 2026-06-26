@@ -7,7 +7,17 @@ const BASE = env.SITE_URL;
 // ---- Helpers ----
 
 function toUrl(path: string): string {
+  if (/^https?:\/\//i.test(path)) return path;
   return `${BASE}${path}`;
+}
+
+function propertyValue(name: string, value?: string | number | null) {
+  if (value === undefined || value === null || value === "") return null;
+  return {
+    "@type": "PropertyValue",
+    name,
+    value: String(value),
+  };
 }
 
 // ---- JSON-LD React Component ----
@@ -119,6 +129,26 @@ export function productSchema(product: Product, categoryName?: string) {
           },
         ]
       : [];
+  const productProperties = [
+    ...torqueProps,
+    propertyValue("Damper Type", categoryName),
+    propertyValue("Damping Direction", product.buffer_direction),
+    propertyValue("Mounting Method", product.assembly_method),
+    propertyValue("Force Range", product.force_range),
+    propertyValue("Hard Torque", product.hard_torque),
+    propertyValue("Hard Force", product.hard_force),
+    propertyValue("Sound Type", product.sound_type),
+    propertyValue("Temperature Range", product.durability?.temperature ?? product.durability?.temperature_value),
+    propertyValue(
+      "Cycle Life",
+      product.durability?.cycles
+        ? `${product.durability.cycles}${product.durability.cycles_unit ? ` ${product.durability.cycles_unit}` : " cycles"}`
+        : null,
+    ),
+    ...(product.applications || []).slice(0, 6).map((application) => propertyValue("Application", application)),
+    ...(product.characteristics || []).slice(0, 6).map((characteristic) => propertyValue("Characteristic", characteristic)),
+    ...(product.materials || []).slice(0, 6).map((material) => propertyValue(`Material: ${material.part}`, material.material)),
+  ].filter(Boolean);
 
   return {
     "@context": "https://schema.org",
@@ -126,7 +156,7 @@ export function productSchema(product: Product, categoryName?: string) {
     name: product.name,
     description: product.description || product.summary,
     sku: product.model,
-    image: galleryImages.map((img) => img.url),
+    image: galleryImages.map((img) => toUrl(img.url)),
     brand: {
       "@type": "Brand",
       name: SITE_CONFIG.name,
@@ -136,7 +166,7 @@ export function productSchema(product: Product, categoryName?: string) {
       name: SITE_CONFIG.fullName,
       url: BASE,
     },
-    ...(torqueProps.length > 0 && { additionalProperty: torqueProps }),
+    ...(productProperties.length > 0 && { additionalProperty: productProperties }),
     offers: {
       "@type": "Offer",
       availability: "https://schema.org/InStock",

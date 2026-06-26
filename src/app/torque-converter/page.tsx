@@ -28,6 +28,9 @@ export const metadata: Metadata = {
       "Free online torque unit conversion tool for damper specification and motion control engineering.",
     images: ["/images/logo-color.webp"],
   },
+  alternates: {
+    canonical: "/torque-converter",
+  },
 };
 
 export default function TorqueConverterPage() {

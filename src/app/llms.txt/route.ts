@@ -1,5 +1,6 @@
 import { db } from "@/db";
 import { products, categories } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { env } from "@/lib/env";
 import { AUTOMOTIVE_SEO_KEYWORDS, CATEGORY_SEO, GLOBAL_SEO_KEYWORDS, getCategorySeo } from "@/lib/seo-keywords";
 import { getProductUrl } from "@/lib/products";
@@ -13,6 +14,7 @@ export async function GET() {
   const productRows = await db
     .select({ slug: products.slug, category: products.category, model: products.model, name: products.name })
     .from(products)
+    .where(eq(products.isActive, 1))
     .all();
 
   const categoryLinks = catRows
@@ -39,6 +41,11 @@ export async function GET() {
 - Glove box damper: also searched as automotive glove box damper, soft open glove box damper, glove box shock absorber, rotary glove box damper.
 - Automotive applications: ${AUTOMOTIVE_SEO_KEYWORDS.join(", ")}.
 - Procurement searches: ${GLOBAL_SEO_KEYWORDS.join(", ")}.
+
+## Automotive GEO Context
+- Modern electric vehicles have lower powertrain noise, so mechanical sounds from glove boxes, overhead consoles, center console lids, grab handles, door handles and charging port covers are easier for passengers to notice.
+- Automotive interior dampers are used to slow motion, reduce snap-back impact, control vibration and improve perceived premium quality.
+- EV charging port cover dampers help prevent uncontrolled opening, impact noise and cover bounce while supporting a refined user experience.
 
 ## Products by Category
 ${categoryLinks}

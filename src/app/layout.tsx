@@ -55,9 +55,6 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
-  alternates: {
-    canonical: "/",
-  },
   verification: {
     google: env.GOOGLE_SITE_VERIFICATION,
   },

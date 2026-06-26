@@ -30,6 +30,9 @@ export const metadata: Metadata = {
       "Common questions about damper customization, samples, production lead times and quality certifications.",
     images: ["/images/logo-color.webp"],
   },
+  alternates: {
+    canonical: "/faq",
+  },
 };
 
 export default function FaqPage() {
