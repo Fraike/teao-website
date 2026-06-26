@@ -14,6 +14,8 @@ import { CategoryExplainer } from "@/components/products/CategoryExplainer";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { getCategorySeo } from "@/lib/seo-keywords";
 
+export const revalidate = 60;
+
 const VALID_CATEGORIES = ["gear-damper", "axial-damper", "glove-box-damper", "latch", "other"];
 
 export async function generateStaticParams() {

@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { products } from "@/db/schema";
@@ -36,6 +37,12 @@ export async function PUT(
     .run();
 
   const updated = await db.select().from(products).where(eq(products.id, numId)).get();
+
+  // Revalidate product pages to reflect edits live
+  revalidatePath(`/${updated!.category}`);
+  revalidatePath(`/${updated!.category}/${updated!.slug}`);
+  revalidatePath("/products");
+
   return NextResponse.json(serializeProduct(updated!));
 }
 
@@ -47,6 +54,12 @@ export async function DELETE(
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const { id } = await params;
-  await db.delete(products).where(eq(products.id, Number(id))).run();
+  const target = await db.select().from(products).where(eq(products.id, Number(id))).get();
+  if (target) {
+    await db.delete(products).where(eq(products.id, Number(id))).run();
+    revalidatePath(`/${target.category}`);
+    revalidatePath(`/${target.category}/${target.slug}`);
+    revalidatePath("/products");
+  }
   return NextResponse.json({ success: true });
 }

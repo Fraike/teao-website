@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { eq, like, or } from "drizzle-orm";
 import { db } from "@/db";
 import { products } from "@/db/schema";
@@ -32,6 +33,10 @@ export async function POST(request: Request) {
   const data = await request.json();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const row = await db.insert(products).values(deserializeProduct(data) as any).returning().get();
+
+  // Revalidate to include the new product
+  revalidatePath(`/${row.category}`);
+  revalidatePath("/products");
 
   return NextResponse.json(serializeProduct(row), { status: 201 });
 }

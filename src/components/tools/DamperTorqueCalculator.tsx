@@ -277,21 +277,21 @@ export default function DamperTorqueCalculator({
         <div className="mb-5 flex flex-col gap-3 border-b border-[#E5E7EB] pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#ED7606]">
-              测试输入
+              Input Parameters
             </p>
             <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#111827]">
-              阻尼器扭矩计算器
+              Damper Torque Estimator
             </h2>
           </div>
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-xs font-bold text-[#6B7280]">
             <Calculator size={15} className="text-[#ED7606]" />
-            实时计算
+            Live Calculation
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="对手件重量"
+            label="Part Weight"
             value={weightKg}
             onChange={setWeightKg}
             suffix="kg"
@@ -301,21 +301,21 @@ export default function DamperTorqueCalculator({
           <label className="block">
             <span className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-[#6B7280]">
               <Ruler size={13} />
-              重心数据
+              CG Data
             </span>
             <select
               value={geometryMode}
               onChange={(event) => setGeometryMode(event.target.value as GeometryMode)}
               className="h-12 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-sm font-bold text-[#111827] outline-none transition-colors focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
             >
-              <option value="length">用总长度 / 2 估算</option>
-              <option value="cg">已知重心距离</option>
+              <option value="length">Estimate from total length / 2</option>
+              <option value="cg">Known CG distance</option>
             </select>
           </label>
 
           {geometryMode === "length" ? (
             <Field
-              label="对手件总长度"
+              label="Total Part Length"
               value={panelLengthMm}
               onChange={setPanelLengthMm}
               suffix="mm"
@@ -323,7 +323,7 @@ export default function DamperTorqueCalculator({
             />
           ) : (
             <Field
-              label="旋转轴到重心距离"
+              label="Axis to CG Distance"
               value={cgDistanceMm}
               onChange={setCgDistanceMm}
               suffix="mm"
@@ -332,7 +332,7 @@ export default function DamperTorqueCalculator({
           )}
 
           <Field
-            label="开启角度"
+            label="Opening Angle"
             value={openingAngleDeg}
             onChange={setOpeningAngleDeg}
             suffix="deg"
@@ -340,7 +340,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="目标开启时间"
+            label="Target Open Time"
             value={targetTimeSec}
             onChange={setTargetTimeSec}
             suffix="sec"
@@ -348,7 +348,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="阻尼器数量"
+            label="Damper Count"
             value={damperCount}
             onChange={setDamperCount}
             suffix="pcs"
@@ -358,7 +358,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="传动比"
+            label="Motion Ratio"
             value={motionRatio}
             onChange={setMotionRatio}
             suffix="x"
@@ -367,7 +367,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="传动效率"
+            label="Transmission Efficiency"
             value={efficiencyPercent}
             onChange={setEfficiencyPercent}
             suffix="%"
@@ -378,22 +378,22 @@ export default function DamperTorqueCalculator({
           <label className="block">
             <span className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-[#6B7280]">
               <SlidersHorizontal size={13} />
-              最不利力臂
+              Worst-Case Lever Arm
             </span>
             <select
               value={leverMode}
               onChange={(event) => setLeverMode(event.target.value as LeverMode)}
               className="h-12 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-sm font-bold text-[#111827] outline-none transition-colors focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
             >
-              <option value="conservative">保守按 100%</option>
-              <option value="vertical-start">竖直起始 sin(角度)</option>
-              <option value="custom">自定义系数</option>
+              <option value="conservative">Conservative 100%</option>
+              <option value="vertical-start">Vertical start sin(angle)</option>
+              <option value="custom">Custom factor</option>
             </select>
           </label>
 
           {leverMode === "custom" ? (
             <Field
-              label="力臂系数"
+              label="Lever Factor"
               value={customLeverFactor}
               onChange={setCustomLeverFactor}
               suffix="0-1"
@@ -403,7 +403,7 @@ export default function DamperTorqueCalculator({
           ) : (
             <div className="rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] p-3.5">
               <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">
-                当前力臂系数
+                Current Lever Factor
               </p>
               <p className="mt-1 text-xl font-black text-[#111827]">
                 {formatNumber(result.leverFactor, 3)}
@@ -412,7 +412,7 @@ export default function DamperTorqueCalculator({
           )}
 
           <Field
-            label="低安全余量"
+            label="Low Safety Margin"
             value={marginLowPercent}
             onChange={setMarginLowPercent}
             suffix="%"
@@ -420,7 +420,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="高安全余量"
+            label="High Safety Margin"
             value={marginHighPercent}
             onChange={setMarginHighPercent}
             suffix="%"
@@ -432,8 +432,8 @@ export default function DamperTorqueCalculator({
           <div className="flex items-start gap-3">
             <AlertTriangle size={18} className="mt-0.5 shrink-0 text-[#ED7606]" />
             <p className="text-sm leading-relaxed text-[#6B7280]">
-              计算说明：负载扭矩按重量、重力加速度、旋转轴到重心距离和最不利力臂系数计算。
-              速度、温度、齿轮啮合和最终手感仍需要样件验证。
+              Load torque is calculated from weight, gravity, axis-to-CG distance and worst-case lever factor.
+              Speed, temperature, gear engagement and final motion feel still require sample validation.
             </p>
           </div>
         </div>
@@ -444,27 +444,27 @@ export default function DamperTorqueCalculator({
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#FBBF24]">
-                推荐范围
+                Recommended Range
               </p>
-              <h2 className="mt-1 text-xl font-black tracking-[-0.04em]">单个阻尼器目标</h2>
+              <h2 className="mt-1 text-xl font-black tracking-[-0.04em]">Per Damper Target</h2>
             </div>
             <Gauge size={22} className="text-[#ED7606]" />
           </div>
 
           <div className="rounded-lg bg-white p-4 text-[#111827]">
             <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">
-              初选推荐扭矩
+              Initial Torque Estimate
             </p>
             <p className="mt-1 text-3xl font-black tracking-[-0.05em] text-[#ED7606] tabular-nums">
               {formatGfcm(recommendedLowGfcm)}-{formatGfcm(recommendedHighGfcm)}
             </p>
-            <p className="mt-1 text-sm font-bold text-[#6B7280]">gf.cm / 个阻尼器</p>
+            <p className="mt-1 text-sm font-bold text-[#6B7280]">gf.cm / damper</p>
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-lg border border-white/10 bg-white/7 p-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/45">
-                N.m 范围
+                N·m Range
               </p>
               <p className="mt-1 text-lg font-black tabular-nums">
                 {formatTorqueNm(result.recommendedLowNm)}-{formatTorqueNm(result.recommendedHighNm)}
@@ -472,7 +472,7 @@ export default function DamperTorqueCalculator({
             </div>
             <div className="rounded-lg border border-white/10 bg-white/7 p-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/45">
-                阻尼器转速
+                Damper RPM
               </p>
               <p className="mt-1 text-lg font-black tabular-nums">
                 {formatNumber(result.damperRpm, 2)} rpm
@@ -483,25 +483,25 @@ export default function DamperTorqueCalculator({
 
         <section className="grid grid-cols-2 gap-3">
           <Metric
-            label="负载扭矩"
-            value={`${formatTorqueNm(result.hingeTorqueNm)} N.m`}
-            sub={`${formatGfcm(hingeTorqueGfcm)} gf.cm，作用在旋转轴`}
+            label="Load Torque"
+            value={`${formatTorqueNm(result.hingeTorqueNm)} N·m`}
+            sub={`${formatGfcm(hingeTorqueGfcm)} gf·cm at hinge axis`}
           />
           <Metric
-            label="单个基础扭矩"
-            value={`${formatGfcm(perDamperGfcm)} gf.cm`}
-            sub={`${formatTorqueNm(result.perDamperNm)} N.m，未加安全余量`}
+            label="Base Torque/Damper"
+            value={`${formatGfcm(perDamperGfcm)} gf·cm`}
+            sub={`${formatTorqueNm(result.perDamperNm)} N·m, before safety margin`}
             accent
           />
           <Metric
-            label="重心距离"
+            label="CG Distance"
             value={`${formatNumber(result.distanceMm, 1)} mm`}
-            sub={geometryMode === "length" ? "按总长度 / 2 估算" : "用户输入"}
+            sub={geometryMode === "length" ? "Estimated: length / 2" : "User input"}
           />
           <Metric
-            label="对手件转速"
+            label="Part RPM"
             value={`${formatNumber(result.lidRpm, 2)} rpm`}
-            sub={`传动比 ${formatNumber(result.ratio, 2)}x`}
+            sub={`Motion ratio ${formatNumber(result.ratio, 2)}x`}
           />
         </section>
 
@@ -509,10 +509,10 @@ export default function DamperTorqueCalculator({
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#ED7606]">
-                参考产品
+                Reference Products
               </p>
               <h3 className="mt-0.5 text-lg font-black tracking-[-0.03em] text-[#111827]">
-                最接近的 TEAO 扭矩范围
+                Closest TEAO Torque Range
               </h3>
             </div>
           </div>
@@ -531,7 +531,7 @@ export default function DamperTorqueCalculator({
                       {product.coversMid && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-emerald-700">
                           <CheckCircle2 size={11} />
-                          覆盖目标
+                          Match
                         </span>
                       )}
                     </div>
@@ -543,7 +543,7 @@ export default function DamperTorqueCalculator({
                     {formatGfcm(product.minNm * NM_TO_GFCM)}-
                     {formatGfcm(product.maxNm * NM_TO_GFCM)}
                     <br />
-                    gf.cm
+                    gf·cm
                   </span>
                 </div>
               </Link>
@@ -553,12 +553,12 @@ export default function DamperTorqueCalculator({
 
         <section className="rounded-xl border border-[#E5E7EB] bg-white p-4">
           <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#9CA3AF]">
-            计算公式
+            Formula
           </p>
           <div className="mt-2 space-y-1.5 font-mono text-xs leading-relaxed text-[#374151]">
-            <p>T_load = m x 9.80665 x L x 力臂系数</p>
-            <p>T_damper = T_load / 数量 / 传动比 / 效率</p>
-            <p>rpm = 角度 / 360 / 时间 x 60 x 传动比</p>
+            <p>T_load = m × 9.80665 × L × lever_factor</p>
+            <p>T_damper = T_load / count / ratio / efficiency</p>
+            <p>rpm = angle / 360 / time × 60 × ratio</p>
           </div>
         </section>
       </aside>

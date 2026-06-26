@@ -5,14 +5,10 @@ import { getProductUrl } from "@/lib/products";
 import { JsonLdScript } from "@/lib/structured-data";
 
 export const metadata: Metadata = {
-  title: "阻尼器扭矩计算器 | TEAO 工程工具",
+  title: "Damper Torque Calculator | TEAO Engineering Tools",
   description:
-    "根据对手件重量、旋转轴到重心距离、开启角度、目标时间、传动比和安全余量，估算旋转阻尼器或齿轮阻尼器初选扭矩。",
+    "Estimate the initial torque range for rotary dampers or gear dampers using part weight, axis-to-CG distance, opening angle, target time, motion ratio and safety margin.",
   keywords: [
-    "阻尼器扭矩计算器",
-    "旋转阻尼器扭矩计算",
-    "齿轮阻尼器选型",
-    "阻尼器选型",
     "damper torque calculator",
     "rotary damper torque calculation",
     "gear damper selection",
@@ -25,9 +21,9 @@ export const metadata: Metadata = {
     canonical: "/damper-torque-calculator",
   },
   openGraph: {
-    title: "阻尼器扭矩计算器 | TEAO 工程工具",
+    title: "Damper Torque Calculator | TEAO Engineering Tools",
     description:
-      "输入真实应用数据，估算齿轮阻尼器或旋转阻尼器的初选扭矩范围。",
+      "Enter real application data to estimate the initial torque range for gear dampers or rotary dampers.",
     images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
   },
 };
@@ -35,11 +31,11 @@ export const metadata: Metadata = {
 const calculatorSchema = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "阻尼器扭矩计算器",
+  name: "Damper Torque Calculator",
   applicationCategory: "EngineeringApplication",
   operatingSystem: "Web",
   description:
-    "用于根据重量、重心距离、角度、时间、传动比和余量估算旋转阻尼器扭矩的工程计算器。",
+    "Engineering calculator for estimating rotary damper torque based on weight, CG distance, angle, time, motion ratio and safety margin.",
   offers: {
     "@type": "Offer",
     price: "0",
@@ -69,12 +65,13 @@ export default function DamperTorqueCalculatorPage() {
         <section className="pb-8 lg:pb-10">
           <div className="shell">
             <div className="mb-6 max-w-3xl">
-              <span className="eyebrow">工程工具</span>
+              <span className="eyebrow">Engineering Tools</span>
               <h1 className="mt-3 text-[clamp(32px,5vw,58px)] font-black leading-[0.96] tracking-[-0.05em] text-[#111827]">
-                阻尼器扭矩计算器
+                Damper Torque Calculator
               </h1>
               <p className="mt-4 max-w-2xl text-base leading-relaxed text-[#6B7280] lg:text-lg">
-                根据客户通常能提供的对手件数据，先估算齿轮阻尼器或旋转阻尼器的初选扭矩范围。
+                Estimate the initial torque range for gear dampers or rotary dampers using the
+                application data that customers can typically provide.
               </p>
             </div>
             <DamperTorqueCalculator products={selectableProducts} />

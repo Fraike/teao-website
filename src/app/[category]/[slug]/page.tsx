@@ -28,6 +28,8 @@ interface Props {
   params: Promise<{ category: string; slug: string }>;
 }
 
+export const revalidate = 60;
+
 export async function generateStaticParams() {
   const rows = await db.select({ slug: products.slug, category: products.category }).from(products).all();
   return rows.map((row) => ({ category: row.category, slug: row.slug }));
