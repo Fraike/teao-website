@@ -103,6 +103,10 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`${pathname}.html`, request.url), 301);
   }
 
+  if (/^\/(?:ja|de)\/news\//.test(pathname) && !pathname.endsWith(".html")) {
+    return NextResponse.redirect(new URL(`${pathname}.html`, request.url), 301);
+  }
+
   // /products/slug -> canonical legacy /category/slug product URL
   if (pathname.startsWith("/products/")) {
     const slug = pathname.split("/").pop() || "";

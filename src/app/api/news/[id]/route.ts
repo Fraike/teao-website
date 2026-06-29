@@ -3,6 +3,8 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news } from "@/db/schema";
 import { getSession } from "@/lib/auth";
+import { env } from "@/lib/env";
+import { translateNewsArticle } from "@/lib/translation/news";
 
 export async function GET(
   _request: Request,
@@ -46,10 +48,23 @@ export async function PUT(
     .run();
 
   const updated = await db.select().from(news).where(eq(news.id, Number(id))).get();
+  let translations = null;
+  if (updated && env.AUTO_TRANSLATE_NEWS && data.autoTranslate !== false) {
+    translations = await translateNewsArticle({
+      id: updated.id,
+      slug: updated.slug,
+      title: updated.title,
+      summary: updated.summary,
+      content: updated.content,
+      seoTitle: updated.seoTitle,
+      keywords: updated.keywords,
+    });
+  }
   return NextResponse.json({
     ...updated,
     isPublished: Boolean(updated!.isPublished),
     relatedProducts: JSON.parse(updated!.relatedProducts || "[]"),
+    translations,
   });
 }
 

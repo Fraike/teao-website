@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
         source: "/news/:slug.html",
         destination: "/news/:slug",
       },
+      {
+        source: "/:locale(ja|de)/news/:slug.html",
+        destination: "/:locale/news/:slug",
+      },
     ];
   },
   async redirects() {

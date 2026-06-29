@@ -2,24 +2,28 @@ import Image from "next/image";
 import { PARTNERS } from "@/lib/constants";
 import { Reveal } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils";
+import type { SiteLocale } from "@/lib/i18n-ui";
+import { getHomeCopy } from "@/lib/home-i18n";
 
-export function PartnerSection() {
+export function PartnerSection({ locale = "en" }: { locale?: SiteLocale }) {
+  const copy = getHomeCopy(locale).partners;
+
   return (
     <section className="py-14 lg:py-20 bg-[#FAF9F6]" id="partners">
       <div className="shell">
         <Reveal>
           <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.9fr)_minmax(320px,0.55fr)] gap-4 lg:gap-12 items-end mb-6 lg:mb-9">
             <div>
-              <span className="eyebrow">Partners</span>
+              <span className="eyebrow">{copy.eyebrow}</span>
               <h2 className="mt-2.5 lg:mt-3.5 text-[30px] sm:text-[34px] lg:text-[clamp(34px,3.8vw,52px)] leading-[1.02] lg:leading-[0.97] tracking-[-0.04em] font-extrabold text-[#111827] text-balance">
-                Our Customers
+                {copy.title}
               </h2>
               <p className="mt-3 text-[#6B7280] text-[15px] lg:text-[17px] leading-relaxed max-w-[620px]">
-                Trusted across automotive and appliance supply chains.
+                {copy.description}
               </p>
             </div>
             <p className="text-[#6B7280] text-[15px] lg:text-[17px] leading-relaxed max-w-[560px]">
-              TEAO supports demanding OEM programs with validated damper platforms, engineering review and repeatable mass-production quality.
+              {copy.body}
             </p>
           </div>
         </Reveal>

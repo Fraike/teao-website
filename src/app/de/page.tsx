@@ -1,0 +1,69 @@
+import type { Metadata } from "next";
+import { Suspense } from "react";
+import { HeroSection } from "@/components/home/hero-section";
+import { ProductGrid } from "@/components/home/product-grid";
+import { CapabilitySection } from "@/components/home/capability-section";
+import { ApplicationSection } from "@/components/home/application-section";
+import { PartnerSection } from "@/components/home/partner-section";
+import { ProcessSection } from "@/components/home/process-section";
+import { NewsSection } from "@/components/home/news-section";
+import { CTASection } from "@/components/home/cta-section";
+import { JsonLdScript, websiteSchema } from "@/lib/structured-data";
+import { LOCALE_OG, withLocale, getAlternateUrls } from "@/lib/i18n";
+
+const locale = "de" as const;
+
+function ProductGridSkeleton() {
+  return (
+    <section className="section" id="products">
+      <div className="shell">
+        <div className="animate-pulse">
+          <div className="h-4 w-32 rounded bg-[#E5E7EB] mb-3" />
+          <div className="h-10 w-96 rounded bg-[#E5E7EB] mb-2" />
+          <div className="h-5 w-[480px] rounded bg-[#E5E7EB] mb-8" />
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-3.5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <div key={i} className="rounded-xl border border-[#E5E7EB] bg-white overflow-hidden">
+                <div className="aspect-[4/3] img-shimmer" />
+                <div className="p-3.5 space-y-2">
+                  <div className="h-3 w-5 rounded bg-[#E5E7EB]" />
+                  <div className="h-5 w-20 rounded bg-[#E5E7EB]" />
+                  <div className="h-3 w-full rounded bg-[#E5E7EB]" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export function generateMetadata(): Metadata {
+  const title = "Hersteller für Fahrzeugdämpfer und Verriegelungen";
+  const description = "TEAO liefert Zahnrad-Dämpfer, Rotationsdämpfer, Axialdämpfer, Barrel-Dämpfer, Handschuhfachdämpfer und Verriegelungen für B2B-Projekte.";
+  return {
+    title,
+    description,
+    alternates: { canonical: withLocale("/", locale), languages: getAlternateUrls("/") },
+    openGraph: { title: `${title} | TEAO`, description, locale: LOCALE_OG[locale] },
+  };
+}
+
+export default function LocalizedHomePage() {
+  return (
+    <>
+      <JsonLdScript data={websiteSchema()} />
+      <HeroSection locale={locale} />
+      <Suspense fallback={<ProductGridSkeleton />}>
+        <ProductGrid locale={locale} />
+      </Suspense>
+      <CapabilitySection locale={locale} />
+      <ApplicationSection locale={locale} />
+      <PartnerSection locale={locale} />
+      <ProcessSection locale={locale} />
+      <NewsSection locale={locale} />
+      <CTASection locale={locale} />
+    </>
+  );
+}

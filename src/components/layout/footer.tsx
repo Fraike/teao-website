@@ -1,33 +1,54 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/constants";
+import { stripLocale, withLocale } from "@/lib/i18n";
+import { getUiCopy } from "@/lib/i18n-ui";
 
-const FOOTER_LINKS = {
-  Products: [
-    { label: "Gear Dampers", href: "/products?category=gear-damper" },
-    { label: "Axial Dampers", href: "/products?category=axial-damper" },
-    { label: "Glove Box Dampers", href: "/products?category=glove-box-damper" },
-    { label: "Latches", href: "/products?category=latch" },
-    { label: "Other Products", href: "/products?category=other" },
-  ],
-  Company: [
-    { label: "About TEAO", href: "/about" },
-    { label: "Quality", href: "/quality" },
-    { label: "Applications", href: "/applications" },
-    { label: "News", href: "/news" },
-    { label: "Contact", href: "/contact" },
-  ],
-  Resources: [
-    { label: "Torque Converter", href: "/torque-converter" },
-    { label: "FAQ", href: "/faq" },
-  ],
-  "Global Sites": [
-    { label: "Alibaba Store", href: "https://teaodamper.en.alibaba.com/index.html?spm=a2700.shop_cp.88.12.295d66e8YJF94s" },
-    { label: "TEAO Global", href: "https://www.teaoglobal.com/" },
-  ],
-};
+const FOOTER_LINKS = [
+  {
+    group: "products",
+    links: [
+      { key: "gearDampers", href: "/products?category=gear-damper" },
+      { key: "axialDampers", href: "/products?category=axial-damper" },
+      { key: "gloveBoxDampers", href: "/products?category=glove-box-damper" },
+      { key: "latches", href: "/products?category=latch" },
+      { key: "otherProducts", href: "/products?category=other" },
+    ],
+  },
+  {
+    group: "company",
+    links: [
+      { key: "aboutTeao", href: "/about" },
+      { key: "quality", href: "/quality" },
+      { key: "applications", href: "/applications" },
+      { key: "news", href: "/news" },
+      { key: "contact", href: "/contact" },
+    ],
+  },
+  {
+    group: "resources",
+    links: [
+      { key: "torqueConverter", href: "/torque-converter" },
+      { key: "faq", href: "/faq" },
+    ],
+  },
+  {
+    group: "globalSites",
+    links: [
+      { key: "alibabaStore", href: "https://teaodamper.en.alibaba.com/index.html?spm=a2700.shop_cp.88.12.295d66e8YJF94s" },
+      { key: "teaoGlobal", href: "https://www.teaoglobal.com/" },
+    ],
+  },
+] as const;
 
 export default function Footer() {
+  const pathname = usePathname();
+  const { locale } = stripLocale(pathname || "/");
+  const copy = getUiCopy(locale);
+
   return (
     <footer className="bg-[#F0F2F5] text-[#6B7280] text-[13px] border-t border-[#E5E7EB]/60">
       <div className="shell py-7 md:py-12">
@@ -45,7 +66,7 @@ export default function Footer() {
               />
             </div>
             <p className="text-[#6B7280] leading-relaxed max-w-[240px] text-sm md:text-[13px]">
-              Precision damper solutions for global automotive and industrial programs since 2001.
+              {copy.footer.description}
             </p>
             <a
               href="https://wa.me/8618813935128"
@@ -59,31 +80,31 @@ export default function Footer() {
               +86 188 1393 5128
             </a>
             <div className="flex flex-wrap gap-x-4 gap-y-2 mt-4 md:hidden">
-              <Link href="/products" className="hover:text-[#ED7606]">Products</Link>
-              <Link href="/quality" className="hover:text-[#ED7606]">Quality</Link>
-              <Link href="/applications" className="hover:text-[#ED7606]">Applications</Link>
-              <Link href="/news" className="hover:text-[#ED7606]">News</Link>
-              <Link href="/contact" className="hover:text-[#ED7606]">Contact</Link>
-              <a href="https://www.teaoglobal.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#ED7606]">TEAO Global</a>
+              <Link href={withLocale("/products", locale)} className="hover:text-[#ED7606]">{copy.nav.products}</Link>
+              <Link href={withLocale("/quality", locale)} className="hover:text-[#ED7606]">{copy.nav.quality}</Link>
+              <Link href={withLocale("/applications", locale)} className="hover:text-[#ED7606]">{copy.nav.applications}</Link>
+              <Link href={withLocale("/news", locale)} className="hover:text-[#ED7606]">{copy.nav.news}</Link>
+              <Link href={withLocale("/contact", locale)} className="hover:text-[#ED7606]">{copy.nav.contact}</Link>
+              <a href="https://www.teaoglobal.com/" target="_blank" rel="noopener noreferrer" className="hover:text-[#ED7606]">{copy.footer.links.teaoGlobal}</a>
             </div>
           </div>
 
           {/* Links */}
-          {Object.entries(FOOTER_LINKS).map(([group, links]) => (
+          {FOOTER_LINKS.map(({ group, links }) => (
             <div key={group} className="hidden md:block">
-              <h4 className="text-[#111827] font-bold text-sm mb-4 tracking-wide">{group}</h4>
+              <h4 className="text-[#111827] font-bold text-sm mb-4 tracking-wide">{copy.footer.groups[group]}</h4>
               <ul className="space-y-2.5">
                 {links.map((link) => {
                   const isExternal = link.href.startsWith("http");
                   return (
-                    <li key={link.label}>
+                    <li key={link.key}>
                       {isExternal ? (
                         <a href={link.href} target="_blank" rel="noopener noreferrer" className="hover:text-[#ED7606] transition-colors">
-                          {link.label}
+                          {copy.footer.links[link.key]}
                         </a>
                       ) : (
-                        <Link href={link.href} className="hover:text-[#ED7606] transition-colors">
-                          {link.label}
+                        <Link href={withLocale(link.href, locale)} className="hover:text-[#ED7606] transition-colors">
+                          {copy.footer.links[link.key]}
                         </Link>
                       )}
                     </li>

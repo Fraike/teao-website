@@ -68,6 +68,53 @@ export const news = sqliteTable("news", {
   updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
 
+export const productTranslations = sqliteTable("product_translations", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  productId: integer("product_id").notNull().references(() => products.id),
+  locale: text("locale").notNull(),
+  name: text("name").notNull(),
+  summary: text("summary").notNull(),
+  description: text("description").notNull(),
+  features: text("features").notNull().default("[]"),
+  applications: text("applications").notNull().default("[]"),
+  seoTitle: text("seo_title"),
+  seoDescription: text("seo_description"),
+  tags: text("tags").default("[]"),
+  translationStatus: text("translation_status").notNull().default("pending"),
+  sourceHash: text("source_hash"),
+  errorMessage: text("error_message"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const newsTranslations = sqliteTable("news_translations", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  newsId: integer("news_id").notNull().references(() => news.id),
+  locale: text("locale").notNull(),
+  slug: text("slug").notNull(),
+  title: text("title").notNull(),
+  summary: text("summary").notNull(),
+  content: text("content").notNull(),
+  seoTitle: text("seo_title"),
+  keywords: text("keywords"),
+  translationStatus: text("translation_status").notNull().default("pending"),
+  sourceHash: text("source_hash"),
+  errorMessage: text("error_message"),
+  createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
+export const staticTranslations = sqliteTable("static_translations", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  locale: text("locale").notNull(),
+  namespace: text("namespace").notNull(),
+  key: text("key").notNull(),
+  value: text("value").notNull(),
+  translationStatus: text("translation_status").notNull().default("translated"),
+  sourceHash: text("source_hash"),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
+});
+
 export const admins = sqliteTable("admins", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   username: text("username").notNull().unique(),

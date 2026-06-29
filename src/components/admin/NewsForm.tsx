@@ -28,11 +28,21 @@ const ARTICLE_TYPES = [
   { value: "news", label: "News" },
 ];
 
+interface TranslationRow {
+  id: number;
+  locale: "ja" | "de";
+  translationStatus: string;
+  errorMessage?: string | null;
+  updatedAt?: string | number | null;
+}
+
 export default function NewsForm({ initial, isNew }: Props) {
   const router = useRouter();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
+  const [translationRows, setTranslationRows] = useState<TranslationRow[]>([]);
+  const [translating, setTranslating] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [dirty, setDirty] = useState(false);
 
@@ -56,6 +66,19 @@ export default function NewsForm({ initial, isNew }: Props) {
     isPublished: initial ? (initial.isPublished !== false) : true,
     publishedAt: (initial?.publishedAt as string) || new Date().toISOString().slice(0, 10),
   });
+
+  async function loadTranslations() {
+    if (isNew || !initial?.id) return;
+    const res = await fetch(`/api/news/${initial.id}/translations`);
+    if (res.ok) {
+      setTranslationRows(await res.json());
+    }
+  }
+
+  useEffect(() => {
+    loadTranslations();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initial?.id, isNew]);
 
   // Unsaved changes warning
   useEffect(() => {
@@ -97,6 +120,15 @@ export default function NewsForm({ initial, isNew }: Props) {
     });
 
     if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data.translations)) {
+        setTranslationRows(data.translations.map((item: { locale: "ja" | "de"; status: string; error?: string }) => ({
+          id: 0,
+          locale: item.locale,
+          translationStatus: item.status,
+          errorMessage: item.error,
+        })));
+      }
       setDirty(false);
       setSuccessMsg(isNew ? "Article created" : "Changes saved");
       setTimeout(() => setSuccessMsg(""), 3000);
@@ -109,6 +141,26 @@ export default function NewsForm({ initial, isNew }: Props) {
       setError(data.error || "Save failed");
     }
     setSaving(false);
+  }
+
+  async function handleRetranslate(locale?: "ja" | "de") {
+    if (!initial?.id) return;
+    setTranslating(true);
+    setError("");
+    const res = await fetch(`/api/news/${initial.id}/translations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(locale ? { locale } : { locales: ["ja", "de"] }),
+    });
+    if (res.ok) {
+      await loadTranslations();
+      setSuccessMsg(locale ? `${locale.toUpperCase()} translation requested` : "Translations requested");
+      setTimeout(() => setSuccessMsg(""), 3000);
+    } else {
+      const data = await res.json().catch(() => ({}));
+      setError(data.error || "Translation failed");
+    }
+    setTranslating(false);
   }
 
   async function handleDelete() {
@@ -351,6 +403,62 @@ export default function NewsForm({ initial, isNew }: Props) {
               </a>
             )}
           </section>
+
+          {!isNew && (
+            <section className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_32px_rgba(17,24,39,0.05)]">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-[#ED7606]">
+                    <Sparkles size={14} />
+                    Translations
+                  </div>
+                  <h2 className="mt-1 text-base font-black tracking-[-0.02em] text-[#111827]">Japanese / German</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleRetranslate()}
+                  disabled={translating}
+                  className="rounded-full bg-[#111827] px-3 py-1.5 text-[11px] font-bold text-white disabled:opacity-50"
+                >
+                  {translating ? "Working..." : "Retranslate"}
+                </button>
+              </div>
+              <div className="space-y-2">
+                {(["ja", "de"] as const).map((locale) => {
+                  const row = translationRows.find((item) => item.locale === locale);
+                  const status = row?.translationStatus || "pending";
+                  const ok = status === "translated";
+                  const failed = status === "failed";
+                  return (
+                    <div key={locale} className="rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] p-3">
+                      <div className="flex items-center justify-between gap-2">
+                        <div>
+                          <div className="text-sm font-black text-[#111827]">{locale === "ja" ? "Japanese" : "German"}</div>
+                          <div className={`mt-1 text-[11px] font-bold ${ok ? "text-green-700" : failed ? "text-red-600" : "text-[#6B7280]"}`}>
+                            {status}
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRetranslate(locale)}
+                          disabled={translating}
+                          className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 text-[11px] font-bold text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606] disabled:opacity-50"
+                        >
+                          Retry
+                        </button>
+                      </div>
+                      {row?.errorMessage && (
+                        <p className="mt-2 line-clamp-3 text-[11px] leading-relaxed text-red-600">{row.errorMessage}</p>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+              <p className="mt-3 text-[11px] leading-relaxed text-[#6B7280]">
+                English remains the source. Translations are generated automatically and can be retried without replacing the English article.
+              </p>
+            </section>
+          )}
 
           <section className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_32px_rgba(17,24,39,0.05)]">
             <h2 className="mb-4 text-sm font-black text-[#111827]">Readiness</h2>

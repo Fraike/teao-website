@@ -13,6 +13,8 @@ import {
   SlidersHorizontal,
   Weight,
 } from "lucide-react";
+import { getTorqueCalculatorCopy } from "@/lib/torque-calculator-i18n";
+import type { Locale } from "@/lib/i18n";
 
 type ProductOption = {
   model: string;
@@ -162,9 +164,12 @@ function Metric({
 
 export default function DamperTorqueCalculator({
   products,
+  locale = "en",
 }: {
   products: ProductOption[];
+  locale?: Locale | "en";
 }) {
+  const copy = getTorqueCalculatorCopy(locale);
   const [geometryMode, setGeometryMode] = useState<GeometryMode>("length");
   const [leverMode, setLeverMode] = useState<LeverMode>("conservative");
   const [weightKg, setWeightKg] = useState("0.30");
@@ -277,21 +282,21 @@ export default function DamperTorqueCalculator({
         <div className="mb-5 flex flex-col gap-3 border-b border-[#E5E7EB] pb-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#ED7606]">
-              Input Parameters
+              {copy.inputParameters}
             </p>
             <h2 className="mt-1 text-2xl font-black tracking-[-0.04em] text-[#111827]">
-              Damper Torque Estimator
+              {copy.estimatorTitle}
             </h2>
           </div>
           <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E5E7EB] bg-[#F8F9FA] px-3 py-2 text-xs font-bold text-[#6B7280]">
             <Calculator size={15} className="text-[#ED7606]" />
-            Live Calculation
+            {copy.liveCalculation}
           </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
           <Field
-            label="Part Weight"
+            label={copy.partWeight}
             value={weightKg}
             onChange={setWeightKg}
             suffix="kg"
@@ -301,21 +306,21 @@ export default function DamperTorqueCalculator({
           <label className="block">
             <span className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-[#6B7280]">
               <Ruler size={13} />
-              CG Data
+              {copy.cgData}
             </span>
             <select
               value={geometryMode}
               onChange={(event) => setGeometryMode(event.target.value as GeometryMode)}
               className="h-12 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-sm font-bold text-[#111827] outline-none transition-colors focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
             >
-              <option value="length">Estimate from total length / 2</option>
-              <option value="cg">Known CG distance</option>
+              <option value="length">{copy.estimateFromLength}</option>
+              <option value="cg">{copy.knownCg}</option>
             </select>
           </label>
 
           {geometryMode === "length" ? (
             <Field
-              label="Total Part Length"
+              label={copy.totalPartLength}
               value={panelLengthMm}
               onChange={setPanelLengthMm}
               suffix="mm"
@@ -323,7 +328,7 @@ export default function DamperTorqueCalculator({
             />
           ) : (
             <Field
-              label="Axis to CG Distance"
+              label={copy.axisToCg}
               value={cgDistanceMm}
               onChange={setCgDistanceMm}
               suffix="mm"
@@ -332,7 +337,7 @@ export default function DamperTorqueCalculator({
           )}
 
           <Field
-            label="Opening Angle"
+            label={copy.openingAngle}
             value={openingAngleDeg}
             onChange={setOpeningAngleDeg}
             suffix="deg"
@@ -340,7 +345,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="Target Open Time"
+            label={copy.targetOpenTime}
             value={targetTimeSec}
             onChange={setTargetTimeSec}
             suffix="sec"
@@ -348,7 +353,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="Damper Count"
+            label={copy.damperCount}
             value={damperCount}
             onChange={setDamperCount}
             suffix="pcs"
@@ -358,7 +363,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="Motion Ratio"
+            label={copy.motionRatio}
             value={motionRatio}
             onChange={setMotionRatio}
             suffix="x"
@@ -367,7 +372,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="Transmission Efficiency"
+            label={copy.transmissionEfficiency}
             value={efficiencyPercent}
             onChange={setEfficiencyPercent}
             suffix="%"
@@ -378,22 +383,22 @@ export default function DamperTorqueCalculator({
           <label className="block">
             <span className="mb-2 flex items-center gap-1.5 text-[11px] font-black uppercase tracking-[0.1em] text-[#6B7280]">
               <SlidersHorizontal size={13} />
-              Worst-Case Lever Arm
+              {copy.worstCaseLeverArm}
             </span>
             <select
               value={leverMode}
               onChange={(event) => setLeverMode(event.target.value as LeverMode)}
               className="h-12 w-full rounded-lg border border-[#E5E7EB] bg-white px-3.5 text-sm font-bold text-[#111827] outline-none transition-colors focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
             >
-              <option value="conservative">Conservative 100%</option>
-              <option value="vertical-start">Vertical start sin(angle)</option>
-              <option value="custom">Custom factor</option>
+              <option value="conservative">{copy.conservative}</option>
+              <option value="vertical-start">{copy.verticalStart}</option>
+              <option value="custom">{copy.customFactor}</option>
             </select>
           </label>
 
           {leverMode === "custom" ? (
             <Field
-              label="Lever Factor"
+              label={copy.leverFactor}
               value={customLeverFactor}
               onChange={setCustomLeverFactor}
               suffix="0-1"
@@ -403,7 +408,7 @@ export default function DamperTorqueCalculator({
           ) : (
             <div className="rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] p-3.5">
               <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">
-                Current Lever Factor
+                {copy.currentLeverFactor}
               </p>
               <p className="mt-1 text-xl font-black text-[#111827]">
                 {formatNumber(result.leverFactor, 3)}
@@ -412,7 +417,7 @@ export default function DamperTorqueCalculator({
           )}
 
           <Field
-            label="Low Safety Margin"
+            label={copy.lowSafetyMargin}
             value={marginLowPercent}
             onChange={setMarginLowPercent}
             suffix="%"
@@ -420,7 +425,7 @@ export default function DamperTorqueCalculator({
           />
 
           <Field
-            label="High Safety Margin"
+            label={copy.highSafetyMargin}
             value={marginHighPercent}
             onChange={setMarginHighPercent}
             suffix="%"
@@ -432,8 +437,7 @@ export default function DamperTorqueCalculator({
           <div className="flex items-start gap-3">
             <AlertTriangle size={18} className="mt-0.5 shrink-0 text-[#ED7606]" />
             <p className="text-sm leading-relaxed text-[#6B7280]">
-              Load torque is calculated from weight, gravity, axis-to-CG distance and worst-case lever factor.
-              Speed, temperature, gear engagement and final motion feel still require sample validation.
+              {copy.note}
             </p>
           </div>
         </div>
@@ -444,27 +448,27 @@ export default function DamperTorqueCalculator({
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#FBBF24]">
-                Recommended Range
+                {copy.recommendedRange}
               </p>
-              <h2 className="mt-1 text-xl font-black tracking-[-0.04em]">Per Damper Target</h2>
+              <h2 className="mt-1 text-xl font-black tracking-[-0.04em]">{copy.perDamperTarget}</h2>
             </div>
             <Gauge size={22} className="text-[#ED7606]" />
           </div>
 
           <div className="rounded-lg bg-white p-4 text-[#111827]">
             <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#9CA3AF]">
-              Initial Torque Estimate
+              {copy.initialTorqueEstimate}
             </p>
             <p className="mt-1 text-3xl font-black tracking-[-0.05em] text-[#ED7606] tabular-nums">
               {formatGfcm(recommendedLowGfcm)}-{formatGfcm(recommendedHighGfcm)}
             </p>
-            <p className="mt-1 text-sm font-bold text-[#6B7280]">gf.cm / damper</p>
+            <p className="mt-1 text-sm font-bold text-[#6B7280]">{copy.perDamperUnit}</p>
           </div>
 
           <div className="mt-3 grid grid-cols-2 gap-2">
             <div className="rounded-lg border border-white/10 bg-white/7 p-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/45">
-                N·m Range
+                {copy.nmRange}
               </p>
               <p className="mt-1 text-lg font-black tabular-nums">
                 {formatTorqueNm(result.recommendedLowNm)}-{formatTorqueNm(result.recommendedHighNm)}
@@ -472,7 +476,7 @@ export default function DamperTorqueCalculator({
             </div>
             <div className="rounded-lg border border-white/10 bg-white/7 p-3">
               <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-white/45">
-                Damper RPM
+                {copy.damperRpm}
               </p>
               <p className="mt-1 text-lg font-black tabular-nums">
                 {formatNumber(result.damperRpm, 2)} rpm
@@ -483,25 +487,25 @@ export default function DamperTorqueCalculator({
 
         <section className="grid grid-cols-2 gap-3">
           <Metric
-            label="Load Torque"
+            label={copy.loadTorque}
             value={`${formatTorqueNm(result.hingeTorqueNm)} N·m`}
-            sub={`${formatGfcm(hingeTorqueGfcm)} gf·cm at hinge axis`}
+            sub={`${formatGfcm(hingeTorqueGfcm)} ${copy.atHingeAxis}`}
           />
           <Metric
-            label="Base Torque/Damper"
+            label={copy.baseTorque}
             value={`${formatGfcm(perDamperGfcm)} gf·cm`}
-            sub={`${formatTorqueNm(result.perDamperNm)} N·m, before safety margin`}
+            sub={`${formatTorqueNm(result.perDamperNm)} ${copy.beforeMargin}`}
             accent
           />
           <Metric
-            label="CG Distance"
+            label={copy.cgDistance}
             value={`${formatNumber(result.distanceMm, 1)} mm`}
-            sub={geometryMode === "length" ? "Estimated: length / 2" : "User input"}
+            sub={geometryMode === "length" ? copy.estimatedLength : copy.userInput}
           />
           <Metric
-            label="Part RPM"
+            label={copy.partRpm}
             value={`${formatNumber(result.lidRpm, 2)} rpm`}
-            sub={`Motion ratio ${formatNumber(result.ratio, 2)}x`}
+            sub={`${copy.ratio} ${formatNumber(result.ratio, 2)}x`}
           />
         </section>
 
@@ -509,10 +513,10 @@ export default function DamperTorqueCalculator({
           <div className="mb-3 flex items-center justify-between gap-3">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#ED7606]">
-                Reference Products
+                {copy.referenceProducts}
               </p>
               <h3 className="mt-0.5 text-lg font-black tracking-[-0.03em] text-[#111827]">
-                Closest TEAO Torque Range
+                {copy.closestRange}
               </h3>
             </div>
           </div>
@@ -531,7 +535,7 @@ export default function DamperTorqueCalculator({
                       {product.coversMid && (
                         <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.08em] text-emerald-700">
                           <CheckCircle2 size={11} />
-                          Match
+                          {copy.match}
                         </span>
                       )}
                     </div>
@@ -553,7 +557,7 @@ export default function DamperTorqueCalculator({
 
         <section className="rounded-xl border border-[#E5E7EB] bg-white p-4">
           <p className="text-[10px] font-black uppercase tracking-[0.14em] text-[#9CA3AF]">
-            Formula
+            {copy.formula}
           </p>
           <div className="mt-2 space-y-1.5 font-mono text-xs leading-relaxed text-[#374151]">
             <p>T_load = m × 9.80665 × L × lever_factor</p>

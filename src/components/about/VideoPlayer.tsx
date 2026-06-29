@@ -4,7 +4,17 @@ import { useRef, useState } from "react";
 import Image from "next/image";
 import { Play, Video, Pause } from "lucide-react";
 
-export function VideoPlayer({ poster, src }: { poster: string; src: string }) {
+export function VideoPlayer({
+  poster,
+  src,
+  badge = "Company Video",
+  title = "Inside TEAO Manufacturing",
+}: {
+  poster: string;
+  src: string;
+  badge?: string;
+  title?: string;
+}) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [playing, setPlaying] = useState(false);
   const [started, setStarted] = useState(false);
@@ -50,7 +60,7 @@ export function VideoPlayer({ poster, src }: { poster: string; src: string }) {
           <div className="absolute left-5 top-5 lg:left-7 lg:top-7 inline-flex items-center gap-2 rounded-full border border-white/16 bg-[#111827]/50 px-3.5 py-2 text-white/80 backdrop-blur-md">
             <Video size={15} strokeWidth={2} />
             <span className="text-[11px] font-black uppercase tracking-[0.14em]">
-              Company Video
+              {badge}
             </span>
           </div>
           <div className="absolute inset-0 flex items-center justify-center">
@@ -60,7 +70,7 @@ export function VideoPlayer({ poster, src }: { poster: string; src: string }) {
           </div>
           <div className="absolute left-5 right-5 bottom-5 lg:left-7 lg:right-7 lg:bottom-7">
             <h2 className="max-w-[420px] text-white text-2xl lg:text-[30px] leading-[1.02] font-black tracking-[-0.04em]">
-              Inside TEAO Manufacturing
+              {title}
             </h2>
           </div>
         </>

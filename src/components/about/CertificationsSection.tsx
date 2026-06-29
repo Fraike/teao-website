@@ -2,8 +2,11 @@ import { Reveal } from "@/components/ui/reveal";
 import Image from "next/image";
 import { patentCertificates, systemCertificates } from "@/content/about";
 import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
+import { getAboutCopy, type AboutLocale } from "@/lib/about-i18n";
 
-export function CertificationsSection() {
+export function CertificationsSection({ locale = "en" }: { locale?: AboutLocale }) {
+  const copy = getAboutCopy(locale).certificates;
+
   return (
     <section
       className="relative overflow-hidden pt-16 pb-8 lg:pt-24 lg:pb-10 bg-white"
@@ -18,15 +21,13 @@ export function CertificationsSection() {
         <Reveal>
           <div className="grid lg:grid-cols-[0.75fr_1fr] gap-8 lg:gap-14 items-end mb-8 lg:mb-12">
             <div>
-              <span className="eyebrow">Quality Credentials</span>
+              <span className="eyebrow">{copy.eyebrow}</span>
               <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3vw,42px)] leading-[1.04] tracking-[-0.04em] font-black text-balance text-[#111827]">
-                IATF 16949 and ISO 14001 certified systems, backed by 20+ patents.
+                {copy.title}
               </h2>
             </div>
             <p className="text-[#6B7280] text-[15px] lg:text-[17px] leading-relaxed max-w-[620px]">
-              TEAO is an automotive quality system and environmental management system certified
-              manufacturer, a high-tech enterprise, and a long-term developer of patented damper
-              structures and mechanisms.
+              {copy.description}
             </p>
           </div>
         </Reveal>
@@ -37,14 +38,14 @@ export function CertificationsSection() {
               <div className="flex items-start justify-between gap-5 mb-5">
                 <div>
                   <span className="text-[#ED7606] text-xs font-black uppercase tracking-[0.14em]">
-                    System Certificates
+                    {copy.systemLabel}
                   </span>
                   <h3 className="mt-2 text-2xl lg:text-3xl leading-tight font-black text-[#111827]">
-                    IATF 16949 / ISO 14001
+                    {copy.systemTitle}
                   </h3>
                 </div>
                 <span className="hidden sm:inline-flex rounded-full border border-[#E5E7EB] px-3 py-1 text-xs font-bold text-[#6B7280]">
-                  Factory Management
+                  {copy.systemBadge}
                 </span>
               </div>
               <div className="grid sm:grid-cols-2 gap-3.5">
@@ -60,14 +61,14 @@ export function CertificationsSection() {
               <div className="flex items-start justify-between gap-5 mb-5">
                 <div>
                   <span className="text-[#FF9A3C] text-xs font-black uppercase tracking-[0.14em]">
-                    Patent Certificates
+                    {copy.patentLabel}
                   </span>
                   <h3 className="mt-2 text-2xl lg:text-3xl leading-tight font-black">
-                    20+ Patented Technologies
+                    {copy.patentTitle}
                   </h3>
                 </div>
                 <span className="hidden sm:inline-flex rounded-full border border-white/12 px-3 py-1 text-xs font-bold text-white/55">
-                  R&D Evidence
+                  {copy.patentBadge}
                 </span>
               </div>
               <div className="grid sm:grid-cols-3 gap-3.5">

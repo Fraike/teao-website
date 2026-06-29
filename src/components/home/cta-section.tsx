@@ -1,8 +1,13 @@
 import Link from "next/link";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Reveal } from "@/components/ui/reveal";
+import type { SiteLocale } from "@/lib/i18n-ui";
+import { withLocale } from "@/lib/i18n";
+import { getHomeCopy } from "@/lib/home-i18n";
 
-export function CTASection() {
+export function CTASection({ locale = "en" }: { locale?: SiteLocale }) {
+  const copy = getHomeCopy(locale).cta;
+
   return (
     <section
       className="relative py-24 text-white overflow-hidden"
@@ -24,32 +29,31 @@ export function CTASection() {
       <div className="shell relative z-10">
         <div className="grid lg:grid-cols-[minmax(0,0.8fr)_minmax(320px,0.42fr)] gap-12 items-end">
           <Reveal>
-            <span className="eyebrow">Start a Project</span>
+            <span className="eyebrow">{copy.eyebrow}</span>
             <h2 className="mt-3.5 max-w-[790px] text-[clamp(36px,4.5vw,66px)] leading-[0.93] tracking-[-0.05em] font-black">
-              Share the application.
+              {copy.titleA}
               <span className="block bg-gradient-to-r from-white to-[#FF9A3C] bg-clip-text text-transparent">
-                Get a practical damper proposal.
+                {copy.titleB}
               </span>
             </h2>
             <p className="mt-5 text-white/60 text-lg max-w-[600px] leading-relaxed">
-              Tell us the space envelope, target torque, annual volume and validation needs.
-              TEAO will match an existing platform or define a custom structure for review.
+              {copy.description}
             </p>
           </Reveal>
 
           <aside className="p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
             <h3 className="text-white text-xl font-extrabold leading-tight">
-              Technical quotation contact
+              {copy.contactTitle}
             </h3>
             <p className="mt-2 mb-3 text-white/55 text-sm leading-5">
-              Send drawings, samples or application notes. Our team will confirm feasibility and next steps.
+              {copy.contactBody}
             </p>
             <Link href={`mailto:${SITE_CONFIG.email}`} className="flex items-center gap-2 py-3 border-b border-white/8 text-white/70 text-sm hover:text-white transition-colors">
               <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
               {SITE_CONFIG.email}
             </Link>
-            <Link href="/contact" className="flex items-center gap-2 py-3 text-[#FF9A3C] font-extrabold hover:text-white transition-colors">
-              Request quotation
+            <Link href={withLocale("/contact", locale)} className="flex items-center gap-2 py-3 text-[#FF9A3C] font-extrabold hover:text-white transition-colors">
+              {copy.request}
               <span className="text-lg">→</span>
             </Link>
             <div className="flex flex-wrap gap-2.5 mt-4">

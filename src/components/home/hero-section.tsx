@@ -1,8 +1,13 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { CATEGORIES } from "@/lib/constants";
+import type { SiteLocale } from "@/lib/i18n-ui";
+import { withLocale } from "@/lib/i18n";
+import { getHomeCopy } from "@/lib/home-i18n";
 
-export function HeroSection() {
+export function HeroSection({ locale = "en" }: { locale?: SiteLocale }) {
+  const copy = getHomeCopy(locale).hero;
+
   return (
     <section className="relative min-h-[680px] lg:min-h-[min(100svh,820px)] flex items-center text-[#111827] bg-[#FAF9F6] overflow-hidden">
       {/* Warm radial glow */}
@@ -45,32 +50,31 @@ export function HeroSection() {
             <div>
               <div className="inline-flex gap-2 items-center px-3.5 py-2 rounded-full border border-white/60 bg-white/70 backdrop-blur-xl text-[#374151] text-[11px] font-extrabold uppercase tracking-[0.09em] shadow-[0_2px_12px_rgba(0,0,0,.03)]">
                 <span className="w-2 h-2 rounded-full bg-[#ED7606] shadow-[0_0_0_6px_rgba(237,118,6,.14)] animate-pulse" />
-                B2B damper manufacturer since 2001
+                {copy.eyebrow}
               </div>
               <h1 className="max-w-[760px] mt-5 lg:mt-6 mb-5 lg:mb-6 text-[40px] sm:text-[50px] lg:text-[clamp(50px,4.55vw,78px)] 2xl:text-[84px] leading-[0.96] lg:leading-[0.93] tracking-[-0.045em] lg:tracking-[-0.052em] font-black text-[#111827] text-balance">
-                Slow down the closing.
+                {copy.titleA}
                 <span className="block mt-1">
-                  Keep{" "}
+                  {copy.titleBPrefix}{" "}
                   <strong className="bg-gradient-to-r from-[#111827] via-[#C85D00] to-[#ED7606] bg-clip-text text-transparent font-black">
-                    quiet
+                    {copy.titleBHighlight}
                   </strong>{" "}
-                  in motion.
+                  {copy.titleBSuffix}
                 </span>
               </h1>
               <p className="max-w-[760px] text-[#4B5563] text-[16px] lg:text-[clamp(16px,1.05vw,20px)] leading-relaxed">
-                Five focused product lines for global OEM, Tier‑1 and industrial assemblies.
-                Engineered for stable damping, soft closing and repeatable mass production.
+                {copy.description}
               </p>
               <div className="flex flex-wrap gap-3 mt-7 lg:mt-9">
                 <Button href="#products" variant="primary">
-                  Explore Products
+                  {copy.primary}
                 </Button>
                 <Button
-                  href="/contact"
+                  href={withLocale("/contact", locale)}
                   variant="outline"
                   className="border-[#ED7606] bg-white text-[#C85D00] shadow-[0_12px_28px_rgba(237,118,6,0.16)] hover:bg-[#FFF7ED] hover:text-[#B45309] hover:shadow-[0_16px_34px_rgba(237,118,6,0.22)]"
                 >
-                  Send Your Drawing
+                  {copy.secondary}
                 </Button>
               </div>
             </div>
@@ -102,12 +106,7 @@ export function HeroSection() {
 
           {/* Metrics */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-10 lg:mt-12">
-            {[
-              { value: "20+", label: "Years damper expertise" },
-              { value: "IATF", label: "16949 + ISO 14001" },
-              { value: "Custom", label: "Torque and structure" },
-              { value: "80M", label: "Annual capacity" },
-            ].map((m) => (
+            {copy.metrics.map((m) => (
               <div key={m.label} className="relative p-4 lg:p-5 rounded-xl border border-white/60 bg-white/70 backdrop-blur-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:-translate-y-1 hover:shadow-[0_8px_28px_rgba(237,118,6,0.08)] transition-all duration-300">
                 <b className="block text-[24px] lg:text-[30px] tracking-[-0.04em] text-[#111827] tabular-nums">{m.value}</b>
                 <span className="block mt-1 text-[#6B7280] text-[11px] lg:text-[13px] font-bold">{m.label}</span>

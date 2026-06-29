@@ -2,10 +2,13 @@ import { Reveal } from "@/components/ui/reveal";
 import { corporateValues } from "@/content/about";
 import { BookOpen, HeartHandshake, Leaf, Building2 } from "lucide-react";
 import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
+import { getAboutCopy, type AboutLocale } from "@/lib/about-i18n";
 
 const valueIcons = [BookOpen, HeartHandshake, Leaf, Building2];
 
-export function CorporateValues() {
+export function CorporateValues({ locale = "en" }: { locale?: AboutLocale }) {
+  const copy = getAboutCopy(locale).csr;
+
   return (
     <section className="relative overflow-hidden pt-10 pb-14 lg:pt-12 lg:pb-20 bg-white">
       <AboutSectionBackdrop
@@ -17,21 +20,19 @@ export function CorporateValues() {
         <Reveal>
           <div className="grid lg:grid-cols-[0.78fr_1fr] gap-6 lg:gap-12 items-end">
             <div>
-              <span className="eyebrow">Corporate Social Responsibility</span>
+              <span className="eyebrow">{copy.eyebrow}</span>
               <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3.2vw,44px)] leading-[1.02] tracking-[-0.04em] font-extrabold text-[#111827]">
-                Contributing to education, charity and environmental protection.
+                {copy.title}
               </h2>
             </div>
             <p className="text-[#6B7280] text-[15px] lg:text-[17px] leading-relaxed max-w-[620px]">
-              TEAO believes enterprise development should create value beyond products. We support
-              public-interest activities in education, charity, environmental protection and local
-              community development.
+              {copy.description}
             </p>
           </div>
         </Reveal>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-8 lg:mt-10">
-          {corporateValues.map((val, i) => {
+          {(copy.values || corporateValues).map((val, i) => {
             const Icon = valueIcons[i];
             return (
               <div

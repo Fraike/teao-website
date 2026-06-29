@@ -1,29 +1,31 @@
 import Image from "next/image";
 import { GraduationCap, HeartPulse, ShieldCheck } from "lucide-react";
 import { Reveal } from "@/components/ui/reveal";
-import { peopleCulture } from "@/content/about";
+import { getAboutCopy, type AboutLocale } from "@/lib/about-i18n";
 
 const cultureIcons = [GraduationCap, HeartPulse, ShieldCheck];
-const cultureImages = [
-  {
-    src: peopleCulture.images.office,
-    alt: "TEAO office team group photo",
-  },
-  {
-    src: peopleCulture.images.employeeWork,
-    alt: "TEAO team building interaction",
-  },
-  {
-    src: peopleCulture.images.training,
-    alt: "TEAO employee training and collaboration",
-  },
-  {
-    src: peopleCulture.images.building,
-    alt: "TEAO team building activity",
-  },
-];
 
-export function PeopleCultureSection() {
+export function PeopleCultureSection({ locale = "en" }: { locale?: AboutLocale }) {
+  const copy = getAboutCopy(locale).peopleCulture;
+  const cultureImages = [
+    {
+      src: copy.images.office,
+      alt: "TEAO office team group photo",
+    },
+    {
+      src: copy.images.employeeWork,
+      alt: "TEAO team building interaction",
+    },
+    {
+      src: copy.images.training,
+      alt: "TEAO employee training and collaboration",
+    },
+    {
+      src: copy.images.building,
+      alt: "TEAO team building activity",
+    },
+  ];
+
   return (
     <section className="relative overflow-hidden bg-[#F8FAFC] py-12 lg:py-16">
       <div className="pointer-events-none absolute left-[-80px] top-[-140px] h-[320px] w-[320px] rounded-full border border-[#ED7606]/10" />
@@ -31,12 +33,12 @@ export function PeopleCultureSection() {
         <div className="grid gap-7 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-11">
           <Reveal>
             <div>
-              <span className="eyebrow">{peopleCulture.eyebrow}</span>
+              <span className="eyebrow">{copy.eyebrow}</span>
               <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3.1vw,42px)] leading-[1.03] tracking-[-0.04em] font-extrabold text-[#111827]">
-                {peopleCulture.title}
+                {copy.title}
               </h2>
               <p className="mt-4 max-w-[620px] text-[15px] leading-relaxed text-[#6B7280] lg:text-[17px]">
-                {peopleCulture.description}
+                {copy.description}
               </p>
             </div>
           </Reveal>
@@ -69,7 +71,7 @@ export function PeopleCultureSection() {
         </div>
 
         <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3 lg:mt-8">
-          {peopleCulture.highlights.map((item, index) => {
+          {copy.highlights.map((item, index) => {
             const Icon = cultureIcons[index];
             return (
               <Reveal key={item.name} delay={(index + 1) as 1 | 2 | 3}>

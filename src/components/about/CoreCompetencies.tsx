@@ -3,10 +3,13 @@ import Image from "next/image";
 import { competencies } from "@/content/about";
 import { Cog, Wrench, Settings } from "lucide-react";
 import { AboutSectionBackdrop } from "./AboutSectionBackdrop";
+import { getAboutCopy, type AboutLocale } from "@/lib/about-i18n";
 
 const icons = [Settings, Wrench, Cog];
 
-export function CoreCompetencies() {
+export function CoreCompetencies({ locale = "en" }: { locale?: AboutLocale }) {
+  const copy = getAboutCopy(locale).competencies;
+
   return (
     <section className="relative overflow-hidden pt-10 pb-16 lg:pt-12 lg:pb-24 bg-[#F0F2F5]">
       <AboutSectionBackdrop
@@ -17,15 +20,15 @@ export function CoreCompetencies() {
       <div className="shell relative z-10">
         <Reveal>
           <div className="text-center">
-            <span className="eyebrow">Core Competencies</span>
+            <span className="eyebrow">{copy.eyebrow}</span>
             <h2 className="mt-2.5 lg:mt-3.5 text-[26px] sm:text-[30px] lg:text-[clamp(30px,3.6vw,46px)] leading-[1.02] tracking-[-0.04em] font-extrabold text-[#111827]">
-              Complete manufacturing capabilities.
+              {copy.title}
             </h2>
           </div>
         </Reveal>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-5 mt-8 lg:mt-10">
-          {competencies.map((comp, i) => {
+          {(copy.items || competencies).map((comp, i) => {
             const Icon = icons[i];
             const isHighlight = comp.highlight;
 

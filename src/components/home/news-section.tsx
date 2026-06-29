@@ -1,27 +1,40 @@
 import Link from "next/link";
-import { desc } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
-import { news } from "@/db/schema";
+import { news, newsTranslations } from "@/db/schema";
 import { SectionHead } from "@/components/ui/section-head";
 import { Reveal } from "@/components/ui/reveal";
+import type { SiteLocale } from "@/lib/i18n-ui";
+import { withLocale } from "@/lib/i18n";
+import { getHomeCopy } from "@/lib/home-i18n";
 
-export async function NewsSection() {
+export async function NewsSection({ locale = "en" }: { locale?: SiteLocale }) {
   const rows = await db
     .select()
     .from(news)
     .orderBy(desc(news.publishedAt))
     .limit(3)
     .all();
-  const articles = rows.filter((n) => Boolean(n.isPublished));
+  const published = rows.filter((n) => Boolean(n.isPublished));
+  const copy = getHomeCopy(locale).news;
+  const articles = await Promise.all(published.map(async (item) => {
+    if (locale === "en") return item;
+    const translated = await db
+      .select()
+      .from(newsTranslations)
+      .where(and(eq(newsTranslations.newsId, item.id), eq(newsTranslations.locale, locale), eq(newsTranslations.translationStatus, "translated")))
+      .get();
+    return translated ? { ...item, title: translated.title, summary: translated.summary, slug: item.slug } : item;
+  }));
 
   return (
     <section className="section bg-[#FAF9F6]" id="news">
       <div className="shell">
         <Reveal>
           <SectionHead
-            eyebrow="News"
-            title="Manufacturing notes and engineering updates."
-            description="Practical updates on damper selection, process capability and quality control for purchasing and engineering teams."
+            eyebrow={copy.eyebrow}
+            title={copy.title}
+            description={copy.description}
           />
         </Reveal>
 
@@ -39,14 +52,14 @@ export async function NewsSection() {
                   </h3>
                   <p className="mt-2 text-[#6B7280] text-sm leading-relaxed">{item.summary}</p>
                 </div>
-                <Link href="/news" className="mt-4 lg:mt-6 text-[#ED7606] text-sm font-extrabold hover:underline">
-                  Read more →
+                <Link href={withLocale(`/news/${item.slug}.html`, locale)} className="mt-4 lg:mt-6 text-[#ED7606] text-sm font-extrabold hover:underline">
+                  {copy.readMore} →
                 </Link>
               </article>
             </Reveal>
           ))}
           {articles.length === 0 && (
-            <p className="col-span-full text-center py-8 text-[#9CA3AF] text-sm">No articles yet.</p>
+            <p className="col-span-full text-center py-8 text-[#9CA3AF] text-sm">{copy.empty}</p>
           )}
         </div>
       </div>
