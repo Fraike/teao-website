@@ -7,9 +7,11 @@ import { ApplicationSection } from "@/components/home/application-section";
 import { PartnerSection } from "@/components/home/partner-section";
 import { ProcessSection } from "@/components/home/process-section";
 import { NewsSection } from "@/components/home/news-section";
+import { GeoFaqSection } from "@/components/home/geo-faq-section";
 import { CTASection } from "@/components/home/cta-section";
-import { JsonLdScript, websiteSchema } from "@/lib/structured-data";
+import { JsonLdScript, faqPageSchema, websiteSchema } from "@/lib/structured-data";
 import { AUTOMOTIVE_SEO_KEYWORDS, GLOBAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
+import { getHomeCopy } from "@/lib/home-i18n";
 
 function ProductGridSkeleton() {
   return (
@@ -62,14 +64,14 @@ export const metadata: Metadata = {
     title: "Automotive Damper & Latch Manufacturer | TEAO",
     description:
       "IATF 16949 certified damper manufacturer. Gear dampers, axial dampers, latches and custom motion control for global automotive B2B programs.",
-    images: [{ url: "/images/logo-color.webp", width: 512, height: 512 }],
+    images: [{ url: "/images/news/automotive-interior-damper-map.webp", width: 1672, height: 941 }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Automotive Damper & Latch Manufacturer | TEAO",
     description:
       "IATF 16949 certified damper manufacturer. 20+ years of expertise in gear dampers, axial dampers, latches and motion control.",
-    images: ["/images/logo-color.webp"],
+    images: ["/images/news/automotive-interior-damper-map.webp"],
   },
   alternates: {
     canonical: "/",
@@ -77,9 +79,12 @@ export const metadata: Metadata = {
 };
 
 export default function Home() {
+  const geoFaq = getHomeCopy("en").geoFaq;
+
   return (
     <>
       <JsonLdScript data={websiteSchema()} />
+      <JsonLdScript data={faqPageSchema(geoFaq.questions)} />
       <HeroSection />
       <Suspense fallback={<ProductGridSkeleton />}>
         <ProductGrid />
@@ -89,6 +94,7 @@ export default function Home() {
       <PartnerSection />
       <ProcessSection />
       <NewsSection />
+      <GeoFaqSection />
       <CTASection />
     </>
   );

@@ -73,6 +73,32 @@ export const HOME_COPY = {
         { title: "Produce", description: "Tooling, process qualification, inspection and serial delivery." },
       ],
     },
+    geoFaq: {
+      eyebrow: "Engineering Answers",
+      title: "What TEAO manufactures and how to select a damper.",
+      shortAnswer:
+        "TEAO manufactures gear dampers, rotary dampers, axial dampers, barrel dampers, glove box dampers, latches and custom motion-control parts for automotive and industrial mechanisms. Engineers use these dampers to slow moving covers, reduce impact noise, control snap-back and improve perceived quality in quiet EV and premium interior systems.",
+      applicationsCta: "Automotive applications",
+      contactCta: "Send drawing",
+      questions: [
+        {
+          q: "What does TEAO manufacture?",
+          a: "TEAO manufactures precision dampers and latches, including gear dampers, rotary dampers, axial dampers, barrel dampers, glove box dampers and custom soft-motion components for automotive, appliance and industrial assemblies.",
+        },
+        {
+          q: "Why are dampers important in modern electric vehicles?",
+          a: "Electric vehicles have lower powertrain noise, so clicks, impacts and snap-back sounds from glove boxes, grab handles, console lids and charging port covers are easier to notice. A properly selected damper slows the motion and makes the mechanism feel quieter and more premium.",
+        },
+        {
+          q: "What is the difference between a gear damper and an axial damper?",
+          a: "A gear damper, also called a rotary damper, controls rotating motion through a gear or rotor. An axial damper, also called a barrel damper, controls push-pull or stroke-based motion in compact linear mechanisms.",
+        },
+        {
+          q: "What information is needed for a custom damper quotation?",
+          a: "Share the application position, drawing or 3D space envelope, target torque or damping force, movement direction, working angle or stroke, temperature range, lifetime target and estimated annual volume.",
+        },
+      ],
+    },
     news: {
       eyebrow: "News",
       title: "Manufacturing notes and engineering updates.",
@@ -162,6 +188,32 @@ export const HOME_COPY = {
         { title: "量産", description: "金型、工程認定、検査、量産納入へ進みます。" },
       ],
     },
+    geoFaq: {
+      eyebrow: "技術回答",
+      title: "TEAOの製品とダンパー選定の基本。",
+      shortAnswer:
+        "TEAOは、自動車および産業機構向けに、ギアダンパー、ロータリーダンパー、アキシャルダンパー、バレルダンパー、グローブボックスダンパー、ラッチ、カスタムモーションコントロール部品を製造しています。これらのダンパーは、静かなEV内装や高級感が求められる機構で、カバーの動きを遅くし、衝撃音や戻り音を抑え、操作感を高めるために使われます。",
+      applicationsCta: "自動車用途を見る",
+      contactCta: "図面を送る",
+      questions: [
+        {
+          q: "TEAOは何を製造していますか？",
+          a: "TEAOは、ギアダンパー、ロータリーダンパー、アキシャルダンパー、バレルダンパー、グローブボックスダンパー、ラッチ、自動車・家電・産業機器向けのカスタムソフトモーション部品を製造しています。",
+        },
+        {
+          q: "なぜ現代のEVにダンパーが重要ですか？",
+          a: "EVはパワートレイン音が小さいため、グローブボックス、グラブハンドル、コンソールリッド、充電口カバーのクリック音や衝撃音が目立ちやすくなります。適切なダンパーは動きを遅くし、静かで上質な操作感を作ります。",
+        },
+        {
+          q: "ギアダンパーとアキシャルダンパーの違いは何ですか？",
+          a: "ギアダンパーはロータリーダンパーとも呼ばれ、ギアやローターで回転運動を制御します。アキシャルダンパーはバレルダンパーとも呼ばれ、コンパクトな直線機構の押し引きやストローク動作を制御します。",
+        },
+        {
+          q: "カスタムダンパーの見積にはどんな情報が必要ですか？",
+          a: "用途位置、図面または3Dスペース、目標トルクまたは減衰力、動作方向、作動角度またはストローク、温度範囲、寿命目標、年間数量を共有してください。",
+        },
+      ],
+    },
     news: {
       eyebrow: "ニュース",
       title: "製造ノートと技術アップデート。",
@@ -249,6 +301,32 @@ export const HOME_COPY = {
         { title: "Engineering", description: "Machbarkeit, Struktur, Material und Dämpfungsrichtung prüfen." },
         { title: "Validierung", description: "Prototyp, Einbauprüfung, Drehmomenttest und Bewegungsgefühl abstimmen." },
         { title: "Produktion", description: "Werkzeugbau, Prozessqualifikation, Prüfung und Serienlieferung." },
+      ],
+    },
+    geoFaq: {
+      eyebrow: "Technische Antworten",
+      title: "Was TEAO herstellt und wie ein Dämpfer ausgewählt wird.",
+      shortAnswer:
+        "TEAO fertigt Zahnrad-Dämpfer, Rotationsdämpfer, Axialdämpfer, Barrel-Dämpfer, Handschuhfachdämpfer, Verriegelungen und kundenspezifische Motion-Control-Bauteile für Automotive- und Industrie-Mechanismen. Ingenieure nutzen diese Dämpfer, um bewegte Abdeckungen zu verlangsamen, Aufprallgeräusche zu reduzieren, Rückschnappen zu kontrollieren und die wahrgenommene Qualität in leisen EV- und Premium-Innenräumen zu verbessern.",
+      applicationsCta: "Automotive-Anwendungen",
+      contactCta: "Zeichnung senden",
+      questions: [
+        {
+          q: "Was stellt TEAO her?",
+          a: "TEAO fertigt Präzisionsdämpfer und Verriegelungen, darunter Zahnrad-Dämpfer, Rotationsdämpfer, Axialdämpfer, Barrel-Dämpfer, Handschuhfachdämpfer und kundenspezifische Soft-Motion-Komponenten für Automotive-, Haushaltsgeräte- und Industrie-Baugruppen.",
+        },
+        {
+          q: "Warum sind Dämpfer in modernen Elektrofahrzeugen wichtig?",
+          a: "Elektrofahrzeuge haben weniger Antriebsgeräusche, deshalb fallen Klick-, Aufprall- und Rückschnappgeräusche von Handschuhfächern, Haltegriffen, Konsolendeckeln und Ladeanschlussklappen stärker auf. Ein passend ausgewählter Dämpfer verlangsamt die Bewegung und sorgt für ein leiseres, hochwertigeres Gefühl.",
+        },
+        {
+          q: "Was ist der Unterschied zwischen einem Zahnrad-Dämpfer und einem Axialdämpfer?",
+          a: "Ein Zahnrad-Dämpfer, auch Rotationsdämpfer genannt, kontrolliert Drehbewegungen über ein Zahnrad oder einen Rotor. Ein Axialdämpfer, auch Barrel-Dämpfer genannt, kontrolliert Push-Pull- oder hubbasierte Bewegungen in kompakten linearen Mechanismen.",
+        },
+        {
+          q: "Welche Informationen werden für ein kundenspezifisches Dämpferangebot benötigt?",
+          a: "Teilen Sie Anwendungsposition, Zeichnung oder 3D-Bauraum, Zielmoment oder Dämpfungskraft, Bewegungsrichtung, Arbeitswinkel oder Hub, Temperaturbereich, Lebensdauerziel und geschätzte Jahresmenge mit.",
+        },
       ],
     },
     news: {

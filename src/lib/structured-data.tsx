@@ -185,7 +185,7 @@ export function productSchema(product: Product, categoryName?: string) {
   };
 }
 
-export function faqPageSchema(questions: { q: string; a: string }[]) {
+export function faqPageSchema(questions: readonly { q: string; a: string }[]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",

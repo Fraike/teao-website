@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
 import { PublicChrome } from "@/components/layout/public-chrome";
 import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
 import { env } from "@/lib/env";
@@ -7,9 +7,10 @@ import { organizationSchema, JsonLdScript } from "@/lib/structured-data";
 import { AUTOMOTIVE_SEO_KEYWORDS, GLOBAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "700", "900"],
+const inter = localFont({
+  src: "./fonts/inter-latin.woff2",
+  weight: "100 900",
+  style: "normal",
   display: "swap",
   variable: "--font-inter",
 });

@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { ArrowUpRight } from "lucide-react";
 import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import { news, newsTranslations } from "@/db/schema";
@@ -38,24 +40,44 @@ export async function NewsSection({ locale = "en" }: { locale?: SiteLocale }) {
           />
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
           {articles.map((item, i) => (
             <Reveal key={item.title} delay={i === 0 ? undefined : (Math.min(i, 2) as 1 | 2)}>
-              <article className="relative min-h-[180px] lg:min-h-[240px] p-5 lg:p-6 flex flex-col justify-between rounded-xl border border-[#E5E5E5] bg-white hover:-translate-y-1.5 hover:shadow-[0_24px_56px_rgba(237,118,6,0.06)] transition-all duration-300 overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#ED7606] to-[#ED7606]/30" />
-                <div>
-                  <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-[#FFF1E3] text-[#ED7606] text-[10px] font-black uppercase tracking-[0.12em]">
-                    {item.category}
-                  </span>
-                  <h3 className="mt-5 lg:mt-7 text-xl lg:text-2xl leading-[1.10] tracking-[-0.03em] font-extrabold text-[#111827]">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 text-[#6B7280] text-sm leading-relaxed">{item.summary}</p>
-                </div>
-                <Link href={withLocale(`/news/${item.slug}.html`, locale)} className="mt-4 lg:mt-6 text-[#ED7606] text-sm font-extrabold hover:underline">
-                  {copy.readMore} →
-                </Link>
-              </article>
+              <Link
+                href={withLocale(`/news/${item.slug}.html`, locale)}
+                className="group block h-full overflow-hidden rounded-xl border border-[#E5E5E5] bg-white transition-all duration-300 hover:-translate-y-1.5 hover:border-[#ED7606]/30 hover:shadow-[0_24px_56px_rgba(237,118,6,0.08)]"
+              >
+                <article className="flex h-full flex-col">
+                  <div className="relative aspect-[16/7] overflow-hidden bg-[#F8F9FA]">
+                    <Image
+                      src={getNewsCardImage(item)}
+                      alt={item.title}
+                      fill
+                      loading="lazy"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.05]"
+                    />
+                    <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,24,39,0.05)_0%,rgba(17,24,39,0.42)_100%)]" />
+                    <span className="absolute left-3 top-3 inline-flex items-center rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-[#ED7606] shadow-[0_8px_22px_rgba(17,24,39,0.10)] backdrop-blur">
+                      {item.category}
+                    </span>
+                  </div>
+                  <div className="flex flex-1 flex-col p-3.5 lg:p-4">
+                    <div className="flex items-start gap-3">
+                      <h3 className="line-clamp-2 flex-1 text-[18px] font-extrabold leading-[1.12] tracking-[-0.03em] text-[#111827] transition-colors group-hover:text-[#ED7606] lg:text-[20px]">
+                        {item.title}
+                      </h3>
+                      <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-[#E5E7EB] bg-[#FAF9F6] text-[#ED7606] transition-all group-hover:border-[#ED7606] group-hover:bg-[#ED7606] group-hover:text-white">
+                        <ArrowUpRight size={15} />
+                      </span>
+                    </div>
+                    <p className="mt-2 line-clamp-2 text-[13px] leading-5 text-[#6B7280]">{item.summary}</p>
+                    <span className="mt-3 text-sm font-extrabold text-[#ED7606]">
+                      {copy.readMore} →
+                    </span>
+                  </div>
+                </article>
+              </Link>
             </Reveal>
           ))}
           {articles.length === 0 && (
@@ -65,4 +87,17 @@ export async function NewsSection({ locale = "en" }: { locale?: SiteLocale }) {
       </div>
     </section>
   );
+}
+
+function getNewsCardImage(item: { image: string; title: string; summary: string; slug: string }) {
+  if (item.image && item.image !== "#") return item.image;
+
+  const text = `${item.title} ${item.summary} ${item.slug}`.toLowerCase();
+  if (text.includes("automotive") || text.includes("interior") || text.includes("ev")) {
+    return "/images/news/automotive-interior-damper-map.webp";
+  }
+  if (text.includes("rotary") || text.includes("gear")) {
+    return "/images/news/rotary-damper-internal-structure.webp";
+  }
+  return "/images/products/gear-damper/GearDamperCategory.webp";
 }

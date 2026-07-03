@@ -6,16 +6,17 @@ import { usePathname } from "next/navigation";
 import { SITE_CONFIG } from "@/lib/constants";
 import { stripLocale, withLocale } from "@/lib/i18n";
 import { getUiCopy } from "@/lib/i18n-ui";
+import { getCategoryUrl } from "@/lib/products";
 
 const FOOTER_LINKS = [
   {
     group: "products",
     links: [
-      { key: "gearDampers", href: "/products?category=gear-damper" },
-      { key: "axialDampers", href: "/products?category=axial-damper" },
-      { key: "gloveBoxDampers", href: "/products?category=glove-box-damper" },
-      { key: "latches", href: "/products?category=latch" },
-      { key: "otherProducts", href: "/products?category=other" },
+      { key: "gearDampers", href: getCategoryUrl("gear-damper") },
+      { key: "axialDampers", href: getCategoryUrl("axial-damper") },
+      { key: "gloveBoxDampers", href: getCategoryUrl("glove-box-damper") },
+      { key: "latches", href: getCategoryUrl("latch") },
+      { key: "otherProducts", href: getCategoryUrl("other") },
     ],
   },
   {

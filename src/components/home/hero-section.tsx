@@ -24,13 +24,15 @@ export function HeroSection({ locale = "en" }: { locale?: SiteLocale }) {
 
       {/* Background layers */}
       <div className="absolute inset-0">
-        <div
-          className="absolute inset-0 scale-[1.04] animate-hero-drift opacity-20"
-          style={{
-            background:
-              "linear-gradient(90deg, rgba(250,249,246,.96), rgba(250,249,246,.7) 46%, rgba(250,249,246,.15)), linear-gradient(0deg, rgba(250,249,246,.94), rgba(250,249,246,0) 38%), url('/images/Homepage-background-image.webp') center / cover no-repeat, #FAF9F6",
-          }}
+        <Image
+          src="/images/Homepage-background-image.webp"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="scale-[1.04] animate-hero-drift object-cover opacity-20"
         />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(250,249,246,.96),rgba(250,249,246,.7)_46%,rgba(250,249,246,.15)),linear-gradient(0deg,rgba(250,249,246,.94),rgba(250,249,246,0)_38%)]" />
         <div
           className="absolute inset-0 opacity-[0.18]"
           style={{

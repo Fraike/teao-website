@@ -7,9 +7,11 @@ import { ApplicationSection } from "@/components/home/application-section";
 import { PartnerSection } from "@/components/home/partner-section";
 import { ProcessSection } from "@/components/home/process-section";
 import { NewsSection } from "@/components/home/news-section";
+import { GeoFaqSection } from "@/components/home/geo-faq-section";
 import { CTASection } from "@/components/home/cta-section";
-import { JsonLdScript, websiteSchema } from "@/lib/structured-data";
+import { JsonLdScript, faqPageSchema, websiteSchema } from "@/lib/structured-data";
 import { LOCALE_OG, withLocale, getAlternateUrls } from "@/lib/i18n";
+import { getHomeCopy } from "@/lib/home-i18n";
 
 const locale = "de" as const;
 
@@ -46,14 +48,28 @@ export function generateMetadata(): Metadata {
     title,
     description,
     alternates: { canonical: withLocale("/", locale), languages: getAlternateUrls("/") },
-    openGraph: { title: `${title} | TEAO`, description, locale: LOCALE_OG[locale] },
+    openGraph: {
+      title: `${title} | TEAO`,
+      description,
+      locale: LOCALE_OG[locale],
+      images: [{ url: "/images/news/automotive-interior-damper-map.webp", width: 1672, height: 941 }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${title} | TEAO`,
+      description,
+      images: ["/images/news/automotive-interior-damper-map.webp"],
+    },
   };
 }
 
 export default function LocalizedHomePage() {
+  const geoFaq = getHomeCopy(locale).geoFaq;
+
   return (
     <>
       <JsonLdScript data={websiteSchema()} />
+      <JsonLdScript data={faqPageSchema(geoFaq.questions)} />
       <HeroSection locale={locale} />
       <Suspense fallback={<ProductGridSkeleton />}>
         <ProductGrid locale={locale} />
@@ -63,6 +79,7 @@ export default function LocalizedHomePage() {
       <PartnerSection locale={locale} />
       <ProcessSection locale={locale} />
       <NewsSection locale={locale} />
+      <GeoFaqSection locale={locale} />
       <CTASection locale={locale} />
     </>
   );

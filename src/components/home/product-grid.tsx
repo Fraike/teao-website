@@ -8,6 +8,7 @@ import { SkeletonImage } from "@/components/ui/skeleton-image";
 import type { SiteLocale } from "@/lib/i18n-ui";
 import { withLocale } from "@/lib/i18n";
 import { getHomeCopy } from "@/lib/home-i18n";
+import { getCategoryUrl } from "@/lib/products";
 
 export async function ProductGrid({ locale = "en" }: { locale?: SiteLocale }) {
   const rows = await db.select().from(categories).all();
@@ -47,7 +48,7 @@ export async function ProductGrid({ locale = "en" }: { locale?: SiteLocale }) {
 
             <Reveal delay={((i % 2) + 1) as 1 | 2}>
               <Link
-                href={withLocale(`/products?category=${cat.slug}`, locale)}
+                href={withLocale(getCategoryUrl(cat), locale)}
                 className="product-card group"
               >
                 <div className="product-card__media">

@@ -222,3 +222,8 @@ export function getAllAttachments(products: Product[]): string[] {
 export function getProductUrl(product: { slug: string; category: string }): string {
   return `/${product.category}/${product.slug}`;
 }
+
+export function getCategoryUrl(category: { slug: string } | string): string {
+  const slug = typeof category === "string" ? category : category.slug;
+  return `/${slug}`;
+}

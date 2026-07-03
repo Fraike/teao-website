@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import { GlobalSearch } from "@/components/search/GlobalSearch";
 import { stripLocale, withLocale } from "@/lib/i18n";
 import { getUiCopy } from "@/lib/i18n-ui";
+import { getCategoryUrl } from "@/lib/products";
 
 const NAV_ITEMS = [
   { key: "products", href: "/products", mega: true },
@@ -91,7 +92,7 @@ export default function Header() {
                     {CATEGORIES.map((cat) => (
                       <Link
                         key={cat.slug}
-                        href={withLocale(`/products?category=${cat.slug}`, locale)}
+                        href={withLocale(getCategoryUrl(cat), locale)}
                         className="min-h-[142px] p-3.5 flex flex-col justify-between rounded-xl border border-[#E5E7EB]/60 bg-[#F8F9FA] hover:-translate-y-1 hover:border-[#ED7606]/40 hover:bg-white transition-all duration-300"
                       >
                         <div className="relative w-full h-[76px]">
