@@ -107,6 +107,25 @@ export default async function CategoryPage({ params }: Props) {
 
   const categoryFAQ = seo.faq;
 
+  // Compute filter options for gear-damper
+  const showFilter = category === "gear-damper";
+  const filterProps = showFilter
+    ? (() => {
+        const torques = mappedProducts
+          .filter((p) => p.torque?.unit === "gf.cm")
+          .flatMap((p) => [p.torque!.min, p.torque!.max]);
+        const torqueMin = torques.length > 0 ? Math.floor(Math.min(...torques)) : 0;
+        const torqueMax = torques.length > 0 ? Math.ceil(Math.max(...torques)) : 1000;
+        const mountingOptions = [...new Set(mappedProducts.map((p) => p.assembly_method).filter(Boolean))] as string[];
+        const dampingOptions = [...new Set(mappedProducts.map((p) => p.buffer_direction).filter(Boolean))] as string[];
+        return {
+          torqueRange: { min: torqueMin, max: torqueMax },
+          mountingOptions,
+          dampingOptions,
+        };
+      })()
+    : undefined;
+
   return (
     <>
       <JsonLdScript data={listingJsonLd} />
@@ -116,7 +135,12 @@ export default async function CategoryPage({ params }: Props) {
       <CategoryTabs current={category} />
       <section className="section !pt-8 !pb-12">
         <div className="shell">
-          <ProductListClient products={mappedProducts} category={categoryInfo} />
+          <ProductListClient
+            products={mappedProducts}
+            category={categoryInfo}
+            showFilter={showFilter}
+            {...(filterProps || {})}
+          />
         </div>
       </section>
       <CategoryExplainer category={categoryInfo} />
