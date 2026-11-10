@@ -1,7 +1,9 @@
 # TEAO Website — 项目全貌文档
 
 > **用途**: 帮助 AI（ChatGPT、Claude、Perplexity 等）和开发者快速理解项目结构、技术栈、业务逻辑和开发规范。
-> **最后更新**: 2025-06-01
+> **最后更新**: 2026-11-09
+>
+> 本文描述原项目目录。本机统一预览由当前开发工作树提供，3091 和 3100 指向同一服务。Search Console 自动同步、询盘回复草稿与运营看板见 3091 优化工作树中的同名文档。启动见 [README.md](README.md)，协作规则见 [AGENTS.md](AGENTS.md)。
 
 ---
 
@@ -42,7 +44,7 @@
 | 语言 | TypeScript 5.8 (strict mode) |
 | 样式 | Tailwind CSS v4 (PostCSS) |
 | ORM | Drizzle ORM + @libsql/client |
-| 数据库 | SQLite (本地) / Turso (生产) |
+| 数据库 | 默认 SQLite，可通过配置连接 Turso |
 | 富文本 | TipTap (React 编辑器) |
 | 认证 | JWT via `jose` + bcryptjs (httpOnly Cookie) |
 | 邮件 | Resend (通知邮件) |
@@ -452,6 +454,8 @@ DB 中多个字段以 JSON 字符串存储，通过 `src/lib/products.ts` 中的
 ## 9. 部署
 
 ### 服务器
+
+生产部署、生产数据修复和整库同步需要分别确认。整库同步属于替换操作，优先使用针对目标库的增量迁移。
 - **IP**: 107.150.106.22 (外部)
 - **OS**: Ubuntu 24.04
 - **用户**: ubuntu
@@ -538,10 +542,10 @@ ssh ubuntu@107.150.106.22 "cd /home/ubuntu/teao-website && \
 
 ### 启动
 ```bash
-npm install           # 安装依赖
-npm run dev           # 启动开发服务器 (Turbopack, port 3000)
+npm ci                # 安装锁定的依赖
+npm run dev           # 单独开发本目录时启动开发服务器
 npm run build         # 生产构建
-npm run start         # 生产运行
+npm run start         # 启动已有生产构建
 npm run lint          # ESLint
 npm run typecheck     # TypeScript 检查
 npm run db:push       # 推送 Schema 到数据库
@@ -549,12 +553,15 @@ npm run db:studio     # Drizzle Studio 图形界面
 npm run db:seed       # 初始化种子数据
 ```
 
+当前统一预览的后台为 `http://127.0.0.1:3091/admin/login`，3100 同路径跳转至该入口。使用 `PORT=3101 npm run dev` 可切换端口。生产预览先运行 `npm run build`，后台登录还需设置 `AUTH_SECRET`。管理员凭据由项目维护者单独交付。
+
 ### 种子数据
-`npm run db:seed` 会创建:
+
+`npm run db:seed` 会清空并重建分类、产品和新闻，只在可丢弃的本地样例数据库使用。样例包括：
 - 5 个产品分类
 - 12 个示例产品
 - 3 篇新闻
-- 管理员账号: `admin` / `teao123`
+- 管理员账号在管理员表为空时初始化
 
 ### .gitignore 关键条目
 - `data/` — 数据库文件不提交
@@ -648,6 +655,7 @@ npm run db:seed       # 初始化种子数据
 ## 13. 扩展 & 未来规划
 
 ### 当前阶段
+- [x] 英文默认页面及日语、德语入口
 - [x] 静态产品数据
 - [x] SQLite 数据库 + ORM
 - [x] 后台管理面板（产品/新闻/媒体 CRUD）
@@ -661,7 +669,6 @@ npm run db:seed       # 初始化种子数据
 
 ### 未实现
 - [ ] CMS 集成（Payload / Strapi）
-- [ ] 多语言支持
 - [ ] CI/CD Pipeline
 - [ ] 自动化测试
 - [ ] AI 聊天机器人

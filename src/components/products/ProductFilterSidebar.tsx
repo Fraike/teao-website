@@ -1,7 +1,16 @@
 "use client";
 
-import { useState } from "react";
-import { ChevronDown, ChevronUp, RotateCw, Wrench, ArrowRightLeft } from "lucide-react";
+import { useCallback, useRef } from "react";
+import {
+  RotateCw,
+  Wrench,
+  ArrowLeftRight,
+  X,
+  ArrowRight,
+  Bolt,
+  Puzzle,
+  SlidersHorizontal,
+} from "lucide-react";
 
 export type FilterState = {
   torqueMin: number | null;
@@ -18,38 +27,138 @@ type Props = {
   dampingOptions: string[];
 };
 
-function CollapsibleSection({
-  title,
-  icon,
-  defaultOpen = true,
-  children,
+const DIRECTION_ICONS: Record<string, React.ElementType> = {
+  Bidirectional: ArrowLeftRight,
+  Oneway: ArrowRight,
+  "One-way": ArrowRight,
+};
+
+const MOUNTING_ICONS: Record<string, React.ElementType> = {
+  "Screw Fixing": Bolt,
+  "Snap fit": Puzzle,
+};
+
+function RangeSlider({
+  min,
+  max,
+  valueLow,
+  valueHigh,
+  onChange,
+  unit,
 }: {
-  title: string;
-  icon: React.ReactNode;
-  defaultOpen?: boolean;
-  children: React.ReactNode;
+  min: number;
+  max: number;
+  valueLow: number;
+  valueHigh: number;
+  onChange: (low: number, high: number) => void;
+  unit: string;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const range = max - min || 1;
+
+  const lowPercent = ((valueLow - min) / range) * 100;
+  const highPercent = ((valueHigh - min) / range) * 100;
+
+  const handleLowChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const v = Number(e.target.value);
+      onChange(Math.min(v, valueHigh), valueHigh);
+    },
+    [valueHigh, onChange],
+  );
+
+  const handleHighChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const v = Number(e.target.value);
+      onChange(valueLow, Math.max(v, valueLow));
+    },
+    [valueLow, onChange],
+  );
+
   return (
-    <div className="border-b border-[#E5E7EB] last:border-b-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between gap-2 py-3 text-left"
-      >
-        <span className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.1em] text-[#374151]">
-          {icon}
-          {title}
-        </span>
-        {open ? <ChevronUp size={14} className="text-[#9CA3AF]" /> : <ChevronDown size={14} className="text-[#9CA3AF]" />}
-      </button>
-      {open && <div className="pb-4">{children}</div>}
+    <div className="space-y-3">
+      {/* Values display */}
+      <div className="flex items-center justify-between gap-1 tabular-nums">
+        <span className="text-sm font-black text-[#111827]">{Math.round(valueLow)}</span>
+        <span className="text-[10px] font-bold text-[#9CA3AF] uppercase">{unit}</span>
+        <span className="text-sm font-black text-[#111827]">{Math.round(valueHigh)}</span>
+      </div>
+
+      {/* Dual range slider */}
+      <div ref={trackRef} className="relative h-6 flex items-center">
+        <div className="absolute inset-x-0 h-1.5 rounded-full bg-[#E5E7EB]" />
+        <div
+          className="absolute h-1.5 rounded-full bg-[#ED7606]"
+          style={{ left: `${lowPercent}%`, width: `${highPercent - lowPercent}%` }}
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step="any"
+          value={valueLow}
+          onChange={handleLowChange}
+          className="range-slider-thumb"
+          style={{ zIndex: lowPercent > 50 ? 4 : 2 }}
+        />
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step="any"
+          value={valueHigh}
+          onChange={handleHighChange}
+          className="range-slider-thumb"
+          style={{ zIndex: highPercent < 50 ? 4 : 2 }}
+        />
+      </div>
+
+      {/* Min/Max labels */}
+      <div className="flex justify-between text-[10px] font-bold text-[#9CA3AF] tabular-nums">
+        <span>{min}</span>
+        <span>{max}</span>
+      </div>
     </div>
   );
 }
 
+function OptionChip({
+  label,
+  active,
+  onClick,
+  icon: Icon,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+  icon?: React.ElementType;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`group flex w-full items-center gap-2.5 rounded-lg border px-3 py-2.5 text-left transition-all ${
+        active
+          ? "border-[#ED7606]/50 bg-[#FFF7ED] text-[#ED7606] shadow-[0_0_0_1px_rgba(237,118,6,.1)]"
+          : "border-[#E5E7EB] bg-white text-[#374151] hover:border-[#D1D5DB] hover:bg-[#F8F9FA]"
+      }`}
+    >
+      {Icon && (
+        <Icon
+          size={15}
+          className={`shrink-0 transition-colors ${
+            active ? "text-[#ED7606]" : "text-[#9CA3AF] group-hover:text-[#6B7280]"
+          }`}
+        />
+      )}
+      <span className="text-xs font-bold">{label}</span>
+      {active && <X size={12} className="ml-auto shrink-0 opacity-50" />}
+    </button>
+  );
+}
+
 export function ProductFilterSidebar({ filters, onChange, torqueRange, mountingOptions, dampingOptions }: Props) {
-  const [torqueMinInput, setTorqueMinInput] = useState(filters.torqueMin !== null ? String(filters.torqueMin) : "");
-  const [torqueMaxInput, setTorqueMaxInput] = useState(filters.torqueMax !== null ? String(filters.torqueMax) : "");
+  const effectiveMin = filters.torqueMin ?? torqueRange.min;
+  const effectiveMax = filters.torqueMax ?? torqueRange.max;
 
   const hasActiveFilters =
     filters.torqueMin !== null ||
@@ -57,133 +166,104 @@ export function ProductFilterSidebar({ filters, onChange, torqueRange, mountingO
     filters.mountingMethods.length > 0 ||
     filters.dampingDirections.length > 0;
 
-  const applyTorque = () => {
-    const min = torqueMinInput ? parseFloat(torqueMinInput) : null;
-    const max = torqueMaxInput ? parseFloat(torqueMaxInput) : null;
-    onChange({ ...filters, torqueMin: min && !isNaN(min) ? min : null, torqueMax: max && !isNaN(max) ? max : null });
+  const handleTorqueChange = (low: number, high: number) => {
+    const roundedLow = Math.round(low);
+    const roundedHigh = Math.round(high);
+    onChange({
+      ...filters,
+      torqueMin: roundedLow > torqueRange.min ? roundedLow : null,
+      torqueMax: roundedHigh < torqueRange.max ? roundedHigh : null,
+    });
   };
 
-  const toggleMounting = (method: string) => {
-    const next = filters.mountingMethods.includes(method)
-      ? filters.mountingMethods.filter((m) => m !== method)
-      : [...filters.mountingMethods, method];
-    onChange({ ...filters, mountingMethods: next });
-  };
-
-  const toggleDirection = (direction: string) => {
-    const next = filters.dampingDirections.includes(direction)
-      ? filters.dampingDirections.filter((d) => d !== direction)
-      : [...filters.dampingDirections, direction];
-    onChange({ ...filters, dampingDirections: next });
+  const toggleOption = (key: "mountingMethods" | "dampingDirections", value: string) => {
+    const current = filters[key];
+    const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+    onChange({ ...filters, [key]: next });
   };
 
   const clearAll = () => {
-    setTorqueMinInput("");
-    setTorqueMaxInput("");
     onChange({ torqueMin: null, torqueMax: null, mountingMethods: [], dampingDirections: [] });
   };
 
   return (
-    <div className="rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_4px_20px_rgba(0,0,0,.03)]">
+    <div className="rounded-xl border border-[#E5E7EB] bg-white shadow-[0_4px_24px_rgba(0,0,0,.04)]">
       {/* Header */}
-      <div className="flex items-center justify-between gap-3 border-b border-[#E5E7EB] px-5 py-3.5">
-        <span className="text-sm font-black tracking-[-0.02em] text-[#111827]">Filters</span>
+      <div className="flex items-center justify-between px-4 py-3 border-b border-[#E5E7EB]">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal size={14} className="text-[#ED7606]" />
+          <span className="text-sm font-black tracking-[-0.02em] text-[#111827]">Filters</span>
+        </div>
         {hasActiveFilters && (
           <button
             onClick={clearAll}
-            className="text-[11px] font-bold text-[#ED7606] hover:underline"
+            className="text-[11px] font-bold text-[#ED7606] hover:text-[#D46900] transition-colors"
           >
-            Clear All
+            Reset
           </button>
         )}
       </div>
 
-      {/* Torque Range */}
-      <CollapsibleSection title="Torque Range (gf.cm)" icon={<RotateCw size={13} className="text-[#ED7606]" />}>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              placeholder={String(torqueRange.min)}
-              value={torqueMinInput}
-              onChange={(e) => setTorqueMinInput(e.target.value)}
-              onBlur={applyTorque}
-              onKeyDown={(e) => e.key === "Enter" && applyTorque()}
-              className="w-full h-10 rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-bold text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606]"
-            />
-            <span className="text-xs font-bold text-[#9CA3AF]">–</span>
-            <input
-              type="number"
-              placeholder={String(torqueRange.max)}
-              value={torqueMaxInput}
-              onChange={(e) => setTorqueMaxInput(e.target.value)}
-              onBlur={applyTorque}
-              onKeyDown={(e) => e.key === "Enter" && applyTorque()}
-              className="w-full h-10 rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-bold text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606]"
-            />
+      <div className="px-4 py-4 space-y-5">
+        {/* Torque Range */}
+        <div>
+          <div className="flex items-center gap-2 mb-3">
+            <RotateCw size={14} className="text-[#ED7606] shrink-0" />
+            <span className="text-xs font-black uppercase tracking-[0.08em] text-[#374151]">Torque</span>
+            <span className="text-[10px] font-bold text-[#9CA3AF]">gf·cm</span>
           </div>
-          <p className="text-[10px] text-[#9CA3AF]">
-            Range: {torqueRange.min} – {torqueRange.max} gf.cm
-          </p>
+          <RangeSlider
+            min={torqueRange.min}
+            max={torqueRange.max}
+            valueLow={effectiveMin}
+            valueHigh={effectiveMax}
+            onChange={handleTorqueChange}
+            unit="gf·cm"
+          />
         </div>
-      </CollapsibleSection>
 
-      {/* Mounting Method */}
-      {mountingOptions.length > 0 && (
-        <CollapsibleSection title="Mounting Method" icon={<Wrench size={13} className="text-[#ED7606]" />}>
-          <div className="space-y-2">
-            {mountingOptions.map((method) => (
-              <label
-                key={method}
-                className="flex items-center gap-2.5 cursor-pointer group"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.mountingMethods.includes(method)}
-                  onChange={() => toggleMounting(method)}
-                  className="h-4 w-4 rounded border-[#D1D5DB] text-[#ED7606] focus:ring-[#ED7606]"
+        {/* Mounting Method */}
+        {mountingOptions.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-2.5">
+              <Wrench size={14} className="text-[#ED7606] shrink-0" />
+              <span className="text-xs font-black uppercase tracking-[0.08em] text-[#374151]">Mounting</span>
+            </div>
+            <div className="space-y-1.5">
+              {mountingOptions.map((method) => (
+                <OptionChip
+                  key={method}
+                  label={method}
+                  icon={MOUNTING_ICONS[method]}
+                  active={filters.mountingMethods.includes(method)}
+                  onClick={() => toggleOption("mountingMethods", method)}
                 />
-                <span className="text-sm font-bold text-[#374151] group-hover:text-[#111827] transition-colors">
-                  {method}
-                </span>
-              </label>
-            ))}
+              ))}
+            </div>
           </div>
-        </CollapsibleSection>
-      )}
+        )}
 
-      {/* Damping Direction */}
-      {dampingOptions.length > 0 && (
-        <CollapsibleSection title="Damping Direction" icon={<ArrowRightLeft size={13} className="text-[#ED7606]" />}>
-          <div className="space-y-2">
-            {dampingOptions.map((direction) => (
-              <label
-                key={direction}
-                className="flex items-center gap-2.5 cursor-pointer group"
-              >
-                <input
-                  type="checkbox"
-                  checked={filters.dampingDirections.includes(direction)}
-                  onChange={() => toggleDirection(direction)}
-                  className="h-4 w-4 rounded border-[#D1D5DB] text-[#ED7606] focus:ring-[#ED7606]"
+        {/* Damping Direction */}
+        {dampingOptions.length > 0 && (
+          <div>
+            <div className="flex items-center gap-2 mb-2.5">
+              <ArrowLeftRight size={14} className="text-[#ED7606] shrink-0" />
+              <span className="text-xs font-black uppercase tracking-[0.08em] text-[#374151]">Direction</span>
+            </div>
+            <div className="space-y-1.5">
+              {dampingOptions.map((direction) => (
+                <OptionChip
+                  key={direction}
+                  label={direction}
+                  icon={DIRECTION_ICONS[direction]}
+                  active={filters.dampingDirections.includes(direction)}
+                  onClick={() => toggleOption("dampingDirections", direction)}
                 />
-                <span className="text-sm font-bold text-[#374151] group-hover:text-[#111827] transition-colors">
-                  {direction}
-                </span>
-              </label>
-            ))}
+              ))}
+            </div>
           </div>
-        </CollapsibleSection>
-      )}
-
-      {/* Active count badge on mobile */}
-      {hasActiveFilters && (
-        <div className="px-5 py-3 border-t border-[#E5E7EB] lg:hidden">
-          <button onClick={clearAll} className="w-full rounded-lg bg-[#111827] px-4 py-2 text-xs font-bold text-white">
-            Clear All Filters
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

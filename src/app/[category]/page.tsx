@@ -9,6 +9,7 @@ import type { CategoryInfo } from "@/types";
 import { CategoryHero } from "@/components/products/CategoryHero";
 import { CategoryTabs } from "@/components/products/CategoryTabs";
 import { ProductListClient } from "@/components/products/ProductListClient";
+import { FilteredProductList } from "@/components/products/FilteredProductList";
 import { ApplicationContent } from "@/components/products/ApplicationContent";
 import { CategoryExplainer } from "@/components/products/CategoryExplainer";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
@@ -134,14 +135,13 @@ export default async function CategoryPage({ params }: Props) {
       <CategoryHero category={categoryInfo} />
       <CategoryTabs current={category} />
       <section className="section !pt-8 !pb-12">
-        <div className="shell">
-          <ProductListClient
-            products={mappedProducts}
-            category={categoryInfo}
-            showFilter={showFilter}
-            {...(filterProps || {})}
-          />
-        </div>
+        {showFilter && filterProps ? (
+          <FilteredProductList products={mappedProducts} {...filterProps} />
+        ) : (
+          <div className="shell">
+            <ProductListClient products={mappedProducts} category={categoryInfo} />
+          </div>
+        )}
       </section>
       <CategoryExplainer category={categoryInfo} />
       <ApplicationContent category={categoryInfo} />

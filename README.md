@@ -1,6 +1,16 @@
-# TEAO Website
+# TEAO 国际独立站
 
-TEAO (Dongguan TEAO Precision Technology Co., Ltd.) — automotive damper & latch manufacturer website. B2B platform for product discovery, engineering inquiry, and company information.
+TEAO 面向海外采购、产品设计和工程团队的 B2B 网站。客户可以按型号、参数或应用查找阻尼器与锁扣，阅读选型资料、使用扭矩工具并提交工程询盘。
+
+- **产品与应用**：齿轮式旋转阻尼器、轴向阻尼器、手套箱阻尼器、锁扣与定制件，含汽车内外饰应用和推荐型号。
+- **网站后台**：管理产品、技术文章和媒体，查看访问数据与询盘。表单记录询盘并通过已配置的 Resend 通知业务邮箱。
+- **公开内容**：英文为默认语言，提供日语和德语页面。产品详情以 `/{category}/{slug}` 为 canonical。
+
+本目录是原项目检出。本机统一预览由当前优化工作树的开发服务提供，[3091](http://127.0.0.1:3091/) 和 [3100](http://127.0.0.1:3100/) 都打开同一份页面。预览当前优化代码时，在优化工作树中运行 `npm run dev`。
+
+管理员凭据由项目维护者单独交付，不使用文档中的默认账号。
+
+工程细节见 [PROJECT.md](PROJECT.md)，协作约定见 [AGENTS.md](AGENTS.md)。
 
 ## Tech Stack
 
@@ -10,7 +20,7 @@ TEAO (Dongguan TEAO Precision Technology Co., Ltd.) — automotive damper & latc
 | Language | TypeScript 5.8 (strict mode) |
 | Styling | Tailwind CSS v4 (PostCSS) |
 | Database ORM | Drizzle ORM + @libsql/client |
-| Database | SQLite (local dev) / Turso (production) |
+| Database | SQLite by default; optional remote libSQL (Turso) |
 | Auth | JWT via `jose` + bcryptjs (httpOnly cookie) |
 | Animation | Framer Motion |
 | Icons | Lucide React |
@@ -79,9 +89,8 @@ src/
 ### Architecture
 
 Dual-environment setup in `src/db/index.ts`:
-- **Local**: SQLite file at `data/teao.db` (auto-created if absent)
-- **Production**: Turso (libsql) cloud database
-- Switch is automatic based on `TURSO_DATABASE_URL` env var
+- **Default**: SQLite file at `data/teao.db`. Use an initialized development database with catalog data.
+- **Optional remote**: libSQL through Turso when both `TURSO_DATABASE_URL` and `TURSO_AUTH_TOKEN` are set.
 
 ### Tables
 
@@ -101,19 +110,19 @@ All product/company images are **local static files** under `public/images/`. Im
 ### Seeding
 
 ```bash
-npm run db:seed   # Seeds: 5 categories, 12 products, 3 news, admin (admin / teao123)
+npm run db:seed   # Replace catalog and news with sample data in a disposable database
 ```
 
 ## Environment Variables
 
-Copy `.env.example` to `.env`:
+Use [`.env.example`](.env.example) as the configuration reference. Keep credentials in a local environment file.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `NEXT_PUBLIC_SITE_URL` | Yes | `https://www.teao-damper.com` | Canonical URL |
-| `TURSO_DATABASE_URL` | Production | — | Turso DB URL (unset = use local SQLite) |
-| `TURSO_AUTH_TOKEN` | Production | — | Turso auth token |
-| `AUTH_SECRET` | Production | `dev-secret` | JWT signing secret |
+| `NEXT_PUBLIC_SITE_URL` | Yes | `https://teao-damper.com` | Canonical URL |
+| `TURSO_DATABASE_URL` | Optional | — | Turso DB URL (unset = use local SQLite) |
+| `TURSO_AUTH_TOKEN` | Optional | — | Turso auth token |
+| `AUTH_SECRET` | Production | — | Required for signing admin sessions when running a production build |
 | `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Optional | — | Enable Plausible analytics |
 | `GOOGLE_SITE_VERIFICATION` | Optional | — | Google Search Console |
 | `NEXT_PUBLIC_YOUTUBE_VIDEO_ID` | Optional | — | About page video embed |
@@ -125,14 +134,16 @@ Copy `.env.example` to `.env`:
 ## Scripts
 
 ```bash
-npm run dev          # Start dev server (Turbopack)
+npm run dev          # Start this checkout for independent development
 npm run build        # Production build
-npm run start        # Production server
+npm run start        # Serve this checkout’s existing production build
 npm run lint         # Run ESLint
 npm run db:push      # Push schema changes to database
 npm run db:studio    # Open Drizzle Studio (GUI)
 npm run db:seed      # Seed database
 ```
+
+Run `npm ci` before first startup. Use `PORT=3101 npm run dev` to override the port. For a fresh production preview or after code changes, run `npm run build && npm run start`. Local administrator credentials are provided separately.
 
 ## Analytics System
 
@@ -175,8 +186,8 @@ npm run db:seed      # Seed database
 
 ## Deployment Notes
 
-1. Set `TURSO_DATABASE_URL` + `TURSO_AUTH_TOKEN` in production (or data persists in `data/teao.db` which is NOT in Git)
+1. Verify the production database connection and backup. The default is the existing `data/teao.db` outside Git.
 2. Set `AUTH_SECRET` to a strong random value
-3. Run `npm run db:seed` once to initialize data on a fresh database
+3. Confirm code deployment and any production database operation separately, as described in [AGENTS.md](AGENTS.md).
 4. `public/uploads/` is for admin media uploads — ensure write permissions
 5. Build output is standard Next.js: `npm run build && npm run start`
