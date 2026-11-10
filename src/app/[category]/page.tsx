@@ -13,6 +13,8 @@ import { ApplicationContent } from "@/components/products/ApplicationContent";
 import { CategoryExplainer } from "@/components/products/CategoryExplainer";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { getCategorySeo } from "@/lib/seo-keywords";
+import Link from "next/link";
+import { damperSelection, getDamperInquiryUrl, type DamperSelectionCategory } from "@/lib/growth-content";
 
 export const revalidate = 60;
 
@@ -106,43 +108,34 @@ export default async function CategoryPage({ params }: Props) {
   ]);
 
   const categoryFAQ = seo.faq;
-
-  // Compute filter options for gear-damper
-  const showFilter = category === "gear-damper";
-  const filterProps = showFilter
-    ? (() => {
-        const torques = mappedProducts
-          .filter((p) => p.torque?.unit === "gf.cm")
-          .flatMap((p) => [p.torque!.min, p.torque!.max]);
-        const torqueMin = torques.length > 0 ? Math.floor(Math.min(...torques)) : 0;
-        const torqueMax = torques.length > 0 ? Math.ceil(Math.max(...torques)) : 1000;
-        const mountingOptions = [...new Set(mappedProducts.map((p) => p.assembly_method).filter(Boolean))] as string[];
-        const dampingOptions = [...new Set(mappedProducts.map((p) => p.buffer_direction).filter(Boolean))] as string[];
-        return {
-          torqueRange: { min: torqueMin, max: torqueMax },
-          mountingOptions,
-          dampingOptions,
-        };
-      })()
-    : undefined;
+  const selection = damperSelection[category as DamperSelectionCategory];
 
   return (
     <>
       <JsonLdScript data={listingJsonLd} />
       <JsonLdScript data={breadcrumbJsonLd} />
       <JsonLdScript data={faqPageSchema(categoryFAQ)} />
-      <CategoryHero category={categoryInfo} />
-      <CategoryTabs current={category} />
-      <section className="section !pt-8 !pb-12">
-        <div className="shell">
-          <ProductListClient
-            products={mappedProducts}
-            category={categoryInfo}
-            showFilter={showFilter}
-            {...(filterProps || {})}
-          />
-        </div>
-      </section>
+      <div className={category === "gear-damper" ? "gear-catalog" : undefined}>
+        <CategoryHero category={categoryInfo} />
+        <CategoryTabs current={category} />
+        <section className="section !pt-8 !pb-12">
+          {selection && (
+            <div className="shell">
+              <aside aria-labelledby="selection-guide" className="mb-8 rounded-xl border border-[#E5E7EB] bg-[#F8F9FA] p-5 sm:p-6">
+                <h2 id="selection-guide" className="text-xl font-extrabold text-[#111827]">How to select a damper</h2>
+                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#4B5563]">{selection.selection}</p>
+                <div className="mt-4 flex flex-wrap items-center gap-4">
+                  <Link href={getDamperInquiryUrl(category, selection.application)} className="btn btn-primary" data-analytics-event="cta_click" data-analytics-target-type="category" data-analytics-target-id={category} data-analytics-source="category_selection">
+                    Request selection support
+                  </Link>
+                  <Link href={`/news/${selection.guide}.html`} className="text-sm font-bold text-[#9A4D06] hover:underline">Read the selection guide</Link>
+                </div>
+              </aside>
+            </div>
+          )}
+          <ProductListClient products={mappedProducts} category={categoryInfo} />
+        </section>
+      </div>
       <CategoryExplainer category={categoryInfo} />
       <ApplicationContent category={categoryInfo} />
       <InquiryCTA />

@@ -83,7 +83,7 @@ export function ProductSelector({ selected, onChange }: Props) {
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}
-          placeholder="Search products to link..."
+          placeholder="搜索要关联的产品…"
           className="w-full h-10 pl-9 pr-3 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
         />
       </div>
@@ -92,10 +92,10 @@ export function ProductSelector({ selected, onChange }: Props) {
       {isOpen && query && (
         <div className="absolute z-20 mt-1 w-full bg-white rounded-lg border border-[#E5E7EB] shadow-lg max-h-48 overflow-y-auto">
           {loading && (
-            <div className="px-3 py-2 text-xs text-[#9CA3AF]">Searching...</div>
+            <div className="px-3 py-2 text-xs text-[#9CA3AF]">正在搜索…</div>
           )}
           {!loading && results.length === 0 && (
-            <div className="px-3 py-2 text-xs text-[#9CA3AF]">No products found</div>
+            <div className="px-3 py-2 text-xs text-[#9CA3AF]">未找到产品</div>
           )}
           {results.map((p) => (
             <button

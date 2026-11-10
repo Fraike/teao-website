@@ -12,21 +12,31 @@ const PAGE_SIZE = 10;
 
 export function ProductListClient({
   products,
-  showFilter = false,
-  torqueRange,
-  mountingOptions,
-  dampingOptions,
+  category,
 }: {
   products: Product[];
   category?: CategoryInfo;
-  showFilter?: boolean;
-  torqueRange?: { min: number; max: number };
-  mountingOptions?: string[];
-  dampingOptions?: string[];
 }) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const prevProductsRef = useRef(products);
+  const showFilter = category?.slug === "gear-damper";
+
+  const filterOptions = useMemo(() => {
+    if (!showFilter) return null;
+
+    const torques = products.flatMap(({ torque }) =>
+      torque?.unit === "gf.cm" ? [torque.min, torque.max] : [],
+    );
+    return {
+      torqueRange: {
+        min: torques.length ? Math.floor(Math.min(...torques)) : 0,
+        max: torques.length ? Math.ceil(Math.max(...torques)) : 1000,
+      },
+      mountingOptions: [...new Set(products.map((p) => p.assembly_method).filter(Boolean))] as string[],
+      dampingOptions: [...new Set(products.map((p) => p.buffer_direction).filter(Boolean))] as string[],
+    };
+  }, [products, showFilter]);
 
   // Filter state
   const [filters, setFilters] = useState<FilterState>({
@@ -107,46 +117,27 @@ export function ProductListClient({
   };
 
   return (
-    <div className={showFilter ? "grid lg:grid-cols-[260px_1fr] gap-6" : ""}>
-      {/* Filter Sidebar */}
-      {showFilter && torqueRange && mountingOptions && dampingOptions && (
-        <aside className="hidden lg:block">
-          <div className="sticky top-28">
-            <ProductFilterSidebar
-              filters={filters}
-              onChange={setFilters}
-              torqueRange={torqueRange}
-              mountingOptions={mountingOptions}
-              dampingOptions={dampingOptions}
-            />
-          </div>
+    <div className={filterOptions ? "shell product-list-with-filters" : "shell"}>
+      {filterOptions && (
+        <aside
+          aria-label="Product filters"
+          className="xl:sticky xl:top-20 xl:col-start-1 xl:row-start-2 xl:max-h-[calc(100dvh-6rem)] xl:self-start xl:overflow-y-auto"
+        >
+          <ProductFilterSidebar filters={filters} onChange={setFilters} {...filterOptions} />
         </aside>
       )}
 
-      <div>
-        {/* Mobile filter toggle */}
-        {showFilter && (
-          <div className="lg:hidden mb-4">
-            <ProductFilterSidebar
-              filters={filters}
-              onChange={setFilters}
-              torqueRange={torqueRange!}
-              mountingOptions={mountingOptions!}
-              dampingOptions={dampingOptions!}
-            />
-          </div>
-        )}
-
-        <div className="mb-6 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-black uppercase tracking-[0.16em] text-[#9CA3AF]">Products</span>
-            <span className="inline-flex items-center justify-center min-w-[28px] h-7 rounded-full bg-[#111827] text-white text-xs font-extrabold px-2">
-              {filtered.length}
-            </span>
-          </div>
-          <ProductSearch value={search} onChange={handleSearch} />
+      <div className={`flex items-center justify-between gap-4 ${filterOptions ? "mb-1 xl:col-start-2 xl:row-start-1" : "mb-6"}`}>
+        <div className="flex items-center gap-3">
+          <span className="text-xs font-black uppercase tracking-[0.16em] text-[#9CA3AF]">Products</span>
+          <span className="inline-flex items-center justify-center min-w-[28px] h-7 rounded-full bg-[#111827] text-white text-xs font-extrabold px-2">
+            {filtered.length}
+          </span>
         </div>
+        <ProductSearch value={search} onChange={handleSearch} />
+      </div>
 
+      <div className="min-w-0 xl:col-start-2 xl:row-start-2">
         <ProductTable products={paged} />
 
         <div className="lg:hidden grid grid-cols-1 sm:grid-cols-2 gap-3">

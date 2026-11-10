@@ -94,7 +94,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
       LinkExtension.configure({ openOnClick: false }),
       ImageExtension,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-      Placeholder.configure({ placeholder: "Write your article content..." }),
+      Placeholder.configure({ placeholder: "请输入英文文章正文…" }),
       Table.configure({ resizable: true }),
       TableRow,
       TableCell,
@@ -126,7 +126,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
 
   const addLink = useCallback(() => {
     if (!editor) return;
-    const url = window.prompt("URL:");
+    const url = window.prompt("请输入链接网址");
     if (url) {
       editor.chain().focus().setLink({ href: url }).run();
     }
@@ -159,28 +159,28 @@ export default function RichTextEditor({ value, onChange }: Props) {
         open={imagePickerOpen}
         onOpenChange={setImagePickerOpen}
         compact
-        placeholder="Select image"
+        placeholder="选择图片"
       />
       {/* Toolbar */}
       <div className="flex items-center gap-0.5 px-3 py-2 border-b border-[#E5E7EB] bg-[#F8F9FA] flex-wrap">
         <ToolbarButton
           active={editor.isActive("bold")}
           onClick={() => editor.chain().focus().toggleBold().run()}
-          title="Bold"
+          title="加粗"
         >
           <Bold size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive("italic")}
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          title="Italic"
+          title="斜体"
         >
           <Italic size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive("underline")}
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          title="Underline"
+          title="下划线"
         >
           <UnderlineIcon size={15} />
         </ToolbarButton>
@@ -190,14 +190,14 @@ export default function RichTextEditor({ value, onChange }: Props) {
         <ToolbarButton
           active={editor.isActive("heading", { level: 2 })}
           onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          title="Heading 2"
+          title="二级标题"
         >
           <Heading2 size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive("heading", { level: 3 })}
           onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          title="Heading 3"
+          title="三级标题"
         >
           <Heading3 size={15} />
         </ToolbarButton>
@@ -207,14 +207,14 @@ export default function RichTextEditor({ value, onChange }: Props) {
         <ToolbarButton
           active={editor.isActive("bulletList")}
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          title="Bullet List"
+          title="项目符号列表"
         >
           <List size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive("orderedList")}
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          title="Ordered List"
+          title="编号列表"
         >
           <ListOrdered size={15} />
         </ToolbarButton>
@@ -224,35 +224,35 @@ export default function RichTextEditor({ value, onChange }: Props) {
         <ToolbarButton
           active={editor.isActive("blockquote")}
           onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          title="Blockquote"
+          title="引用"
         >
           <Quote size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive("codeBlock")}
           onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-          title="Code Block"
+          title="代码块"
         >
           <Code2 size={15} />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          title="Horizontal Rule"
+          title="分隔线"
         >
           <Minus size={15} />
         </ToolbarButton>
 
         <ToolbarDivider />
 
-        <ToolbarButton onClick={addLink} title="Insert Link">
+        <ToolbarButton onClick={addLink} title="插入链接">
           <Link2 size={15} />
         </ToolbarButton>
-        <ToolbarButton onClick={addImage} title="Insert Image">
+        <ToolbarButton onClick={addImage} title="插入图片">
           <ImageIcon size={15} />
         </ToolbarButton>
         <ToolbarButton
           onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
-          title="Insert Table"
+          title="插入表格"
         >
           <TableIcon size={15} />
         </ToolbarButton>
@@ -262,21 +262,21 @@ export default function RichTextEditor({ value, onChange }: Props) {
         <ToolbarButton
           active={editor.isActive({ textAlign: "left" })}
           onClick={() => editor.chain().focus().setTextAlign("left").run()}
-          title="Align Left"
+          title="左对齐"
         >
           <AlignLeft size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive({ textAlign: "center" })}
           onClick={() => editor.chain().focus().setTextAlign("center").run()}
-          title="Align Center"
+          title="居中对齐"
         >
           <AlignCenter size={15} />
         </ToolbarButton>
         <ToolbarButton
           active={editor.isActive({ textAlign: "right" })}
           onClick={() => editor.chain().focus().setTextAlign("right").run()}
-          title="Align Right"
+          title="右对齐"
         >
           <AlignRight size={15} />
         </ToolbarButton>
@@ -291,10 +291,10 @@ export default function RichTextEditor({ value, onChange }: Props) {
                 ? "bg-[#ED7606] text-white"
                 : "text-[#6B7280] hover:bg-[#F3F4F6]"
             }`}
-            title="Toggle Preview"
+            title="切换预览"
           >
             {showPreview ? <Eye size={13} /> : <Pencil size={13} />}
-            <span className="hidden sm:inline">{showPreview ? "Preview" : "Edit"}</span>
+            <span className="hidden sm:inline">{showPreview ? "预览" : "编辑"}</span>
           </button>
         </div>
       </div>
@@ -304,7 +304,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
         {/* Editor */}
         <div className="bg-white">
           <div className="border-b border-[#F3F4F6] px-4 py-2 text-[11px] font-medium text-[#9CA3AF]">
-            Paste Markdown to automatically convert headings, lists, links, images, code blocks and tables.
+            粘贴 Markdown 后会自动转换标题、列表、链接、图片、代码块和表格。
           </div>
           <EditorContent editor={editor} />
         </div>
@@ -314,7 +314,7 @@ export default function RichTextEditor({ value, onChange }: Props) {
           <div className="bg-[#FCFCFC]">
             <div className="px-3 py-2 border-b border-[#E5E7EB] bg-[#F8F9FA]">
               <span className="text-[10px] font-medium uppercase tracking-[0.08em] text-[#9CA3AF]">
-                Live Preview
+                实时预览
               </span>
             </div>
             <div

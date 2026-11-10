@@ -1,5 +1,6 @@
 "use client";
 
+import { getDamperInquiryUrl } from "@/lib/growth-content";
 import type { Product } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
@@ -157,7 +158,7 @@ export function ProductCardMobile({ product }: { product: Product }) {
                 Details
               </Link>
               <Link
-                href={`/contact?product=${encodeURIComponent(product.model)}`}
+                href={getDamperInquiryUrl(product.category, undefined, product.model)}
                 className="text-[11px] font-medium text-[#ED7606]"
                 data-analytics-event="cta_click"
                 data-analytics-target-type="cta"

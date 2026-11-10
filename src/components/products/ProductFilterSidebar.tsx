@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, RotateCw, Wrench, ArrowRightLeft } from "lucide-react";
+import { ChevronDown, Gauge, Wrench, ArrowRightLeft, SlidersHorizontal } from "lucide-react";
 
 export type FilterState = {
   torqueMin: number | null;
@@ -21,26 +21,26 @@ type Props = {
 function CollapsibleSection({
   title,
   icon,
-  defaultOpen = true,
   children,
 }: {
   title: string;
   icon: React.ReactNode;
-  defaultOpen?: boolean;
   children: React.ReactNode;
 }) {
-  const [open, setOpen] = useState(defaultOpen);
+  const [open, setOpen] = useState(true);
   return (
-    <div className="border-b border-[#E5E7EB] last:border-b-0">
+    <div className="border-t border-slate-100 px-3.5">
       <button
+        type="button"
+        aria-expanded={open}
         onClick={() => setOpen(!open)}
-        className="flex w-full items-center justify-between gap-2 py-3 text-left"
+        className="flex w-full items-center justify-between gap-2 py-3.5 text-left"
       >
-        <span className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.1em] text-[#374151]">
+        <span className="flex items-center gap-2 text-xs font-semibold text-slate-800">
           {icon}
           {title}
         </span>
-        {open ? <ChevronUp size={14} className="text-[#9CA3AF]" /> : <ChevronDown size={14} className="text-[#9CA3AF]" />}
+        <ChevronDown size={14} aria-hidden="true" className={open ? "rotate-180 text-slate-500" : "text-slate-500"} />
       </button>
       {open && <div className="pb-4">{children}</div>}
     </div>
@@ -48,8 +48,15 @@ function CollapsibleSection({
 }
 
 export function ProductFilterSidebar({ filters, onChange, torqueRange, mountingOptions, dampingOptions }: Props) {
-  const [torqueMinInput, setTorqueMinInput] = useState(filters.torqueMin !== null ? String(filters.torqueMin) : "");
-  const [torqueMaxInput, setTorqueMaxInput] = useState(filters.torqueMax !== null ? String(filters.torqueMax) : "");
+  const [torqueDraft, setTorqueDraft] = useState<{ bound: "min" | "max"; value: string } | null>(null);
+  const selectedMin = filters.torqueMin ?? torqueRange.min;
+  const selectedMax = filters.torqueMax ?? torqueRange.max;
+  const rangeSize = Math.max(1, torqueRange.max - torqueRange.min);
+  const trackStart = ((selectedMin - torqueRange.min) / rangeSize) * 100;
+  const trackWidth = ((selectedMax - selectedMin) / rangeSize) * 100;
+  const trackMiddle = trackStart + trackWidth / 2;
+  // Split the pointer targets halfway between the thumb centers, including when they overlap.
+  const thumbDivider = `calc(${trackMiddle}% + ${10 - trackMiddle / 5}px)`;
 
   const hasActiveFilters =
     filters.torqueMin !== null ||
@@ -57,10 +64,13 @@ export function ProductFilterSidebar({ filters, onChange, torqueRange, mountingO
     filters.mountingMethods.length > 0 ||
     filters.dampingDirections.length > 0;
 
-  const applyTorque = () => {
-    const min = torqueMinInput ? parseFloat(torqueMinInput) : null;
-    const max = torqueMaxInput ? parseFloat(torqueMaxInput) : null;
-    onChange({ ...filters, torqueMin: min && !isNaN(min) ? min : null, torqueMax: max && !isNaN(max) ? max : null });
+  const updateTorque = (bound: "min" | "max", value: number) => {
+    const key = bound === "min" ? "torqueMin" : "torqueMax";
+    const min = bound === "min" ? torqueRange.min : selectedMin;
+    const max = bound === "max" ? torqueRange.max : selectedMax;
+    const clamped = Math.min(max, Math.max(min, value));
+    const next = clamped === torqueRange[bound] ? null : clamped;
+    if (next !== filters[key]) onChange({ ...filters, [key]: next });
   };
 
   const toggleMounting = (method: string) => {
@@ -78,72 +88,105 @@ export function ProductFilterSidebar({ filters, onChange, torqueRange, mountingO
   };
 
   const clearAll = () => {
-    setTorqueMinInput("");
-    setTorqueMaxInput("");
+    setTorqueDraft(null);
     onChange({ torqueMin: null, torqueMax: null, mountingMethods: [], dampingDirections: [] });
   };
 
   return (
-    <div className="rounded-2xl border border-[#E5E7EB] bg-white shadow-[0_4px_20px_rgba(0,0,0,.03)]">
-      {/* Header */}
-      <div className="flex items-center justify-between gap-3 border-b border-[#E5E7EB] px-5 py-3.5">
-        <span className="text-sm font-black tracking-[-0.02em] text-[#111827]">Filters</span>
+    <div className="rounded-2xl border border-slate-200 bg-white">
+      <div className="flex items-center justify-between gap-2 px-3.5 py-3">
+        <h2 className="flex items-center gap-2.5 text-sm font-bold text-slate-900">
+          <span className="grid size-7 place-items-center rounded-lg bg-orange-50 text-[#B95708]">
+            <SlidersHorizontal size={15} aria-hidden="true" />
+          </span>
+          Filters
+        </h2>
         {hasActiveFilters && (
           <button
+            type="button"
             onClick={clearAll}
-            className="text-[11px] font-bold text-[#ED7606] hover:underline"
+            className="text-xs font-semibold text-[#9A4D06] underline-offset-4 hover:underline"
           >
             Clear All
           </button>
         )}
       </div>
 
-      {/* Torque Range */}
-      <CollapsibleSection title="Torque Range (gf.cm)" icon={<RotateCw size={13} className="text-[#ED7606]" />}>
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <input
-              type="number"
-              placeholder={String(torqueRange.min)}
-              value={torqueMinInput}
-              onChange={(e) => setTorqueMinInput(e.target.value)}
-              onBlur={applyTorque}
-              onKeyDown={(e) => e.key === "Enter" && applyTorque()}
-              className="w-full h-10 rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-bold text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606]"
-            />
-            <span className="text-xs font-bold text-[#9CA3AF]">–</span>
-            <input
-              type="number"
-              placeholder={String(torqueRange.max)}
-              value={torqueMaxInput}
-              onChange={(e) => setTorqueMaxInput(e.target.value)}
-              onBlur={applyTorque}
-              onKeyDown={(e) => e.key === "Enter" && applyTorque()}
-              className="w-full h-10 rounded-lg border border-[#E5E7EB] bg-white px-3 text-xs font-bold text-[#111827] placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606]"
-            />
+      <CollapsibleSection title="Torque range" icon={<Gauge size={14} aria-hidden="true" className="text-[#B95708]" />}>
+        <div className="rounded-xl border border-orange-100 bg-orange-50/70 px-2.5 pb-2.5 pt-1.5">
+          <div className="relative h-8">
+            <div aria-hidden="true" className="absolute inset-x-[10px] top-1/2 h-1.5 -translate-y-1/2 rounded-full bg-orange-200">
+              <div className="absolute h-full rounded-full bg-[#ED7606]" style={{ left: `${trackStart}%`, width: `${trackWidth}%` }} />
+            </div>
+            {(["min", "max"] as const).map((bound) => (
+              <input
+                key={bound}
+                type="range"
+                aria-label={bound === "min" ? "Adjust minimum torque" : "Adjust maximum torque"}
+                aria-valuetext={`${bound === "min" ? selectedMin : selectedMax} gf.cm`}
+                className="torque-slider"
+                style={{ clipPath: bound === "min"
+                  ? `inset(0 calc(100% - ${thumbDivider}) 0 0)`
+                  : `inset(0 0 0 ${thumbDivider})` }}
+                min={torqueRange.min}
+                max={torqueRange.max}
+                step="any"
+                disabled={torqueRange.min === torqueRange.max}
+                value={bound === "min" ? selectedMin : selectedMax}
+                onChange={(event) => updateTorque(bound, Math.round(event.currentTarget.valueAsNumber))}
+              />
+            ))}
           </div>
-          <p className="text-[10px] text-[#9CA3AF]">
-            Range: {torqueRange.min} – {torqueRange.max} gf.cm
-          </p>
+          <div className="mb-2 flex justify-between gap-1 text-[11px] tabular-nums text-slate-600">
+            <span>{torqueRange.min.toLocaleString("en-US")}</span>
+            <span>gf.cm</span>
+            <span>{torqueRange.max.toLocaleString("en-US")}</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1.5">
+            {(["min", "max"] as const).map((bound) => (
+              <label key={bound} className="min-w-0">
+                <span className="mb-0.5 block text-[11px] font-medium text-slate-600">{bound === "min" ? "Min" : "Max"}</span>
+                <input
+                  type="number"
+                  inputMode="decimal"
+                  aria-label={bound === "min" ? "Minimum torque (gf.cm)" : "Maximum torque (gf.cm)"}
+                  min={torqueRange.min}
+                  max={torqueRange.max}
+                  step="any"
+                  value={torqueDraft?.bound === bound ? torqueDraft.value : bound === "min" ? selectedMin : selectedMax}
+                  onChange={(event) => setTorqueDraft({ bound, value: event.currentTarget.value })}
+                  onBlur={(event) => {
+                    const value = event.currentTarget.valueAsNumber;
+                    if (torqueDraft?.bound === bound) updateTorque(bound, Number.isFinite(value) ? value : torqueRange[bound]);
+                    setTorqueDraft(null);
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter") event.currentTarget.blur();
+                  }}
+                  className="h-8 w-full min-w-0 rounded-md border border-orange-200 bg-white px-1.5 text-sm tabular-nums text-slate-900 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
+                />
+              </label>
+            ))}
+          </div>
         </div>
       </CollapsibleSection>
 
       {/* Mounting Method */}
       {mountingOptions.length > 0 && (
-        <CollapsibleSection title="Mounting Method" icon={<Wrench size={13} className="text-[#ED7606]" />}>
-          <div className="space-y-2">
+        <CollapsibleSection title="Mounting method" icon={<Wrench size={14} aria-hidden="true" className="text-slate-500" />}>
+          <div className="space-y-1">
             {mountingOptions.map((method) => (
               <label
                 key={method}
-                className="flex items-center gap-2.5 cursor-pointer group"
+                className="flex cursor-pointer items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 hover:bg-slate-50 has-checked:border-orange-200 has-checked:bg-orange-50"
               >
                 <input
                   type="checkbox"
                   checked={filters.mountingMethods.includes(method)}
                   onChange={() => toggleMounting(method)}
-                  className="h-4 w-4 rounded border-[#D1D5DB] text-[#ED7606] focus:ring-[#ED7606]"
+                  className="size-3.5 shrink-0 accent-[#B95708]"
                 />
-                <span className="text-sm font-bold text-[#374151] group-hover:text-[#111827] transition-colors">
+                <span className="text-xs font-medium text-slate-700">
                   {method}
                 </span>
               </label>
@@ -154,35 +197,26 @@ export function ProductFilterSidebar({ filters, onChange, torqueRange, mountingO
 
       {/* Damping Direction */}
       {dampingOptions.length > 0 && (
-        <CollapsibleSection title="Damping Direction" icon={<ArrowRightLeft size={13} className="text-[#ED7606]" />}>
-          <div className="space-y-2">
+        <CollapsibleSection title="Damping direction" icon={<ArrowRightLeft size={14} aria-hidden="true" className="text-slate-500" />}>
+          <div className="space-y-1">
             {dampingOptions.map((direction) => (
               <label
                 key={direction}
-                className="flex items-center gap-2.5 cursor-pointer group"
+                className="flex cursor-pointer items-center gap-2 rounded-lg border border-transparent px-2 py-1.5 hover:bg-slate-50 has-checked:border-orange-200 has-checked:bg-orange-50"
               >
                 <input
                   type="checkbox"
                   checked={filters.dampingDirections.includes(direction)}
                   onChange={() => toggleDirection(direction)}
-                  className="h-4 w-4 rounded border-[#D1D5DB] text-[#ED7606] focus:ring-[#ED7606]"
+                  className="size-3.5 shrink-0 accent-[#B95708]"
                 />
-                <span className="text-sm font-bold text-[#374151] group-hover:text-[#111827] transition-colors">
+                <span className="text-xs font-medium text-slate-700">
                   {direction}
                 </span>
               </label>
             ))}
           </div>
         </CollapsibleSection>
-      )}
-
-      {/* Active count badge on mobile */}
-      {hasActiveFilters && (
-        <div className="px-5 py-3 border-t border-[#E5E7EB] lg:hidden">
-          <button onClick={clearAll} className="w-full rounded-lg bg-[#111827] px-4 py-2 text-xs font-bold text-white">
-            Clear All Filters
-          </button>
-        </div>
       )}
     </div>
   );

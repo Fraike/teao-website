@@ -15,7 +15,7 @@ export default async function EditNewsPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-[#111827] mb-6">Edit Article</h1>
+      <h1 className="text-2xl font-black text-[#111827] mb-6">编辑文章 / Edit Article</h1>
       <NewsForm initial={{ ...article, isPublished: Boolean(article.isPublished) }} />
     </div>
   );

@@ -1,69 +1,43 @@
-import { Resend } from "resend";
+export const inquiryMailbox = process.env.NOTIFY_EMAIL || "info@chinateao.com";
+const inquirySender = `TEAO Website <notify@${process.env.RESEND_DOMAIN || "teao-damper.com"}>`;
 
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || "info@chinateao.com";
-
-interface InquiryEmailParams {
-  name: string;
-  company?: string;
-  email: string;
-  phone?: string;
-  country?: string;
-  productInterest?: string;
-  annualVolume?: string;
-  message: string;
+export interface InquiryMailPayload {
+  from: string;
+  to: string[];
+  reply_to: string;
+  subject: string;
+  text: string;
 }
 
-export async function sendInquiryNotification(inquiry: InquiryEmailParams) {
+export function inquiryMail(to: string, subject: string, text: string, replyTo = inquiryMailbox): InquiryMailPayload {
+  return { from: inquirySender, to: [to], reply_to: replyTo, subject, text };
+}
+
+export class InquiryMailError extends Error {
+  constructor(message: string, public readonly retryable: boolean) {
+    super(message);
+  }
+}
+
+export async function sendInquiryMail(id: string, payload: InquiryMailPayload) {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    console.warn("RESEND_API_KEY not set, skipping email notification");
-    return;
-  }
+  if (!apiKey) throw new InquiryMailError("Resend API key is not configured.", false);
 
-  const resend = new Resend(apiKey);
+  const response = await fetch("https://api.resend.com/emails", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      "Idempotency-Key": `inquiry-mail/${id}`,
+    },
+    body: JSON.stringify({ ...payload, tags: [{ name: "teao_inquiry_job", value: id }] }),
+    signal: AbortSignal.timeout(10_000),
+  });
 
-  const fields = [
-    ["Name", inquiry.name],
-    ["Company", inquiry.company],
-    ["Email", inquiry.email],
-    ["Phone", inquiry.phone],
-    ["Country", inquiry.country],
-    ["Product Interest", inquiry.productInterest],
-    ["Annual Volume", inquiry.annualVolume],
-  ]
-    .filter(([, v]) => v)
-    .map(([k, v]) => `<p style="margin:4px 0"><strong>${k}:</strong> ${v}</p>`)
-    .join("");
-
-  const fromDomain = process.env.RESEND_DOMAIN || "teao-damper.com";
-  const from = `TEAO Website <notify@${fromDomain}>`;
-
-  try {
-    const result = await resend.emails.send({
-      from,
-      to: [NOTIFY_EMAIL],
-      subject: `New Inquiry: ${inquiry.productInterest || "General"} from ${inquiry.name}`,
-      html: `
-        <div style="font-family:system-ui,sans-serif;max-width:600px;padding:24px">
-          <h2 style="color:#ED7606;margin:0 0 16px">New Contact Inquiry</h2>
-          <div style="background:#F8F9FA;border-radius:12px;padding:20px;margin-bottom:16px">
-            ${fields}
-          </div>
-          <h3 style="margin:0 0 8px;color:#111827">Message:</h3>
-          <p style="color:#374151;line-height:1.6;white-space:pre-wrap">${inquiry.message}</p>
-          <hr style="border:none;border-top:1px solid #E5E7EB;margin:20px 0" />
-          <p style="color:#9CA3AF;font-size:12px">TEAO Website Inquiry System</p>
-        </div>
-      `,
-    });
-    console.log(`Inquiry email sent to ${NOTIFY_EMAIL}, Resend ID: ${result.data?.id || "unknown"}`);
-  } catch (err) {
-    const message = err instanceof Error ? err.message : String(err);
-    console.error("Failed to send inquiry email:", message);
-    console.error("  From:", from);
-    console.error("  To:", NOTIFY_EMAIL);
-    console.error("  Resend Domain:", fromDomain);
-    // Re-throw to let the API route log it
-    throw err;
-  }
+  const data = await response.json().catch(() => null) as { id?: string; name?: string } | null;
+  if (response.ok && typeof data?.id === "string") return data.id;
+  const retryable = response.ok || response.status === 429 || response.status >= 500
+    || data?.name === "concurrent_idempotent_requests";
+  const code = typeof data?.name === "string" && /^[a-z_]{1,80}$/.test(data.name) ? ` (${data.name})` : "";
+  throw new InquiryMailError(`Resend returned HTTP ${response.status}${code}.`, retryable);
 }

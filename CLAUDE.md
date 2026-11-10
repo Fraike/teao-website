@@ -1,5 +1,7 @@
 # TEAO Website Project Rules
 
+See [AGENTS.md](AGENTS.md) for shared collaboration, Git, deployment, and project conventions. See [README.md](README.md) and [PROJECT.md](PROJECT.md) for setup and architecture.
+
 ## Public Content Language
 
 TEAO is an English international independent website. All content deployed or written into public-facing webpages must be in English by default.

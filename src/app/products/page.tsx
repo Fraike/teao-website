@@ -66,13 +66,13 @@ export default async function ProductsPage({
   return (
     <>
       <JsonLdScript data={listingJsonLd} />
-      <CategoryHero category={categoryInfo} />
-      <CategoryTabs current={category} />
-      <section className="section !pt-8 !pb-12">
-        <div className="shell">
-          <ProductListClient products={mappedProducts} />
-        </div>
-      </section>
+      <div className={category === "gear-damper" ? "gear-catalog" : undefined}>
+        <CategoryHero category={categoryInfo} />
+        <CategoryTabs current={category} />
+        <section className="section !pt-8 !pb-12">
+          <ProductListClient products={mappedProducts} category={categoryInfo} />
+        </section>
+      </div>
       <InquiryCTA />
     </>
   );

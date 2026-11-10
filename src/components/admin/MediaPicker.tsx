@@ -1,5 +1,7 @@
 "use client";
 
+import { publishingError } from "./publishing-labels";
+
 import { useState, useEffect, useRef, useCallback } from "react";
 import { ImageIcon, Upload, X, Search, Film, Play, Folder, Link2 } from "lucide-react";
 
@@ -93,13 +95,13 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
       const res = await fetch("/api/media", { method: "POST", body: fd });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error || "Upload failed");
+        throw new Error(publishingError(data.error, "上传失败，请稍后重试。"));
       }
       const data = await res.json();
       onChange(data.url);
       setOpen(false);
     } catch (e: unknown) {
-      setError(e instanceof Error ? e.message : "Upload failed");
+      setError(publishingError(e instanceof Error ? e.message : undefined, "上传失败，请稍后重试。"));
     }
     setUploading(false);
   };
@@ -152,12 +154,12 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
               type="button"
               onClick={() => setOpen(true)}
               className="flex-1 min-w-0 flex items-center gap-2 h-10 px-3 rounded-lg border border-[#E5E7EB] text-sm text-left hover:border-[#ED7606] transition-colors bg-white"
-              title={value || placeholder || "Select media"}
+              title={value || placeholder || "选择素材"}
             >
               {hasValue ? (
                 <span className="truncate text-[#374151]">{value}</span>
               ) : (
-                <span className="text-[#9CA3AF]">{placeholder || "Click to select image or video..."}</span>
+                <span className="text-[#9CA3AF]">{placeholder || "点击选择图片或视频…"}</span>
               )}
             </button>
             {hasValue && (
@@ -180,7 +182,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
               ) : (
                 <img
                   src={value}
-                  alt="Preview"
+                  alt="预览"
                   className="w-full h-full object-cover"
                   onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                 />
@@ -207,7 +209,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                     tab === "upload" ? "bg-[#ED7606] text-white" : "text-[#6B7280] hover:bg-[#F3F4F6]"
                   }`}
                 >
-                  Upload
+                  上传
                 </button>
                 <button
                   type="button"
@@ -216,7 +218,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                     tab === "library" ? "bg-[#ED7606] text-white" : "text-[#6B7280] hover:bg-[#F3F4F6]"
                   }`}
                 >
-                  Library
+                  素材库
                 </button>
                 <button
                   type="button"
@@ -228,7 +230,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                     tab === "url" ? "bg-[#ED7606] text-white" : "text-[#6B7280] hover:bg-[#F3F4F6]"
                   }`}
                 >
-                  URL
+                  网址
                 </button>
               </div>
               <button type="button" onClick={() => setOpen(false)} className="w-8 h-8 rounded-lg hover:bg-[#F3F4F6] flex items-center justify-center text-[#6B7280]">
@@ -259,10 +261,10 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       </div>
                       <div>
                         <p className="text-sm font-bold text-[#374151]">
-                          {uploading ? "Uploading..." : "Drop file here or click to browse"}
+                          {uploading ? "正在上传…" : "拖入文件或点击选择"}
                         </p>
                         <p className="text-xs text-[#9CA3AF] mt-1">
-                          Supported: JPG, PNG, GIF, WebP, MP4, WebM, MOV (max 5MB)
+                          支持 JPG、PNG、GIF、WebP、MP4、WebM、MOV，单个文件不超过 5 MB
                         </p>
                       </div>
                       <button
@@ -271,7 +273,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                         disabled={uploading}
                         className="px-4 h-9 rounded-lg bg-[#ED7606] text-white text-xs font-bold hover:bg-[#D46900] disabled:opacity-50"
                       >
-                        Browse Files
+                        选择文件
                       </button>
                     </div>
                     <input
@@ -294,7 +296,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
                       <input
                         className="w-full h-10 pl-9 pr-3 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606]"
-                        placeholder="Search files..."
+                        placeholder="搜索文件…"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                       />
@@ -304,9 +306,9 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       value={sourceFilter}
                       onChange={(e) => { setSourceFilter(e.target.value as "all" | "project" | "uploads"); }}
                     >
-                      <option value="all">All Sources</option>
-                      <option value="project">Project</option>
-                      <option value="uploads">Uploads</option>
+                      <option value="all">全部来源</option>
+                      <option value="project">项目素材</option>
+                      <option value="uploads">已上传</option>
                     </select>
                   </div>
 
@@ -314,7 +316,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                   {filtered.length === 0 ? (
                     <div className="text-center py-16">
                       <ImageIcon size={36} className="mx-auto text-[#D1D5DB] mb-3" />
-                      <p className="text-sm text-[#9CA3AF]">{search ? "No files match your search" : "No media files yet. Upload some first!"}</p>
+                      <p className="text-sm text-[#9CA3AF]">{search ? "未找到匹配的文件" : "素材库为空，请先上传文件。"}</p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-3">
@@ -361,12 +363,12 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                                 {item.source === "project" ? (
                                   <span className="inline-flex items-center gap-0.5 text-[#9CA3AF]">
                                     <Folder size={9} />
-                                    project
+                                    项目素材
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-0.5 text-[#9CA3AF]">
                                     <Upload size={9} />
-                                    upload
+                                    已上传
                                   </span>
                                 )}
                                 {" · "}
@@ -386,7 +388,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       onClick={fetchLibrary}
                       className="text-xs text-[#6B7280] hover:text-[#ED7606] font-medium"
                     >
-                      Refresh library
+                      刷新素材库
                     </button>
                   </div>
                 </div>
@@ -396,12 +398,12 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
               {tab === "url" && (
                 <div className="space-y-4">
                   <div>
-                    <label className="mb-1 block text-xs font-bold text-[#374151]">Media URL</label>
+                    <label className="mb-1 block text-xs font-bold text-[#374151]">素材网址</label>
                     <div className="relative">
                       <Link2 size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
                       <input
                         className="h-11 w-full rounded-lg border border-[#E5E7EB] pl-9 pr-3 text-sm text-[#374151] focus:border-[#ED7606] focus:outline-none focus:ring-2 focus:ring-[#ED7606]/10"
-                        placeholder="/images/news/example.webp or https://example.com/image.webp"
+                        placeholder="/images/news/example.webp 或 https://example.com/image.webp"
                         value={urlInput}
                         onChange={(e) => {
                           setUrlInput(e.target.value);
@@ -416,7 +418,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       />
                     </div>
                     <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
-                      Use a project path, an uploaded file path, or a full external URL.
+                      可填写项目路径、上传文件路径或完整的外部网址。
                     </p>
                   </div>
 
@@ -425,7 +427,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       {!trimmedUrlInput ? (
                         <div className="text-center text-sm text-[#9CA3AF]">
                           <ImageIcon size={34} className="mx-auto mb-2 text-[#D1D5DB]" />
-                          Enter a URL to preview it here
+                          输入网址后在这里预览
                         </div>
                       ) : isUrlInputVideo ? (
                         <div className="flex h-full w-full items-center justify-center bg-[#111827]">
@@ -434,12 +436,12 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       ) : urlPreviewError ? (
                         <div className="px-6 text-center text-sm text-[#9CA3AF]">
                           <ImageIcon size={34} className="mx-auto mb-2 text-[#D1D5DB]" />
-                          Preview unavailable. You can still use this URL.
+                          无法预览，但仍可使用此网址。
                         </div>
                       ) : (
                         <img
                           src={trimmedUrlInput}
-                          alt="URL preview"
+                          alt="网址预览"
                           className="h-full w-full object-contain p-4"
                           onError={() => setUrlPreviewError(true)}
                         />
@@ -454,7 +456,7 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
                       disabled={!trimmedUrlInput}
                       className="h-10 rounded-lg bg-[#ED7606] px-4 text-xs font-bold text-white transition-colors hover:bg-[#D46900] disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      Use this URL
+                      使用此网址
                     </button>
                   </div>
                 </div>
@@ -464,14 +466,14 @@ export default function MediaPicker({ value, onChange, label, placeholder, accep
             {/* Footer */}
             <div className="flex items-center justify-between px-6 py-3 border-t border-[#E5E7EB] bg-[#F8F9FA] shrink-0">
               <span className="text-[11px] text-[#9CA3AF]">
-                {hasValue ? `Selected: ${value}` : "No file selected"}
+                {hasValue ? `已选择：${value}` : "未选择文件"}
               </span>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 className="px-4 h-9 rounded-lg bg-[#ED7606] text-white text-xs font-bold hover:bg-[#D46900]"
               >
-                Done
+                完成
               </button>
             </div>
           </div>

@@ -10,19 +10,16 @@ interface ExplainerData {
 
 const DATA: Record<string, ExplainerData> = {
   "gear-damper": {
-    what: "A gear damper (rotary damper) is a mechanical motion control component that provides controlled rotational resistance using a precision gear system immersed in high-viscosity silicone oil. When the gear rotates, it shears the silicone oil, converting kinetic energy into heat and producing smooth, quiet deceleration without external power or control systems.",
-    how: "The gear damper consists of a sealed housing filled with silicone oil, a precision gear rotor with internal vanes, and an O-ring seal. As an external mating gear drives the rotor, the vanes shear the viscous silicone oil. The fluid's resistance creates a damping torque proportional to rotation speed — faster movement produces higher resistance, naturally achieving soft-close behavior. TEAO uses SOC-free (Siloxane-free) silicone oil formulations for applications near sensitive electronics to prevent outgassing and electrical contact failure.",
+    what: "TEAO uses gear damper and rotary damper for the same geared product family. These components slow rotary motion in compact mechanisms such as cup holders, door handles and storage lids.",
+    how: "A mating gear or rack drives the damper rotor. The viscous fluid inside the housing resists the rotation and slows the movement. Select the damping direction and torque for the motion of your mechanism.",
     params: [
-      { parameter: "Torque Range", value: "20 – 3,500 gf·cm (varies by model)" },
-      { parameter: "Operating Temperature", value: "-30°C to +80°C" },
-      { parameter: "Damping Direction", value: "One-way (CW or CCW) or Bidirectional" },
-      { parameter: "Mounting Method", value: "Screw fixing" },
-      { parameter: "Gear Parameters", value: "Customizable: tooth count, module (0.8/1.2), outer diameter, pressure angle" },
-      { parameter: "Oil Type", value: "Standard or SOC-free silicone oil" },
-      { parameter: "Durability", value: "30,000 – 50,000+ cycles" },
+      { parameter: "Torque", value: "Compare the adjustable torque range listed for each model" },
+      { parameter: "Damping direction", value: "Confirm direction on the model specification or drawing" },
+      { parameter: "Gear geometry", value: "Check tooth count, module and diameter against the mating part" },
+      { parameter: "Mounting", value: "Compare mounting method, clearance and attachment dimensions" },
     ],
-    customization: "TEAO can customize gear damper torque by adjusting the silicone oil viscosity and internal vane geometry. Custom torque values, damping direction (one-way or bidirectional), gear module, tooth count, and outer diameter are all configurable. Engineering support covers torque tuning, sample review, and application matching before mass production.",
-    applications: "Automotive interiors (cup holders, glove boxes, center console lids, door handles, ashtrays, charge port covers, sunshades, overhead consoles), household appliances (washer lids, refrigerator flaps, cooker covers), office equipment (printers, coffee machines), bathroom fittings (toilet seats), and industrial machinery.",
+    customization: "Share your torque target, damping direction, mounting space, gear geometry and expected operating conditions. TEAO can review the drawing and recommend a suitable model or custom configuration.",
+    applications: "Automotive interiors, compact lids and compartments, appliance mechanisms and office equipment.",
   },
   "axial-damper": {
     what: "An axial damper (barrel damper or linear damper) is a motion control component that provides controlled resistance along a straight linear path. Unlike rotary gear dampers that control rotational motion, axial dampers manage push-pull and sliding movements through hydraulic damping, making them essential for glove box doors, center console lids, grab handles, overhead consoles, and sliding storage compartments.",
@@ -40,17 +37,15 @@ const DATA: Record<string, ExplainerData> = {
     applications: "Automotive glove box doors, center console lids, armrest modules, grab handles, overhead consoles, cup holders, sliding storage compartments, toilet seat soft-close mechanisms, cabinet soft closers, and interior trim mechanisms requiring controlled linear motion.",
   },
   "glove-box-damper": {
-    what: "A glove box damper is a specialized automotive motion control component designed to provide a premium soft-open experience for vehicle glove boxes and interior storage compartments. Unlike general-purpose dampers, it is engineered for the specific kinematics, packaging constraints, door weight, and durability requirements of automotive interior applications across the vehicle's lifetime.",
-    how: "Glove box dampers integrate a gear or pinion mechanism with a viscous damping element in a compact housing. As the glove box door opens, the damper's gear engages a rack or sector gear on the door hinge, driving the internal rotor against silicone oil resistance. This converts the door's gravitational acceleration into controlled, premium-feeling soft-open motion. The integrated clip-in or screw-mount design simplifies assembly line installation.",
+    what: "A glove box damper controls how quickly the lid descends as it opens. A suitable model depends on the lid geometry, available space and target opening time.",
+    how: "The TEAO catalog includes air and oil models. Air models use air resistance during travel. Oil models use fluid resistance. Compare the stroke and dimensions in the model specifications against the travel and space available in your assembly.",
     params: [
-      { parameter: "Damping Force", value: "80 – 250 N" },
-      { parameter: "Operating Temperature", value: "-40°C to +85°C (automotive-grade)" },
-      { parameter: "Material", value: "PA66 + GF / Steel" },
-      { parameter: "Mounting Type", value: "Clip-in or screw" },
-      { parameter: "Durability", value: "Validated to automotive standards" },
+      { parameter: "Damping medium", value: "Air or oil, depending on model" },
+      { parameter: "Stroke", value: "See the listed stroke for each model" },
+      { parameter: "Installation", value: "Check overall length, clearance and attachment dimensions against the drawing" },
     ],
-    customization: "TEAO glove box dampers can be tuned for specific door weights, opening angles, and desired closing times. Custom mounting brackets, gear ratios, and damping forces are engineered to match the vehicle's interior design and assembly process.",
-    applications: "Automotive glove boxes, interior storage compartments, soft-close interior panels, and any vehicle interior lid requiring a premium damped opening experience.",
+    customization: "For application review, provide the lid weight, hinge geometry, opening angle, target opening time and installation drawing. TEAO can use these details to review damping force and mounting options.",
+    applications: "Vehicle glove boxes and interior storage lids that need controlled opening.",
   },
   latch: {
     what: "A latch is a mechanical fastening component that secures, releases, and re-engages moving parts through a purely mechanical heart-shaped cam track mechanism — no power source required. TEAO's push-push latches enable one-push-to-close, one-push-to-open operation with an audible click for tactile confirmation, making them ideal for automotive interior storage compartments and access panels requiring a clean, flush appearance.",

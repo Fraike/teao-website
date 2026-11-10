@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback, useImperativeHandle, forwardRef, useState } from "react";
+import { useRef, useEffect, useCallback, useImperativeHandle, forwardRef, useState, useId } from "react";
 
 const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const LEN = 4;
@@ -72,12 +72,15 @@ export interface CaptchaRef {
 interface CaptchaProps {
   className?: string;
   inputName?: string;
+  locale?: "en" | "zh-CN";
 }
 
 const Captcha = forwardRef<CaptchaRef, CaptchaProps>(function Captcha(
-  { className, inputName = "captchaAnswer" },
+  { className, inputName = "captchaAnswer", locale = "en" },
   ref
 ) {
+  const inputId = useId();
+  const chinese = locale === "zh-CN";
   const [code, setCode] = useState(() => randomCode());
   const [input, setInput] = useState("");
   const [error, setError] = useState(false);
@@ -128,8 +131,8 @@ const Captcha = forwardRef<CaptchaRef, CaptchaProps>(function Captcha(
 
   return (
     <div className={className}>
-      <label className="block text-[13px] font-bold text-[#111827] mb-1.5">
-        Verification code *
+      <label htmlFor={inputId} className="block text-[13px] font-bold text-[#111827] mb-1.5">
+        {chinese ? "验证码 *" : "Verification code *"}
       </label>
       <div className="rounded-lg border border-[#E5E7EB] bg-white p-3">
         <div className="flex flex-col gap-2.5 min-[390px]:flex-row min-[390px]:items-stretch">
@@ -144,6 +147,7 @@ const Captcha = forwardRef<CaptchaRef, CaptchaProps>(function Captcha(
           </div>
           <input
             type="text"
+            id={inputId}
             name={inputName}
             required
             autoComplete="off"
@@ -153,7 +157,7 @@ const Captcha = forwardRef<CaptchaRef, CaptchaProps>(function Captcha(
               setInput(e.target.value);
               setError(false);
             }}
-            placeholder="Enter code"
+            placeholder={chinese ? "输入验证码" : "Enter code"}
             className="flex-1 min-w-0 rounded-md border border-[#E5E7EB] bg-white px-3 text-sm font-bold text-[#374151] uppercase tracking-[0.12em] outline-none placeholder:text-[#9CA3AF] placeholder:normal-case placeholder:tracking-normal focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10"
           />
         </div>
@@ -163,13 +167,13 @@ const Captcha = forwardRef<CaptchaRef, CaptchaProps>(function Captcha(
             onClick={reset}
             className="text-xs font-medium text-[#9CA3AF] transition-colors hover:text-[#ED7606]"
           >
-            Refresh code
+            {chinese ? "更换验证码" : "Refresh code"}
           </button>
         </div>
       </div>
       {error && (
         <p className="mt-1 text-xs text-red-500 font-medium">
-          Incorrect code. Please try the new code shown.
+          {chinese ? "验证码错误，请输入新显示的验证码。" : "Incorrect code. Please try the new code shown."}
         </p>
       )}
     </div>
