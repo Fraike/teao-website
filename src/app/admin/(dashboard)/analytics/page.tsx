@@ -2,10 +2,36 @@ import { db } from "@/db";
 import { analyticsEvents, contactInquiries } from "@/db/schema";
 import { sql } from "drizzle-orm";
 
+const eventLabels: Record<string, string> = {
+  page_view: "页面浏览",
+  product_click: "产品点击",
+  category_click: "分类点击",
+  scene_click: "应用场景点击",
+  cta_click: "行动按钮点击",
+  search: "站内搜索",
+  search_open: "打开搜索",
+  search_result_click: "搜索结果点击",
+  form_submit: "表单提交",
+  form_save_failed: "表单保存失败",
+};
+
+const sourceLabels: Record<string, string> = {
+  header: "顶部导航",
+  product_detail: "产品详情页",
+  category_selection: "分类页选型区",
+  related_products: "关联产品",
+  article_selection: "文章选型区",
+  product_list: "产品列表",
+  mobile_card: "移动端产品卡片",
+  map_hotspot: "应用地图热点",
+  mobile_chip: "移动端快捷入口",
+  automotive_scene: "汽车应用场景",
+};
+
 export default async function AnalyticsDashboard() {
   const now = Date.now();
-  const last7d = now - 7 * 24 * 60 * 60 * 1000;
-  const last30d = now - 30 * 24 * 60 * 60 * 1000;
+  const last7d = Math.floor(now / 1000) - 7 * 24 * 60 * 60;
+  const last30d = Math.floor(now / 1000) - 30 * 24 * 60 * 60;
 
   // Overview stats
   const [allEvents] = await db.select({ count: sql<number>`count(*)` }).from(analyticsEvents).all();
@@ -75,39 +101,39 @@ export default async function AnalyticsDashboard() {
     .where(sql`event = 'cta_click' AND created_at >= ${last7d}`).all();
 
   const funnelSteps = [
-    { label: "Page Views", count: weekPageViews },
-    { label: "Product Clicks", count: productClicksRow?.count ?? 0 },
-    { label: "CTA Clicks", count: ctaClicksRow?.count ?? 0 },
-    { label: "Form Submits", count: weekFormSubmits },
+    { label: "页面浏览量", count: weekPageViews },
+    { label: "产品点击量", count: productClicksRow?.count ?? 0 },
+    { label: "行动按钮点击量", count: ctaClicksRow?.count ?? 0 },
+    { label: "表单提交量", count: weekFormSubmits },
   ];
 
   const maxFunnel = Math.max(...funnelSteps.map((s) => s.count), 1);
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-[#111827] mb-8">Analytics Dashboard</h1>
+      <h1 className="text-2xl font-black text-[#111827] mb-8">访问统计</h1>
 
       {/* Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <StatCard label="Total Events" value={totalEvents.toLocaleString()} />
-        <StatCard label="Page Views" value={totalPageViews.toLocaleString()} subtitle="all time" />
-        <StatCard label="Unique Sessions" value={totalSessions.toLocaleString()} />
-        <StatCard label="Conversion" value={`${convRate}%`} subtitle={`${weekFormSubmits} submits / ${weekPageViews} views (7d)`} accent />
+        <StatCard label="事件总数" value={totalEvents.toLocaleString("zh-CN")} />
+        <StatCard label="页面浏览量" value={totalPageViews.toLocaleString("zh-CN")} subtitle="累计" />
+        <StatCard label="独立会话数" value={totalSessions.toLocaleString("zh-CN")} />
+        <StatCard label="询盘转化率" value={`${convRate}%`} subtitle={`近 7 天 ${weekFormSubmits} 次提交 / ${weekPageViews} 次浏览`} accent />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
         {/* Top Products */}
         <section>
-          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">Top Products (30d)</h2>
+          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">热门产品（近 30 天）</h2>
           <div className="rounded-lg border border-[#E5E7EB] bg-white overflow-hidden">
             {topProducts.length === 0 ? (
-              <p className="p-4 text-sm text-[#9CA3AF]">No data yet</p>
+              <p className="p-4 text-sm text-[#9CA3AF]">暂无数据</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[#E5E7EB] bg-[#F8F9FA]">
-                    <th className="text-left px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">Product</th>
-                    <th className="text-right px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">Clicks</th>
+                    <th className="text-left px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">产品</th>
+                    <th className="text-right px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">点击量</th>
                     <th className="hidden sm:table-cell px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase" />
                   </tr>
                 </thead>
@@ -137,16 +163,16 @@ export default async function AnalyticsDashboard() {
 
         {/* Top Pages */}
         <section>
-          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">Top Pages (30d)</h2>
+          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">热门页面（近 30 天）</h2>
           <div className="rounded-lg border border-[#E5E7EB] bg-white overflow-hidden">
             {topPages.length === 0 ? (
-              <p className="p-4 text-sm text-[#9CA3AF]">No data yet</p>
+              <p className="p-4 text-sm text-[#9CA3AF]">暂无数据</p>
             ) : (
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[#E5E7EB] bg-[#F8F9FA]">
-                    <th className="text-left px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">Page</th>
-                    <th className="text-right px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">Views</th>
+                    <th className="text-left px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">页面</th>
+                    <th className="text-right px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase">浏览量</th>
                     <th className="hidden sm:table-cell px-4 py-2.5 text-xs font-black text-[#6B7280] uppercase" />
                   </tr>
                 </thead>
@@ -178,15 +204,15 @@ export default async function AnalyticsDashboard() {
       <div className="grid lg:grid-cols-2 gap-8 mb-8">
         {/* Event Distribution */}
         <section>
-          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">Event Distribution (30d)</h2>
+          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">事件分布（近 30 天）</h2>
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
             {eventDistribution.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF]">No data yet</p>
+              <p className="text-sm text-[#9CA3AF]">暂无数据</p>
             ) : (
               <div className="space-y-3">
                 {eventDistribution.map((e) => (
                   <div key={e.event} className="flex items-center gap-3">
-                    <span className="w-24 text-xs font-bold text-[#6B7280] capitalize">{e.event?.replace(/_/g, " ")}</span>
+                    <span className="w-24 text-xs font-bold text-[#6B7280] capitalize">{eventLabels[e.event ?? ""] ?? e.event ?? "未知事件"}</span>
                     <div className="flex-1 h-2.5 rounded-full bg-[#F3F4F6]">
                       <div
                         className="h-full rounded-full bg-[#111827]"
@@ -203,15 +229,15 @@ export default async function AnalyticsDashboard() {
 
         {/* Source Breakdown */}
         <section>
-          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">Traffic Sources (30d)</h2>
+          <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">流量来源（近 30 天）</h2>
           <div className="rounded-lg border border-[#E5E7EB] bg-white p-4">
             {sourceBreakdown.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF]">No data yet</p>
+              <p className="text-sm text-[#9CA3AF]">暂无数据</p>
             ) : (
               <div className="space-y-3">
                 {sourceBreakdown.map((s) => (
                   <div key={s.source} className="flex items-center gap-3">
-                    <span className="w-28 text-xs font-bold text-[#6B7280] capitalize">{s.source?.replace(/_/g, " ")}</span>
+                    <span className="w-28 text-xs font-bold text-[#6B7280] capitalize">{sourceLabels[s.source ?? ""] ?? s.source}</span>
                     <div className="flex-1 h-2.5 rounded-full bg-[#F3F4F6]">
                       <div
                         className="h-full rounded-full bg-[#ED7606]"
@@ -229,7 +255,7 @@ export default async function AnalyticsDashboard() {
 
       {/* Conversion Funnel */}
       <section>
-        <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">Conversion Funnel (7d)</h2>
+        <h2 className="text-sm font-black text-[#111827] uppercase tracking-[0.1em] mb-3">转化漏斗（近 7 天）</h2>
         <div className="rounded-lg border border-[#E5E7EB] bg-white p-6">
           <div className="flex items-end gap-4 lg:gap-8">
             {funnelSteps.map((step, i) => (
@@ -243,7 +269,7 @@ export default async function AnalyticsDashboard() {
                   }}
                 />
                 <p className="mt-2 text-xs font-bold text-[#6B7280]">{step.label}</p>
-                <p className="text-lg font-black text-[#111827] tabular-nums">{step.count.toLocaleString()}</p>
+                <p className="text-lg font-black text-[#111827] tabular-nums">{step.count.toLocaleString("zh-CN")}</p>
               </div>
             ))}
           </div>

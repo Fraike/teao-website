@@ -7,7 +7,6 @@ import { JsonLdScript, collectionPageSchema } from "@/lib/structured-data";
 import { CategoryHero } from "@/components/products/CategoryHero";
 import { CategoryTabs } from "@/components/products/CategoryTabs";
 import { ProductListClient } from "@/components/products/ProductListClient";
-import { FilteredProductList } from "@/components/products/FilteredProductList";
 import { InquiryCTA } from "@/components/products/InquiryCTA";
 import { AUTOMOTIVE_SEO_KEYWORDS, GLOBAL_SEO_KEYWORDS } from "@/lib/seo-keywords";
 
@@ -64,39 +63,16 @@ export default async function ProductsPage({
     },
   );
 
-  // Compute filter options for gear-damper
-  const showFilter = category === "gear-damper";
-  const filterProps = showFilter
-    ? (() => {
-        const torques = mappedProducts
-          .filter((p) => p.torque?.unit === "gf.cm")
-          .flatMap((p) => [p.torque!.min, p.torque!.max]);
-        const torqueMin = torques.length > 0 ? Math.floor(Math.min(...torques)) : 0;
-        const torqueMax = torques.length > 0 ? Math.ceil(Math.max(...torques)) : 1000;
-        const mountingOptions = [...new Set(mappedProducts.map((p) => p.assembly_method).filter(Boolean))] as string[];
-        const dampingOptions = [...new Set(mappedProducts.map((p) => p.buffer_direction).filter(Boolean))] as string[];
-        return {
-          torqueRange: { min: torqueMin, max: torqueMax },
-          mountingOptions,
-          dampingOptions,
-        };
-      })()
-    : undefined;
-
   return (
     <>
       <JsonLdScript data={listingJsonLd} />
-      <CategoryHero category={categoryInfo} />
-      <CategoryTabs current={category} />
-      <section className="section !pt-8 !pb-12">
-        {showFilter && filterProps ? (
-          <FilteredProductList products={mappedProducts} {...filterProps} />
-        ) : (
-          <div className="shell">
-            <ProductListClient products={mappedProducts} />
-          </div>
-        )}
-      </section>
+      <div className={category === "gear-damper" ? "gear-catalog" : undefined}>
+        <CategoryHero category={categoryInfo} />
+        <CategoryTabs current={category} />
+        <section className="section !pt-8 !pb-12">
+          <ProductListClient products={mappedProducts} category={categoryInfo} />
+        </section>
+      </div>
       <InquiryCTA />
     </>
   );

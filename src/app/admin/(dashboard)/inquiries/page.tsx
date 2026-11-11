@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { inquiryStatusLabels, productInterestLabel } from "@/lib/admin-labels";
+import { InquiryFollowUp } from "./InquiryFollowUp";
 import { Mail, Building2, Phone, MapPin, Package, Hash, Trash2, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 
 interface Inquiry {
@@ -13,12 +15,16 @@ interface Inquiry {
   productInterest: string | null;
   annualVolume: string | null;
   message: string;
-  createdAt: number;
+  createdAt: string;
+  status: string;
+  quality: string;
+  attribution: string | null;
 }
 
 export default function InquiriesPage() {
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
   const fetchInquiries = useCallback(async () => {
@@ -36,7 +42,7 @@ export default function InquiriesPage() {
   }, [fetchInquiries]);
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this inquiry?")) return;
+    if (!confirm("确定删除这条询盘吗？")) return;
     const res = await fetch("/api/admin/inquiries", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -44,6 +50,10 @@ export default function InquiriesPage() {
     });
     if (res.ok) {
       setInquiries((prev) => prev.filter((i) => i.id !== id));
+      setError("");
+    } else {
+      const data = await res.json();
+      setError(data.error || "无法删除询盘，请重试。");
     }
   };
 
@@ -56,9 +66,10 @@ export default function InquiriesPage() {
     });
   };
 
-  const formatDate = (ts: number) => {
-    return new Date(ts).toLocaleString("en-US", {
-      month: "short",
+  const formatDate = (ts: string) => {
+    return new Date(ts).toLocaleString("zh-CN", {
+      month: "numeric",
+      timeZone: "Asia/Shanghai",
       day: "numeric",
       year: "numeric",
       hour: "2-digit",
@@ -70,22 +81,24 @@ export default function InquiriesPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-black text-[#111827]">Inquiries</h1>
-          <p className="text-sm text-[#6B7280] mt-1">{inquiries.length} submissions</p>
+          <h1 className="text-2xl font-black text-[#111827]">询盘管理</h1>
+          <p className="text-sm text-[#6B7280] mt-1">共 {inquiries.length} 条询盘</p>
         </div>
         <button
           onClick={fetchInquiries}
           className="flex items-center gap-2 h-10 px-4 rounded-lg border border-[#E5E7EB] bg-white text-sm font-bold text-[#6B7280] hover:border-[#ED7606]/30 hover:text-[#ED7606] transition-colors"
         >
           <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-          Refresh
+          刷新
         </button>
       </div>
 
+      {error && <p role="alert" className="mb-3 text-sm text-red-700">{error}</p>}
+
       {loading && inquiries.length === 0 ? (
-        <div className="text-center py-12 text-[#9CA3AF] text-sm">Loading...</div>
+        <div className="text-center py-12 text-[#9CA3AF] text-sm">加载中…</div>
       ) : inquiries.length === 0 ? (
-        <div className="text-center py-12 text-[#9CA3AF] text-sm">No inquiries yet.</div>
+        <div className="text-center py-12 text-[#9CA3AF] text-sm">暂无询盘。</div>
       ) : (
         <div className="space-y-2.5">
           {inquiries.map((inq) => {
@@ -114,12 +127,12 @@ export default function InquiriesPage() {
                       )}
                       {inq.productInterest && (
                         <span className="px-1.5 py-0.5 rounded bg-[#FFF1E3] text-[#ED7606] text-[10px] font-bold">
-                          {inq.productInterest}
+                          {productInterestLabel(inq.productInterest)}
                         </span>
                       )}
                     </div>
                     <p className="text-xs text-[#9CA3AF] mt-0.5">
-                      {inq.email} · {formatDate(inq.createdAt)}
+                      #{inq.id} · {inq.email} · {formatDate(inq.createdAt)} · {inquiryStatusLabels[inq.status] ?? inq.status}
                     </p>
                   </div>
                   <button
@@ -128,7 +141,7 @@ export default function InquiriesPage() {
                       handleDelete(inq.id);
                     }}
                     className="shrink-0 p-2 rounded-lg text-[#9CA3AF] hover:text-red-500 hover:bg-red-50 transition-colors"
-                    title="Delete"
+                    title="删除询盘"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -155,7 +168,7 @@ export default function InquiriesPage() {
                       )}
                       {inq.productInterest && (
                         <div className="flex items-center gap-1.5 text-[#6B7280]">
-                          <Package size={12} />{inq.productInterest}
+                          <Package size={12} />{productInterestLabel(inq.productInterest)}
                         </div>
                       )}
                       {inq.annualVolume && (
@@ -167,6 +180,7 @@ export default function InquiriesPage() {
                     <div className="mt-3 p-3 rounded-lg bg-[#F8F9FA] text-sm text-[#374151] leading-relaxed whitespace-pre-wrap">
                       {inq.message}
                     </div>
+                    <InquiryFollowUp id={inq.id} email={inq.email} status={inq.status} quality={inq.quality} attribution={inq.attribution} onUpdate={fetchInquiries} />
                   </div>
                 )}
               </div>

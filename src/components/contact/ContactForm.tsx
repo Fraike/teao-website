@@ -2,12 +2,18 @@
 
 import { useState, useCallback, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { InquiryChallenge } from "./InquiryChallenge";
+import { captureInquiryVisit } from "@/lib/inquiry-attribution";
 import { Captcha, type CaptchaRef } from "@/components/ui/captcha";
 
 export function ContactForm() {
   const searchParams = useSearchParams();
-  const initialProduct = searchParams.get("product") || "";
+  const initialProduct = (searchParams.get("product") ?? "").slice(0, 100);
+  const initialApplication = (searchParams.get("application") ?? "").slice(0, 150);
+  const initialModel = (searchParams.get("model") ?? "").slice(0, 80);
   const captchaRef = useRef<CaptchaRef>(null);
+  const submissionKey = useRef<string | null>(null);
+  const submitting = useRef(false);
 
   const [form, setForm] = useState({
     name: "",
@@ -17,7 +23,7 @@ export function ContactForm() {
     country: "",
     productInterest: initialProduct,
     annualVolume: "",
-    message: "",
+    message: [initialApplication && `Application: ${initialApplication}`, initialModel && `Model: ${initialModel}`].filter(Boolean).join("\n"),
     privacyAccepted: false,
     website: "",
   });
@@ -37,6 +43,7 @@ export function ContactForm() {
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
+      if (submitting.current) return;
       setErrorMsg("");
 
       if (!form.privacyAccepted) {
@@ -51,15 +58,21 @@ export function ContactForm() {
         return;
       }
 
+      const challenge = new FormData(e.currentTarget as HTMLFormElement).get("cf-turnstile-response");
+      submitting.current = true;
       setStatus("submitting");
 
       try {
+        submissionKey.current ??= crypto.randomUUID();
         const payload = captchaRef.current?.getPayload();
         const res = await fetch("/api/contact", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             ...form,
+            submissionKey: submissionKey.current,
+            turnstileToken: challenge,
+            attribution: { ...captureInquiryVisit(), submissionPage: window.location.pathname },
             captchaToken: payload?.token,
             captchaAnswer: payload?.answer,
           }),
@@ -71,15 +84,7 @@ export function ContactForm() {
         }
 
         setStatus("success");
-        window.dispatchEvent(new CustomEvent("teao:track", {
-          detail: {
-            event: "form_submit",
-            page: window.location.pathname,
-            targetType: "form",
-            targetId: form.productInterest || "general",
-            source: "contact_page",
-          },
-        }));
+        submissionKey.current = null;
         setForm({
           name: "",
           company: "",
@@ -97,6 +102,8 @@ export function ContactForm() {
         setStatus("error");
         setErrorMsg(err instanceof Error ? err.message : "Something went wrong. Please try again.");
         captchaRef.current?.reset();
+      } finally {
+        submitting.current = false;
       }
     },
     [form]
@@ -150,7 +157,10 @@ export function ContactForm() {
           <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Product Interest</label>
           <select name="productInterest" value={form.productInterest} onChange={handleChange} className={fieldClass}>
             <option value="">Select product...</option>
-            <option value="gear-damper">Gear Damper</option>
+            {initialProduct && !["gear-damper", "axial-damper", "glove-box-damper", "latch", "other"].includes(initialProduct) && (
+              <option value={initialProduct}>{initialProduct}</option>
+            )}
+            <option value="gear-damper">Gear Damper / Rotary Damper</option>
             <option value="axial-damper">Axial Damper</option>
             <option value="glove-box-damper">Glove Box Damper</option>
             <option value="latch">Latch</option>
@@ -166,6 +176,8 @@ export function ContactForm() {
         <label className="block text-[13px] font-bold text-[#111827] mb-1.5">Message *</label>
         <textarea name="message" required rows={5} value={form.message} onChange={handleChange} placeholder="Describe your application, torque requirements, mounting space..." className="w-full px-4 py-3 rounded-lg border border-[#E5E7EB] bg-white text-[#374151] text-sm placeholder:text-[#9CA3AF] focus:outline-none focus:border-[#ED7606] focus:ring-2 focus:ring-[#ED7606]/10 transition-all resize-y" />
       </div>
+
+      <InquiryChallenge />
 
       <div className="hidden" aria-hidden="true">
         <label>

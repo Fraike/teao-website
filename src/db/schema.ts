@@ -1,4 +1,4 @@
-import { sqliteTable, integer, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, integer, text, index } from "drizzle-orm/sqlite-core";
 
 export const categories = sqliteTable("categories", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -144,5 +144,39 @@ export const contactInquiries = sqliteTable("contact_inquiries", {
   productInterest: text("product_interest"),
   annualVolume: text("annual_volume"),
   message: text("message").notNull(),
+  submissionKey: text("submission_key").unique(),
+  attribution: text("attribution"),
+  quality: text("quality", { enum: ["pending", "valid", "spam"] }).notNull().default("pending"),
+  status: text("status", { enum: ["pending", "following_up", "replied", "closed"] }).notNull().default("pending"),
+  firstHumanReplyAt: integer("first_human_reply_at", { mode: "timestamp" }),
   createdAt: integer("created_at", { mode: "timestamp" }).$defaultFn(() => new Date()),
 });
+
+export const inquiryDrafts = sqliteTable("inquiry_drafts", {
+  inquiryId: integer("inquiry_id").primaryKey().references(() => contactInquiries.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  sources: text("sources").notNull().default("[]"),
+  version: text("version").notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const inquiryMailJobs = sqliteTable("inquiry_mail_jobs", {
+  id: text("id").primaryKey(),
+  inquiryId: integer("inquiry_id").notNull().references(() => contactInquiries.id, { onDelete: "cascade" }),
+  kind: text("kind", { enum: ["notification", "acknowledgment", "reply"] }).notNull(),
+  status: text("status", { enum: ["pending", "processing", "accepted", "delivered", "bounced", "failed"] }).notNull().default("pending"),
+  payload: text("payload").notNull(),
+  approvedBy: text("approved_by"),
+  providerId: text("provider_id").unique(),
+  providerEventAt: integer("provider_event_at", { mode: "timestamp_ms" }),
+  attempts: integer("attempts").notNull().default(0),
+  firstAttemptAt: integer("first_attempt_at", { mode: "timestamp" }),
+  nextAttemptAt: integer("next_attempt_at", { mode: "timestamp" }).notNull(),
+  leaseUntil: integer("lease_until", { mode: "timestamp" }),
+  sentAt: integer("sent_at", { mode: "timestamp" }),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+  lastError: text("last_error"),
+}, (table) => [
+  index("inquiry_mail_jobs_schedule").on(table.status, table.nextAttemptAt),
+  index("inquiry_mail_jobs_inquiry").on(table.inquiryId),
+]);

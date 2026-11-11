@@ -13,7 +13,7 @@ export const CATEGORY_SEO: Record<SeoCategorySlug, CategorySeoConfig> = {
   "gear-damper": {
     title: "Gear Damper & Rotary Damper Manufacturer | TEAO",
     description:
-      "TEAO manufactures precision gear dampers and rotary dampers for automotive interiors, glove boxes, cup holders, armrests, grab handles and compact soft-motion mechanisms.",
+      "Compare TEAO gear dampers (rotary dampers) by torque, direction, mounting and gear geometry. Find a model for automotive interiors or compact mechanisms.",
     keywords: [
       "gear damper",
       "rotary damper",
@@ -95,9 +95,9 @@ export const CATEGORY_SEO: Record<SeoCategorySlug, CategorySeoConfig> = {
     ],
   },
   "glove-box-damper": {
-    title: "Glove Box Damper Manufacturer | Automotive Soft Open Dampers",
+    title: "Automotive Glove Box Dampers | Air and Oil Models",
     description:
-      "TEAO manufactures automotive glove box dampers for controlled descent, soft-open motion and quiet interior storage operation, with custom force, direction and mounting options.",
+      "Compare TEAO automotive glove box dampers by damping medium, stroke and mounting dimensions. Find air and oil models for controlled glove box opening.",
     keywords: [
       "glove box damper",
       "automotive glove box damper",

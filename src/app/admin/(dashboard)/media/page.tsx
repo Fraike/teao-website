@@ -1,5 +1,7 @@
 "use client";
 
+import { publishingError } from "@/components/admin/publishing-labels";
+
 import { useState, useEffect, useCallback, useRef } from "react";
 
 interface MediaItem {
@@ -40,7 +42,7 @@ export default function MediaPage() {
     setError("");
     for (const file of Array.from(files)) {
       if (!file.type.startsWith("image/")) {
-        setError(`Skipped non-image: ${file.name}`);
+        setError(`已跳过非图片文件：${file.name}`);
         continue;
       }
       const fd = new FormData();
@@ -48,7 +50,7 @@ export default function MediaPage() {
       const res = await fetch("/api/media", { method: "POST", body: fd });
       if (!res.ok) {
         const data = await res.json();
-        setError(data.error || "Upload failed");
+        setError(publishingError(data.error, "上传失败，请稍后重试。"));
       }
     }
     setUploading(false);
@@ -56,8 +58,14 @@ export default function MediaPage() {
   }
 
   async function deleteFile(name: string) {
-    if (!confirm(`Delete ${name}?`)) return;
-    await fetch(`/api/media?file=${encodeURIComponent(name)}`, { method: "DELETE" });
+    if (!confirm(`确认删除 ${name}？`)) return;
+    const response = await fetch(`/api/media?file=${encodeURIComponent(name)}`, { method: "DELETE" });
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      setError(publishingError(data.error, "删除失败，请稍后重试。"));
+      return;
+    }
+    setError("");
     setItems((prev) => prev.filter((i) => i.name !== name));
   }
 
@@ -75,13 +83,13 @@ export default function MediaPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-black text-[#111827]">Media Library</h1>
+        <h1 className="text-2xl font-black text-[#111827]">媒体库</h1>
         <button
           onClick={() => fileRef.current?.click()}
           disabled={uploading}
           className="px-4 h-10 inline-flex items-center rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors"
         >
-          {uploading ? "Uploading..." : "+ Upload"}
+          {uploading ? "正在上传…" : "+ 上传"}
         </button>
       </div>
 
@@ -89,7 +97,7 @@ export default function MediaPage() {
 
       <input
         className="w-full h-10 px-3 rounded-lg border border-[#E5E7EB] text-sm focus:outline-none focus:border-[#ED7606] mb-4"
-        placeholder="Search files..."
+        placeholder="搜索文件…"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
       />
@@ -111,13 +119,13 @@ export default function MediaPage() {
         onDragLeave={() => setDragOver(false)}
         onDrop={(e) => { e.preventDefault(); setDragOver(false); if (e.dataTransfer.files.length) uploadFiles(e.dataTransfer.files); }}
       >
-        <p className="text-sm text-[#9CA3AF]">Drag and drop images here, or click Upload</p>
+        <p className="text-sm text-[#9CA3AF]">拖放图片到这里，或点击上传</p>
       </div>
 
       {loading ? (
-        <p className="text-center text-sm text-[#9CA3AF] py-8">Loading...</p>
+        <p className="text-center text-sm text-[#9CA3AF] py-8">正在加载…</p>
       ) : filtered.length === 0 ? (
-        <p className="text-center text-sm text-[#9CA3AF] py-8">No images found.</p>
+        <p className="text-center text-sm text-[#9CA3AF] py-8">未找到图片。</p>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
           {filtered.map((item) => (
@@ -145,16 +153,16 @@ export default function MediaPage() {
                 <button
                   onClick={() => copyUrl(item.url)}
                   className="w-9 h-9 rounded-lg bg-white text-[10px] font-bold text-[#374151] shadow-lg hover:bg-[#ED7606] hover:text-white transition-colors"
-                  title="Copy URL"
+                  title="复制网址"
                 >
-                  {copied === item.url ? "OK" : "URL"}
+                  {copied === item.url ? "已复制" : "复制网址"}
                 </button>
                 <button
                   onClick={() => deleteFile(item.name)}
                   className="w-9 h-9 rounded-lg bg-white text-[10px] font-bold text-red-600 shadow-lg hover:bg-red-600 hover:text-white transition-colors"
-                  title="Delete"
+                  title="删除"
                 >
-                  Del
+                  删除
                 </button>
               </div>
             </div>

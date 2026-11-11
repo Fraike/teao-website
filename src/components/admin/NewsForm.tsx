@@ -1,5 +1,7 @@
 "use client";
 
+import { publishingError } from "./publishing-labels";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import RichTextEditor from "./RichTextEditor";
@@ -22,10 +24,10 @@ interface Props {
 }
 
 const ARTICLE_TYPES = [
-  { value: "article", label: "Article" },
-  { value: "guide", label: "Guide" },
-  { value: "faq", label: "FAQ" },
-  { value: "news", label: "News" },
+  { value: "article", label: "文章" },
+  { value: "guide", label: "指南" },
+  { value: "faq", label: "常见问题" },
+  { value: "news", label: "新闻" },
 ];
 
 interface TranslationRow {
@@ -130,7 +132,7 @@ export default function NewsForm({ initial, isNew }: Props) {
         })));
       }
       setDirty(false);
-      setSuccessMsg(isNew ? "Article created" : "Changes saved");
+      setSuccessMsg(isNew ? "文章已创建" : "修改已保存");
       setTimeout(() => setSuccessMsg(""), 3000);
       if (redirectAfter) {
         router.push("/admin/news");
@@ -138,7 +140,7 @@ export default function NewsForm({ initial, isNew }: Props) {
       }
     } else {
       const data = await res.json();
-      setError(data.error || "Save failed");
+      setError(publishingError(data.error, "保存失败，请稍后重试。"));
     }
     setSaving(false);
   }
@@ -154,11 +156,11 @@ export default function NewsForm({ initial, isNew }: Props) {
     });
     if (res.ok) {
       await loadTranslations();
-      setSuccessMsg(locale ? `${locale.toUpperCase()} translation requested` : "Translations requested");
+      setSuccessMsg(locale ? `已发起${locale === "ja" ? "日语" : "德语"}翻译` : "已发起翻译");
       setTimeout(() => setSuccessMsg(""), 3000);
     } else {
       const data = await res.json().catch(() => ({}));
-      setError(data.error || "Translation failed");
+      setError(publishingError(data.error, "翻译失败，请稍后重试。"));
     }
     setTranslating(false);
   }
@@ -174,7 +176,7 @@ export default function NewsForm({ initial, isNew }: Props) {
       router.push("/admin/news");
       router.refresh();
     } else {
-      setError("Delete failed");
+      setError("删除失败");
       setSaving(false);
     }
   }
@@ -209,25 +211,26 @@ export default function NewsForm({ initial, isNew }: Props) {
               <div>
                 <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-[#ED7606]">
                   <FileText size={14} />
-                  Article Setup
+                  文章设置
                 </div>
-                <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-[#111827]">Publishing information</h2>
+                <h2 className="mt-1 text-lg font-black tracking-[-0.02em] text-[#111827]">发布信息</h2>
+                <p className="mt-1 text-xs text-[#6B7280]">标题、摘要、正文及搜索字段请填写英文。</p>
               </div>
               <span className={`rounded-full px-3 py-1 text-[11px] font-black ${form.isPublished ? "bg-green-50 text-green-700 border border-green-200" : "bg-[#F3F4F6] text-[#6B7280] border border-[#E5E7EB]"}`}>
-                {form.isPublished ? "Published" : "Draft"}
+                {form.isPublished ? "已发布" : "草稿"}
               </span>
             </div>
 
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.8fr)]">
               <div>
-                <label className={labelClass}>Title *</label>
-                <input className={inputClass + " h-12 text-base font-bold"} value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required />
+                <label htmlFor="news-title" className={labelClass}>文章标题 / Title *</label>
+                <input id="news-title" className={inputClass + " h-12 text-base font-bold"} value={form.title} onChange={(e) => handleTitleChange(e.target.value)} required />
               </div>
               <div>
-                <label className={labelClass}>Slug *</label>
+                <label htmlFor="news-slug" className={labelClass}>网址标识 / Slug *</label>
                 <div className="relative">
                   <LinkIcon size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
-                  <input className={inputClass + " pl-9"} value={form.slug} onChange={(e) => update("slug", e.target.value)} required />
+                  <input id="news-slug" className={inputClass + " pl-9"} value={form.slug} onChange={(e) => update("slug", e.target.value)} required />
                 </div>
                 {publicUrl && <div className="mt-1 truncate text-[11px] text-[#9CA3AF]">{publicUrl}</div>}
               </div>
@@ -235,15 +238,15 @@ export default function NewsForm({ initial, isNew }: Props) {
 
             <div className="mt-4 grid gap-4 sm:grid-cols-3">
               <div>
-                <label className={labelClass}>Category</label>
+                <label className={labelClass}>文章分类</label>
                 <select className={inputClass} value={form.category} onChange={(e) => update("category", e.target.value)}>
-                  <option value="company">Company</option>
-                  <option value="quality">Quality</option>
-                  <option value="engineering">Engineering</option>
+                  <option value="company">公司动态</option>
+                  <option value="quality">质量管理</option>
+                  <option value="engineering">工程技术</option>
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Article Type</label>
+                <label className={labelClass}>文章类型</label>
                 <select
                   className={inputClass}
                   value={form.articleType}
@@ -255,7 +258,7 @@ export default function NewsForm({ initial, isNew }: Props) {
                 </select>
               </div>
               <div>
-                <label className={labelClass}>Date</label>
+                <label className={labelClass}>发布日期</label>
                 <div className="relative">
                   <CalendarDays size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#9CA3AF]" />
                   <input className={inputClass + " pl-9"} type="date" value={form.publishedAt} onChange={(e) => update("publishedAt", e.target.value)} />
@@ -271,7 +274,7 @@ export default function NewsForm({ initial, isNew }: Props) {
                   onChange={(e) => update("isPublished", e.target.checked)}
                   className="w-4 h-4 rounded border-[#E5E7EB] text-[#ED7606] focus:ring-[#ED7606]"
                 />
-                <span className="text-sm font-bold text-[#374151]">Publish this article on the public site</span>
+                <span className="text-sm font-bold text-[#374151]">在公开网站发布此文章</span>
               </label>
             </div>
           </section>
@@ -280,45 +283,45 @@ export default function NewsForm({ initial, isNew }: Props) {
           <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.03)]">
             <div className="mb-5 flex items-center gap-2">
               <Search size={16} className="text-[#ED7606]" />
-              <h2 className="text-base font-extrabold text-[#111827]">SEO, summary and article context</h2>
+              <h2 className="text-base font-extrabold text-[#111827]">搜索优化、摘要与关联内容</h2>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
-                <label className={labelClass}>SEO Title</label>
-                <input
+                <label htmlFor="news-seoTitle" className={labelClass}>搜索标题 / SEO Title</label>
+                <input id="news-seoTitle"
                   className={inputClass}
                   value={form.seoTitle}
                   onChange={(e) => update("seoTitle", e.target.value)}
-                  placeholder="Leave empty to use article title"
+                  placeholder="留空时使用文章标题"
                 />
-                <div className="mt-1 text-[11px] text-[#9CA3AF]">{titleLength}/60 recommended</div>
+                <div className="mt-1 text-[11px] text-[#9CA3AF]">{titleLength} 字符，建议不超过 60</div>
               </div>
               <div>
-                <label className={labelClass}>Keywords</label>
-                <input
+                <label htmlFor="news-keywords" className={labelClass}>关键词 / Keywords</label>
+                <input id="news-keywords"
                   className={inputClass}
                   value={form.keywords}
                   onChange={(e) => update("keywords", e.target.value)}
                   placeholder="keyword1, keyword2, keyword3"
                 />
-                <div className="mt-1 text-[11px] text-[#9CA3AF]">{keywordCount} keyword{keywordCount === 1 ? "" : "s"}</div>
+                <div className="mt-1 text-[11px] text-[#9CA3AF]">{keywordCount} 个关键词</div>
               </div>
             </div>
 
             <div className="mt-4">
-              <label className={labelClass}>Summary</label>
-              <textarea
+              <label htmlFor="news-summary" className={labelClass}>摘要 / Summary</label>
+              <textarea id="news-summary"
                 className={inputClass + " h-28 py-3 leading-relaxed"}
                 value={form.summary}
                 onChange={(e) => update("summary", e.target.value)}
-                placeholder="Short public summary shown below the title and in search previews."
+                placeholder="请输入英文摘要，用于文章标题下方及搜索预览。"
               />
-              <div className="mt-1 text-[11px] text-[#9CA3AF]">{summaryLength}/160 recommended</div>
+              <div className="mt-1 text-[11px] text-[#9CA3AF]">{summaryLength} 字符，建议不超过 160</div>
             </div>
 
             <div className="mt-4">
-              <label className={labelClass}>Related Products</label>
+              <label className={labelClass}>关联产品</label>
               <ProductSelector
                 selected={form.relatedProducts}
                 onChange={(slugs) => update("relatedProducts", slugs)}
@@ -330,16 +333,16 @@ export default function NewsForm({ initial, isNew }: Props) {
           <section className="rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-[0_4px_20px_rgba(17,24,39,0.03)]">
             <div className="mb-5 flex items-center gap-2">
               <ImageIcon size={16} className="text-[#ED7606]" />
-              <h2 className="text-base font-extrabold text-[#111827]">Article hero image</h2>
+              <h2 className="text-base font-extrabold text-[#111827]">文章主图</h2>
             </div>
             <MediaPicker
               value={form.image}
               onChange={(url) => update("image", url)}
-              label="Image URL"
+              label="主图网址 / Image URL"
               placeholder="/images/news/example.webp"
             />
             <p className="mt-2 text-xs leading-relaxed text-[#6B7280]">
-              The public news page uses this as a premium product display. If the URL ends in <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/main.webp</code>, the detail page will prefer <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/photo_1.webp</code> when available.
+              主图会显示在公开文章中。图片网址以 <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/main.webp</code> 结尾时，详情页会优先使用已有的 <code className="rounded bg-[#F3F4F6] px-1 py-0.5">/photo_1.webp</code>。
             </p>
             {form.image && (
               <div className="mt-4 overflow-hidden rounded-2xl border border-[#E5E7EB] bg-[radial-gradient(circle_at_24%_20%,rgba(237,118,6,0.10),transparent_34%),linear-gradient(135deg,#FFFFFF_0%,#F4F7FA_100%)] p-4">
@@ -347,7 +350,7 @@ export default function NewsForm({ initial, isNew }: Props) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={heroPreviewImage}
-                    alt="Article hero preview"
+                    alt="文章主图预览"
                     className="h-full w-full object-contain p-4"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = form.image;
@@ -363,9 +366,9 @@ export default function NewsForm({ initial, isNew }: Props) {
             <div className="mb-5 flex items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <Sparkles size={16} className="text-[#ED7606]" />
-                <h2 className="text-base font-extrabold text-[#111827]">Article body</h2>
+                <h2 className="text-base font-extrabold text-[#111827]">文章正文 / Article Body</h2>
               </div>
-              <span className="text-xs font-bold text-[#9CA3AF]">{wordCount} words</span>
+              <span className="text-xs font-bold text-[#9CA3AF]">{wordCount} 个单词</span>
             </div>
             <RichTextEditor
               value={form.content}
@@ -378,7 +381,7 @@ export default function NewsForm({ initial, isNew }: Props) {
           <section className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_32px_rgba(17,24,39,0.05)]">
             <div className="mb-4 flex items-center gap-2">
               <Eye size={16} className="text-[#ED7606]" />
-              <h2 className="text-sm font-black text-[#111827]">Public preview</h2>
+              <h2 className="text-sm font-black text-[#111827]">公开页预览</h2>
             </div>
             <div className="rounded-2xl border border-[#E5E7EB] bg-[linear-gradient(180deg,#F8F9FA,#FFFFFF)] p-4">
               <div className="mb-3 flex flex-wrap gap-2">
@@ -386,10 +389,10 @@ export default function NewsForm({ initial, isNew }: Props) {
                 <span className="rounded-full border border-[#E5E7EB] bg-white px-2.5 py-1 text-[10px] font-bold text-[#6B7280]">{form.publishedAt}</span>
               </div>
               <h3 className="text-xl font-black leading-[1.03] tracking-[-0.04em] text-[#111827]">
-                {form.title || "Article title"}
+                {form.title || "文章标题预览"}
               </h3>
               <p className="mt-3 line-clamp-4 text-xs leading-relaxed text-[#6B7280]">
-                {form.summary || "Article summary will appear here."}
+                {form.summary || "文章摘要会在此处显示。"}
               </p>
             </div>
             {publicUrl && (
@@ -399,7 +402,7 @@ export default function NewsForm({ initial, isNew }: Props) {
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex h-9 w-full items-center justify-center rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606]"
               >
-                Open public page
+                打开公开页面
               </a>
             )}
           </section>
@@ -410,9 +413,9 @@ export default function NewsForm({ initial, isNew }: Props) {
                 <div>
                   <div className="flex items-center gap-2 text-[11px] font-black uppercase tracking-[0.12em] text-[#ED7606]">
                     <Sparkles size={14} />
-                    Translations
+                    本地化翻译
                   </div>
-                  <h2 className="mt-1 text-base font-black tracking-[-0.02em] text-[#111827]">Japanese / German</h2>
+                  <h2 className="mt-1 text-base font-black tracking-[-0.02em] text-[#111827]">日语与德语</h2>
                 </div>
                 <button
                   type="button"
@@ -420,7 +423,7 @@ export default function NewsForm({ initial, isNew }: Props) {
                   disabled={translating}
                   className="rounded-full bg-[#111827] px-3 py-1.5 text-[11px] font-bold text-white disabled:opacity-50"
                 >
-                  {translating ? "Working..." : "Retranslate"}
+                  {translating ? "正在处理…" : "重新翻译"}
                 </button>
               </div>
               <div className="space-y-2">
@@ -433,9 +436,9 @@ export default function NewsForm({ initial, isNew }: Props) {
                     <div key={locale} className="rounded-lg border border-[#E5E7EB] bg-[#F8F9FA] p-3">
                       <div className="flex items-center justify-between gap-2">
                         <div>
-                          <div className="text-sm font-black text-[#111827]">{locale === "ja" ? "Japanese" : "German"}</div>
+                          <div className="text-sm font-black text-[#111827]">{locale === "ja" ? "日语" : "德语"}</div>
                           <div className={`mt-1 text-[11px] font-bold ${ok ? "text-green-700" : failed ? "text-red-600" : "text-[#6B7280]"}`}>
-                            {status}
+                            {ok ? "已翻译" : failed ? "翻译失败" : "待翻译"}
                           </div>
                         </div>
                         <button
@@ -444,30 +447,30 @@ export default function NewsForm({ initial, isNew }: Props) {
                           disabled={translating}
                           className="rounded-full border border-[#E5E7EB] bg-white px-3 py-1.5 text-[11px] font-bold text-[#374151] hover:border-[#ED7606] hover:text-[#ED7606] disabled:opacity-50"
                         >
-                          Retry
+                          重试
                         </button>
                       </div>
                       {row?.errorMessage && (
-                        <p className="mt-2 line-clamp-3 text-[11px] leading-relaxed text-red-600">{row.errorMessage}</p>
+                        <p className="mt-2 line-clamp-3 text-[11px] leading-relaxed text-red-600">{publishingError(row.errorMessage, "翻译失败，请稍后重试。")}</p>
                       )}
                     </div>
                   );
                 })}
               </div>
               <p className="mt-3 text-[11px] leading-relaxed text-[#6B7280]">
-                English remains the source. Translations are generated automatically and can be retried without replacing the English article.
+                以英文为源稿。可重新生成日语和德语版本，英文原稿会保留。
               </p>
             </section>
           )}
 
           <section className="rounded-xl border border-[#E5E7EB] bg-white p-5 shadow-[0_8px_32px_rgba(17,24,39,0.05)]">
-            <h2 className="mb-4 text-sm font-black text-[#111827]">Readiness</h2>
-            <StatusItem ok={Boolean(form.title)} label="Title is set" />
-            <StatusItem ok={Boolean(form.slug)} label="URL slug is set" />
-            <StatusItem ok={summaryLength >= 80 && summaryLength <= 180} label="Summary length is reasonable" />
-            <StatusItem ok={Boolean(form.image)} label="Hero image is set" />
-            <StatusItem ok={keywordCount >= 2} label="Keywords added" />
-            <StatusItem ok={wordCount >= 250} label="Body has enough content" />
+            <h2 className="mb-4 text-sm font-black text-[#111827]">发布检查</h2>
+            <StatusItem ok={Boolean(form.title)} label="已填写标题" />
+            <StatusItem ok={Boolean(form.slug)} label="已设置网址标识" />
+            <StatusItem ok={summaryLength >= 80 && summaryLength <= 180} label="摘要长度适中" />
+            <StatusItem ok={Boolean(form.image)} label="已设置主图" />
+            <StatusItem ok={keywordCount >= 2} label="已添加关键词" />
+            <StatusItem ok={wordCount >= 250} label="正文内容充足" />
           </section>
         </aside>
       </div>
@@ -478,21 +481,21 @@ export default function NewsForm({ initial, isNew }: Props) {
           {!isNew &&
             (confirmDelete ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-red-600 font-medium">Are you sure?</span>
+                <span className="text-xs text-red-600 font-medium">确认删除此文章？</span>
                 <button
                   type="button"
                   onClick={handleDelete}
                   disabled={saving}
                   className="px-3 h-9 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 disabled:opacity-50"
                 >
-                  {saving ? "Deleting..." : "Yes, delete"}
+                  {saving ? "正在删除…" : "确认删除"}
                 </button>
                 <button
                   type="button"
                   onClick={() => setConfirmDelete(false)}
                   className="px-3 h-9 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151]"
                 >
-                  Cancel
+                  取消
                 </button>
               </div>
             ) : (
@@ -501,7 +504,7 @@ export default function NewsForm({ initial, isNew }: Props) {
                 onClick={handleDelete}
                 className="px-4 h-10 rounded-lg border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors"
               >
-                Delete Article
+                删除文章
               </button>
             ))}
         </div>
@@ -511,7 +514,7 @@ export default function NewsForm({ initial, isNew }: Props) {
             onClick={() => router.back()}
             className="px-6 h-11 rounded-lg border border-[#E5E7EB] text-sm font-bold text-[#374151]"
           >
-            Cancel
+            取消
           </button>
           <button
             type="button"
@@ -519,14 +522,14 @@ export default function NewsForm({ initial, isNew }: Props) {
             disabled={saving}
             className="px-6 h-11 rounded-lg border border-[#ED7606] text-[#ED7606] text-sm font-bold hover:bg-[#FFF1E3] disabled:opacity-50 transition-colors"
           >
-            {saving ? "Saving..." : "Save & Continue"}
+            {saving ? "正在保存…" : "保存并继续编辑"}
           </button>
           <button
             type="submit"
             disabled={saving}
             className="px-6 h-11 rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors"
           >
-            {saving ? "Saving..." : isNew ? "Create Article" : "Save Changes"}
+            {saving ? "正在保存…" : isNew ? "创建文章" : "保存修改"}
           </button>
         </div>
       </div>

@@ -16,7 +16,7 @@ export default async function EditProductPage({
 
   return (
     <div>
-      <h1 className="text-2xl font-black text-[#111827] mb-6">Edit Product</h1>
+      <h1 className="text-2xl font-black text-[#111827] mb-6">编辑产品 / Edit Product</h1>
       <ProductForm initial={serializeProduct(product)} />
     </div>
   );

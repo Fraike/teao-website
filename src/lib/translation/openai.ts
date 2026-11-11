@@ -25,7 +25,7 @@ Terminology:
 - soft close / soft motion: translate naturally for engineering and procurement readers.
 `;
 
-function getTranslationConfig() {
+export function getTranslationConfig() {
   if (env.TRANSLATION_PROVIDER === "deepseek") {
     return {
       providerName: "DeepSeek",

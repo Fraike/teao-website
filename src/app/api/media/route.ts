@@ -66,7 +66,7 @@ async function scanDirRecursive(
 
 export async function GET(request: Request) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "请先登录后台。" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
   const sourceFilter = searchParams.get("source") || "all"; // "all" | "project" | "uploads"
@@ -106,11 +106,11 @@ export async function GET(request: Request) {
 
 export async function DELETE(request: Request) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "请先登录后台。" }, { status: 401 });
 
   const { searchParams } = new URL(request.url);
   const filename = searchParams.get("file");
-  if (!filename) return NextResponse.json({ error: "Missing filename" }, { status: 400 });
+  if (!filename) return NextResponse.json({ error: "缺少文件名。" }, { status: 400 });
 
   // Only allow deleting from uploads (not project images)
   const safe = path.basename(filename);
@@ -118,30 +118,30 @@ export async function DELETE(request: Request) {
 
   // Verify file is actually in uploads directory
   if (!filePath.startsWith(path.join(process.cwd(), "public", "uploads"))) {
-    return NextResponse.json({ error: "Cannot delete project images" }, { status: 403 });
+    return NextResponse.json({ error: "项目内置图片不能在后台删除。" }, { status: 403 });
   }
 
   try {
     await unlink(filePath);
     return NextResponse.json({ success: true });
   } catch {
-    return NextResponse.json({ error: "Delete failed" }, { status: 500 });
+    return NextResponse.json({ error: "删除文件失败，请重试。" }, { status: 500 });
   }
 }
 
 export async function POST(request: Request) {
   const session = await getSession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!session) return NextResponse.json({ error: "请先登录后台。" }, { status: 401 });
 
   const formData = await request.formData();
   const file = formData.get("file") as File;
-  if (!file) return NextResponse.json({ error: "No file" }, { status: 400 });
+  if (!file) return NextResponse.json({ error: "请选择要上传的文件。" }, { status: 400 });
 
   if (!ALLOWED_TYPES.includes(file.type)) {
-    return NextResponse.json({ error: `Unsupported file type: ${file.type}` }, { status: 400 });
+    return NextResponse.json({ error: `不支持的文件类型： ${file.type}` }, { status: 400 });
   }
   if (file.size > MAX_SIZE) {
-    return NextResponse.json({ error: "File too large (max 5MB)" }, { status: 400 });
+    return NextResponse.json({ error: "文件大小不能超过 5 MB。" }, { status: 400 });
   }
 
   const buffer = Buffer.from(await file.arrayBuffer());

@@ -1,3 +1,4 @@
+import { getDamperInquiryUrl } from "@/lib/growth-content";
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
@@ -249,7 +250,7 @@ export default async function CategoryProductDetailPage({ params }: Props) {
 
               <div className="flex flex-wrap gap-3 mt-6">
                 <Button
-                  href={`/contact?product=${encodeURIComponent(product.model)}`}
+                  href={getDamperInquiryUrl(product.category, undefined, product.model)}
                   variant="primary"
                   data-analytics-event="cta_click"
                   data-analytics-target-type="cta"

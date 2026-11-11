@@ -19,12 +19,12 @@ export default async function AdminProductsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-black text-[#111827]">Products</h1>
+        <h1 className="text-2xl font-black text-[#111827]">产品管理</h1>
         <Link
           href="/admin/products/new"
           className="px-4 h-10 inline-flex items-center rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] transition-colors"
         >
-          + Add Product
+          + 新增产品
         </Link>
       </div>
 

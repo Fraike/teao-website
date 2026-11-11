@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "PORT=${PORT:-3100} next dev --turbo",
+    "dev": "node scripts/dev-preview.cjs",
     "build": "next build",
-    "start": "PORT=${PORT:-3100} next start",
+    "start": "PORT=${PORT:-3091} next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "check": "npm run typecheck && npm run lint",

@@ -1,5 +1,7 @@
 "use client";
 
+import { publishingError } from "./publishing-labels";
+
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import MediaPicker from "./MediaPicker";
@@ -15,6 +17,18 @@ const PRESET_SCENARIOS = [
   { image: "/images/applications/applications-gif/safty handle.gif", label: "Safety Handle" },
   { image: "/images/applications/applications-gif/toilet lid.gif", label: "Toilet Lid" },
 ];
+
+const presetLabels: Record<string, string> = {
+  "Center Console": "中控台",
+  "Glove Box": "手套箱",
+  "Door Handle": "车门把手",
+  "Cup Holder": "杯架",
+  "Glasses Box": "眼镜盒",
+  Ashtray: "烟灰缸",
+  "Outlet Cover": "出风口盖",
+  "Safety Handle": "安全扶手",
+  "Toilet Lid": "马桶盖",
+};
 
 type ProductData = Record<string, unknown>;
 
@@ -127,7 +141,7 @@ export default function ProductForm({ initial, isNew }: Props) {
 
     if (res.ok) {
       setDirty(false);
-      setSuccessMsg(isNew ? "Product created" : "Changes saved");
+      setSuccessMsg(isNew ? "产品已创建" : "修改已保存");
       setTimeout(() => setSuccessMsg(""), 3000);
       if (redirectAfter) {
         router.push("/admin/products");
@@ -135,7 +149,7 @@ export default function ProductForm({ initial, isNew }: Props) {
       }
     } else {
       const data = await res.json();
-      setError(data.error || "Save failed");
+      setError(publishingError(data.error, "保存失败，请稍后重试。"));
     }
     setSaving(false);
   }
@@ -151,7 +165,7 @@ export default function ProductForm({ initial, isNew }: Props) {
       router.push("/admin/products");
       router.refresh();
     } else {
-      setError("Delete failed");
+      setError("删除失败");
       setSaving(false);
     }
   }
@@ -175,18 +189,19 @@ export default function ProductForm({ initial, isNew }: Props) {
 
       {/* Basic Info */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Basic Information</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-2">基本信息</h2>
+        <p className="mb-5 text-xs text-[#6B7280]">面向客户的名称、摘要、详情和搜索字段请填写英文。</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className={labelClass}>Model *</label>
-            <input className={inputClass} value={form.model} onChange={(e) => handleModelChange(e.target.value)} required />
+            <label htmlFor="product-model" className={labelClass}>型号 / Model *</label>
+            <input id="product-model" className={inputClass} value={form.model} onChange={(e) => handleModelChange(e.target.value)} required />
           </div>
           <div>
-            <label className={labelClass}>Slug *</label>
-            <input className={inputClass} value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
+            <label htmlFor="product-slug" className={labelClass}>网址标识 / Slug *</label>
+            <input id="product-slug" className={inputClass} value={form.slug} onChange={(e) => set("slug", e.target.value)} required />
           </div>
           <div>
-            <label className={labelClass}>Category *</label>
+            <label className={labelClass}>分类 / Category *</label>
             <select className={inputClass} value={form.category} onChange={(e) => {
               const cat = e.target.value;
               set("category", cat);
@@ -195,76 +210,76 @@ export default function ProductForm({ initial, isNew }: Props) {
                 if (!form.hardForce) set("hardForce", "6");
               }
             }}>
-              <option value="gear-damper">Gear Damper</option>
-              <option value="axial-damper">Axial Damper</option>
-              <option value="glove-box-damper">Glove Box Damper</option>
-              <option value="latch">Latch</option>
-              <option value="other">Other</option>
+              <option value="gear-damper">齿轮阻尼器 / Gear Damper</option>
+              <option value="axial-damper">轴向阻尼器 / Axial Damper</option>
+              <option value="glove-box-damper">手套箱阻尼器 / Glove Box Damper</option>
+              <option value="latch">锁扣 / Latch</option>
+              <option value="other">其他</option>
             </select>
           </div>
           <div>
-            <label className={labelClass}>Sort Order</label>
+            <label className={labelClass}>排序</label>
             <input className={inputClass} type="number" value={form.sortOrder} onChange={(e) => set("sortOrder", Number(e.target.value))} />
           </div>
           <div>
-            <label className={labelClass}>Series</label>
+            <label className={labelClass}>系列 / Series</label>
             <input className={inputClass} value={form.series} onChange={(e) => set("series", e.target.value)} />
           </div>
           <div>
-            <label className={labelClass}>Sub Type</label>
+            <label className={labelClass}>子类型 / Subtype</label>
             <select className={inputClass} value={form.subType} onChange={(e) => set("subType", e.target.value)}>
-              <option value="">None</option>
-              <option value="individual">Individual</option>
-              <option value="series">Series</option>
+              <option value="">未选择</option>
+              <option value="individual">单品</option>
+              <option value="series">系列产品</option>
             </select>
           </div>
           <div>
-            <label className={labelClass}>Variant</label>
+            <label className={labelClass}>变体 / Variant</label>
             <input className={inputClass} value={form.variant} onChange={(e) => set("variant", e.target.value)} />
           </div>
           <div className="flex items-center gap-2 pt-5">
             <input type="checkbox" id="isActive" checked={form.isActive} onChange={(e) => set("isActive", e.target.checked)} />
-            <label htmlFor="isActive" className="text-xs font-bold text-[#374151]">Active</label>
+            <label htmlFor="isActive" className="text-xs font-bold text-[#374151]">上架</label>
           </div>
         </div>
         <div className="grid sm:grid-cols-2 gap-4 mt-4">
           <div>
-            <label className={labelClass}>Name *</label>
-            <input className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} required />
+            <label htmlFor="product-name" className={labelClass}>产品名称 / Product Name *</label>
+            <input id="product-name" className={inputClass} value={form.name} onChange={(e) => set("name", e.target.value)} required />
           </div>
           <div>
-            <label className={labelClass}>Assembly Method</label>
-            <input className={inputClass} value={form.assemblyMethod} onChange={(e) => set("assemblyMethod", e.target.value)} placeholder="e.g. Screw Fixing" />
+            <label className={labelClass}>安装方式 / Assembly Method</label>
+            <input className={inputClass} value={form.assemblyMethod} onChange={(e) => set("assemblyMethod", e.target.value)} placeholder="例如 Screw Fixing" />
           </div>
         </div>
         <div className="mt-4">
-          <label className={labelClass}>Summary</label>
-          <textarea className={inputClass + " h-16 py-2"} value={form.summary} onChange={(e) => set("summary", e.target.value)} />
+          <label htmlFor="product-summary" className={labelClass}>摘要 / Summary</label>
+          <textarea id="product-summary" className={inputClass + " h-16 py-2"} value={form.summary} onChange={(e) => set("summary", e.target.value)} />
         </div>
         <div className="mt-4">
-          <label className={labelClass}>Description</label>
-          <textarea className={inputClass + " h-24 py-2"} value={form.description} onChange={(e) => set("description", e.target.value)} />
+          <label htmlFor="product-description" className={labelClass}>详情 / Description</label>
+          <textarea id="product-description" className={inputClass + " h-24 py-2"} value={form.description} onChange={(e) => set("description", e.target.value)} />
         </div>
       </section>
 
       {/* Images */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Images</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">图片</h2>
         <div className="grid sm:grid-cols-2 gap-4">
           <div>
             <MediaPicker
               value={form.image}
               onChange={(url) => set("image", url)}
-              label="Main Image"
-              placeholder="URL or /uploads/..."
+              label="主图 / Main Image"
+              placeholder="网址或 /uploads/... 路径"
             />
           </div>
           <div>
             <MediaPicker
               value={form.dimensionDrawing}
               onChange={(url) => set("dimensionDrawing", url)}
-              label="Dimension Drawing"
-              placeholder="URL or /images/..."
+              label="尺寸图 / Dimension Drawing"
+              placeholder="网址或 /images/... 路径"
             />
           </div>
         </div>
@@ -272,8 +287,8 @@ export default function ProductForm({ initial, isNew }: Props) {
         {/* Gallery images */}
         <div className="mt-4">
           <div className="flex items-center justify-between mb-2">
-            <label className={labelClass + " mb-0"}>Gallery Images</label>
-            <span className="text-[10px] text-[#9CA3AF]">Drag order: left = priority</span>
+            <label className={labelClass + " mb-0"}>产品相册</label>
+            <span className="text-[10px] text-[#9CA3AF]">从左到右按优先级展示</span>
           </div>
           {form.images.length > 0 && (
             <div className="space-y-2 mb-3">
@@ -300,7 +315,7 @@ export default function ProductForm({ initial, isNew }: Props) {
                               next[i] = { ...next[i], url: e.target.value };
                               set("images", next);
                             }}
-                            placeholder="Image URL"
+                            placeholder="图片网址"
                           />
                           <input
                             className={inputClass + " w-full"}
@@ -310,7 +325,7 @@ export default function ProductForm({ initial, isNew }: Props) {
                               next[i] = { ...next[i], alt: e.target.value };
                               set("images", next);
                             }}
-                            placeholder="Alt text"
+                            placeholder="英文替代文字"
                           />
                         </div>
                       </div>
@@ -324,9 +339,9 @@ export default function ProductForm({ initial, isNew }: Props) {
                               set("images", next);
                             }
                           }}
-                          placeholder="Browse..."
+                          placeholder="浏览素材…"
                         />
-                        <button type="button" onClick={() => setEditingGalleryIdx(null)} className="px-3 h-7 rounded bg-[#ED7606] text-white text-[11px] font-bold">Done</button>
+                        <button type="button" onClick={() => setEditingGalleryIdx(null)} className="px-3 h-7 rounded bg-[#ED7606] text-white text-[11px] font-bold">完成</button>
                       </div>
                     </div>
                   ) : (
@@ -336,22 +351,22 @@ export default function ProductForm({ initial, isNew }: Props) {
                         <img src={img.url} alt={img.alt || ""} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="text-xs text-[#374151] font-medium truncate">{img.alt || "Image " + (i + 1)}</div>
+                        <div className="text-xs text-[#374151] font-medium truncate">{img.alt || "图片 " + (i + 1)}</div>
                         <div className="text-[10px] text-[#9CA3AF] truncate font-mono">{img.url}</div>
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
-                        <button type="button" onClick={() => setEditingGalleryIdx(i)} className="px-2 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#374151] hover:bg-[#F8F9FA]">Edit</button>
+                        <button type="button" onClick={() => setEditingGalleryIdx(i)} className="px-2 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#374151] hover:bg-[#F8F9FA]">编辑</button>
                         {i > 0 && (
-                          <button type="button" onClick={() => moveGalleryImage(i, -1)} className="w-7 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#6B7280] hover:bg-[#F8F9FA] hover:text-[#111827]" title="Move left">&larr;</button>
+                          <button type="button" onClick={() => moveGalleryImage(i, -1)} className="w-7 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#6B7280] hover:bg-[#F8F9FA] hover:text-[#111827]" title="左移">&larr;</button>
                         )}
                         {i < form.images.length - 1 && (
-                          <button type="button" onClick={() => moveGalleryImage(i, 1)} className="w-7 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#6B7280] hover:bg-[#F8F9FA] hover:text-[#111827]" title="Move right">&rarr;</button>
+                          <button type="button" onClick={() => moveGalleryImage(i, 1)} className="w-7 h-7 rounded border border-[#E5E7EB] text-[10px] font-bold text-[#6B7280] hover:bg-[#F8F9FA] hover:text-[#111827]" title="右移">&rarr;</button>
                         )}
                         <button
                           type="button"
                           onClick={() => set("images", form.images.filter((_, j) => j !== i))}
                           className="w-7 h-7 rounded border border-red-200 text-red-500 text-[11px] font-bold hover:bg-red-50"
-                          title="Delete"
+                          title="删除"
                         >
                           &times;
                         </button>
@@ -372,10 +387,10 @@ export default function ProductForm({ initial, isNew }: Props) {
                 }
               }}
               label=""
-              placeholder="+ Add from library or upload"
+              placeholder="+ 从素材库选择或上传"
             />
-            <input className={inputClass + " w-48"} placeholder="Or paste URL..." value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (galleryUrl) { set("images", [...form.images, { url: galleryUrl, alt: galleryAlt || form.name }]); setGalleryUrl(""); setGalleryAlt(""); } } }} />
-            <input className={inputClass + " w-24"} placeholder="Alt" value={galleryAlt} onChange={(e) => setGalleryAlt(e.target.value)} />
+            <input className={inputClass + " w-48"} placeholder="或粘贴网址…" value={galleryUrl} onChange={(e) => setGalleryUrl(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (galleryUrl) { set("images", [...form.images, { url: galleryUrl, alt: galleryAlt || form.name }]); setGalleryUrl(""); setGalleryAlt(""); } } }} />
+            <input className={inputClass + " w-24"} placeholder="英文替代文字" value={galleryAlt} onChange={(e) => setGalleryAlt(e.target.value)} />
           </div>
         </div>
 
@@ -385,16 +400,16 @@ export default function ProductForm({ initial, isNew }: Props) {
             <MediaPicker
               value={form.performanceCharts?.rotation_curve || ""}
               onChange={(url) => set("performanceCharts", { ...form.performanceCharts, rotation_curve: url })}
-              label="Rotation Curve"
-              placeholder="Image URL"
+              label="转动曲线 / Rotation Curve"
+              placeholder="图片网址"
             />
           </div>
           <div>
             <MediaPicker
               value={form.performanceCharts?.temperature_curve || ""}
               onChange={(url) => set("performanceCharts", { ...form.performanceCharts, temperature_curve: url })}
-              label="Temperature Curve"
-              placeholder="Image URL"
+              label="温度曲线 / Temperature Curve"
+              placeholder="图片网址"
             />
           </div>
         </div>
@@ -403,14 +418,14 @@ export default function ProductForm({ initial, isNew }: Props) {
       {/* Torque & Durability — conditional per category */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
         <h2 className="text-base font-extrabold text-[#111827] mb-5">
-          {form.category === "latch" ? "Force & Durability" : "Torque & Durability"}
+          {form.category === "latch" ? "按压力与耐久性" : "扭矩与耐久性"}
         </h2>
 
         {/* Damper: torque fields */}
         {form.category !== "latch" && (
           <div className="grid sm:grid-cols-3 gap-4">
             <div>
-              <label className={labelClass}>Torque Min</label>
+              <label className={labelClass}>最小扭矩 / Min. Torque</label>
               <input
                 className={inputClass}
                 type="number"
@@ -419,7 +434,7 @@ export default function ProductForm({ initial, isNew }: Props) {
               />
             </div>
             <div>
-              <label className={labelClass}>Torque Max</label>
+              <label className={labelClass}>最大扭矩 / Max. Torque</label>
               <input
                 className={inputClass}
                 type="number"
@@ -428,7 +443,7 @@ export default function ProductForm({ initial, isNew }: Props) {
               />
             </div>
             <div>
-              <label className={labelClass}>Torque Unit</label>
+              <label className={labelClass}>扭矩单位 / Torque Unit</label>
               <select
                 className={inputClass}
                 value={form.torque?.unit || "gf.cm"}
@@ -447,8 +462,8 @@ export default function ProductForm({ initial, isNew }: Props) {
         {form.category !== "latch" && (
           <div className="grid sm:grid-cols-3 gap-4 mt-4">
             <div>
-              <label className={labelClass}>Hard Torque</label>
-              <input className={inputClass} value={form.hardTorque} onChange={(e) => set("hardTorque", e.target.value)} placeholder="e.g. 50" />
+              <label className={labelClass}>硬扭矩 / Hard Torque</label>
+              <input className={inputClass} value={form.hardTorque} onChange={(e) => set("hardTorque", e.target.value)} placeholder="例如 50" />
             </div>
           </div>
         )}
@@ -458,28 +473,28 @@ export default function ProductForm({ initial, isNew }: Props) {
           <>
             <div className="grid sm:grid-cols-3 gap-4">
               <div>
-                <label className={labelClass}>Hard Force (按压力)</label>
-                <input className={inputClass} value={form.hardForce} onChange={(e) => set("hardForce", e.target.value)} placeholder="e.g. 6.0" />
+                <label className={labelClass}>按压力 / Hard Force</label>
+                <input className={inputClass} value={form.hardForce} onChange={(e) => set("hardForce", e.target.value)} placeholder="例如 6.0" />
               </div>
               <div>
-                <label className={labelClass}>Force Range</label>
-                <input className={inputClass} value={form.forceRange} onChange={(e) => set("forceRange", e.target.value)} placeholder="e.g. 15 — 50 N" />
+                <label className={labelClass}>力值范围 / Force Range</label>
+                <input className={inputClass} value={form.forceRange} onChange={(e) => set("forceRange", e.target.value)} placeholder="例如 15–50 N" />
               </div>
               <div>
-                <label className={labelClass}>Sound Type</label>
+                <label className={labelClass}>声音类型 / Sound Type</label>
                 <select
                   className={inputClass}
                   value={form.soundType}
                   onChange={(e) => set("soundType", e.target.value)}
                 >
-                  <option value="">Not Set</option>
+                  <option value="">未设置</option>
                   <option value="audible">有声 (Audible)</option>
                   <option value="silent">无声 (Silent)</option>
                 </select>
               </div>
             </div>
             <div className="mt-3 px-3 py-2 rounded-lg bg-[#F3F4F6] text-[11px] text-[#6B7280] font-medium">
-              Latch products use press force instead of torque. Force range is displayed on the product page.
+              锁扣按按压力录入，公开商品页显示力值范围。
             </div>
           </>
         )}
@@ -487,7 +502,7 @@ export default function ProductForm({ initial, isNew }: Props) {
         {/* Durability — all categories */}
         <div className="grid sm:grid-cols-3 gap-4 mt-4">
           <div>
-            <label className={labelClass}>Durability Cycles</label>
+            <label className={labelClass}>耐久次数 / Durability Cycles</label>
             <input
               className={inputClass}
               type="number"
@@ -496,25 +511,25 @@ export default function ProductForm({ initial, isNew }: Props) {
             />
           </div>
           <div>
-            <label className={labelClass}>Temperature Range</label>
+            <label className={labelClass}>温度范围 / Temperature Range</label>
             <input className={inputClass} value={form.durability?.temperature || ""} onChange={(e) => set("durability", { ...form.durability || {}, temperature: e.target.value })} />
           </div>
           <div>
-            <label className={labelClass}>Test Method</label>
+            <label className={labelClass}>测试方法 / Test Method</label>
             <input className={inputClass} value={form.durability?.test_method || ""} onChange={(e) => set("durability", { ...form.durability || {}, test_method: e.target.value })} />
           </div>
         </div>
         <div className="grid sm:grid-cols-3 gap-4 mt-4">
           <div>
-            <label className={labelClass}>Buffer Direction</label>
-            <input className={inputClass} value={form.bufferDirection} onChange={(e) => set("bufferDirection", e.target.value)} placeholder="bidirectional" />
+            <label className={labelClass}>阻尼方向 / Damping Direction</label>
+            <input className={inputClass} value={form.bufferDirection} onChange={(e) => set("bufferDirection", e.target.value)} placeholder="例如 bidirectional" />
           </div>
         </div>
       </section>
 
       {/* Specifications */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Specifications</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">规格参数 / Specifications</h2>
         <div className="flex flex-wrap gap-2 mb-3">
           {Object.entries(form.specifications).map(([k, v]) => (
             <span key={k} className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#FFF1E3] rounded-lg text-xs font-medium text-[#ED7606]">
@@ -524,15 +539,15 @@ export default function ProductForm({ initial, isNew }: Props) {
           ))}
         </div>
         <div className="flex gap-2">
-          <input className={inputClass + " w-40"} placeholder="Key" value={specKey} onChange={(e) => setSpecKey(e.target.value)} />
-          <input className={inputClass + " flex-1"} placeholder="Value" value={specVal} onChange={(e) => setSpecVal(e.target.value)} />
-          <button type="button" onClick={() => { if (specKey && specVal) { set("specifications", { ...form.specifications, [specKey]: specVal }); setSpecKey(""); setSpecVal(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">Add</button>
+          <input className={inputClass + " w-40"} placeholder="参数名" value={specKey} onChange={(e) => setSpecKey(e.target.value)} />
+          <input className={inputClass + " flex-1"} placeholder="参数值" value={specVal} onChange={(e) => setSpecVal(e.target.value)} />
+          <button type="button" onClick={() => { if (specKey && specVal) { set("specifications", { ...form.specifications, [specKey]: specVal }); setSpecKey(""); setSpecVal(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">添加</button>
         </div>
       </section>
 
       {/* Tech Params */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Tech Params</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">技术参数 / Technical Parameters</h2>
         <div className="flex flex-wrap gap-2 mb-3">
           {Object.entries(form.techParams).map(([k, v]) => (
             <span key={k} className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#F3F4F6] rounded-lg text-xs font-medium text-[#374151]">
@@ -542,15 +557,15 @@ export default function ProductForm({ initial, isNew }: Props) {
           ))}
         </div>
         <div className="flex gap-2">
-          <input className={inputClass + " w-40"} placeholder="Key (e.g. outer_diameter)" value={techKey} onChange={(e) => setTechKey(e.target.value)} />
-          <input className={inputClass + " flex-1"} placeholder="Value" value={techVal} onChange={(e) => setTechVal(e.target.value)} />
-          <button type="button" onClick={() => { if (techKey && techVal) { set("techParams", { ...form.techParams, [techKey]: isNaN(Number(techVal)) ? techVal : Number(techVal) }); setTechKey(""); setTechVal(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">Add</button>
+          <input className={inputClass + " w-40"} placeholder="参数名，例如 outer_diameter" value={techKey} onChange={(e) => setTechKey(e.target.value)} />
+          <input className={inputClass + " flex-1"} placeholder="参数值" value={techVal} onChange={(e) => setTechVal(e.target.value)} />
+          <button type="button" onClick={() => { if (techKey && techVal) { set("techParams", { ...form.techParams, [techKey]: isNaN(Number(techVal)) ? techVal : Number(techVal) }); setTechKey(""); setTechVal(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">添加</button>
         </div>
       </section>
 
       {/* Materials */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Materials</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">材料 / Materials</h2>
         <div className="flex flex-wrap gap-2 mb-3">
           {form.materials.map((m, i) => (
             <span key={i} className="inline-flex items-center gap-1 px-2.5 py-1.5 bg-[#F0FDF4] rounded-lg text-xs font-medium text-[#16A34A]">
@@ -560,19 +575,19 @@ export default function ProductForm({ initial, isNew }: Props) {
           ))}
         </div>
         <div className="flex gap-2">
-          <input className={inputClass + " w-40"} placeholder="Part" value={matPart} onChange={(e) => setMatPart(e.target.value)} />
-          <input className={inputClass + " flex-1"} placeholder="Material" value={matMaterial} onChange={(e) => setMatMaterial(e.target.value)} />
-          <button type="button" onClick={() => { if (matPart) { set("materials", [...form.materials, { part: matPart, material: matMaterial }]); setMatPart(""); setMatMaterial(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">Add</button>
+          <input className={inputClass + " w-40"} placeholder="零件名称" value={matPart} onChange={(e) => setMatPart(e.target.value)} />
+          <input className={inputClass + " flex-1"} placeholder="材料名称" value={matMaterial} onChange={(e) => setMatMaterial(e.target.value)} />
+          <button type="button" onClick={() => { if (matPart) { set("materials", [...form.materials, { part: matPart, material: matMaterial }]); setMatPart(""); setMatMaterial(""); } }} className="px-4 h-10 rounded-lg bg-[#111827] text-white text-xs font-bold">添加</button>
         </div>
       </section>
 
       {/* Characteristics, Applications, Tags */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Characteristics & Applications</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">特性与用途</h2>
         <div className="grid sm:grid-cols-3 gap-5">
           {/* Characteristics */}
           <div>
-            <label className={labelClass}>Characteristics</label>
+            <label className={labelClass}>产品特性 / Characteristics</label>
             <div className="flex flex-wrap gap-1.5 mb-2">
               {form.characteristics.map((c, i) => (
                 <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-[#FFF1E3] rounded text-xs font-medium text-[#ED7606]">
@@ -582,12 +597,12 @@ export default function ProductForm({ initial, isNew }: Props) {
               ))}
             </div>
             <div className="flex gap-1.5">
-              <input className={inputClass} value={charInput} onChange={(e) => setCharInput(e.target.value)} placeholder="e.g. SOC Free" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (charInput) { set("characteristics", [...form.characteristics, charInput]); setCharInput(""); } } }} />
+              <input className={inputClass} value={charInput} onChange={(e) => setCharInput(e.target.value)} placeholder="例如 SOC Free" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (charInput) { set("characteristics", [...form.characteristics, charInput]); setCharInput(""); } } }} />
             </div>
           </div>
           {/* Applications */}
           <div>
-            <label className={labelClass}>Applications</label>
+            <label className={labelClass}>应用场景 / Applications</label>
             <div className="flex flex-wrap gap-1.5 mb-2">
               {form.applications.map((a, i) => (
                 <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-[#F0F2F5] rounded text-xs">
@@ -597,12 +612,12 @@ export default function ProductForm({ initial, isNew }: Props) {
               ))}
             </div>
             <div className="flex gap-1.5">
-              <input className={inputClass} value={appInput} onChange={(e) => setAppInput(e.target.value)} placeholder="e.g. Cup holders" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (appInput) { set("applications", [...form.applications, appInput]); setAppInput(""); } } }} />
+              <input className={inputClass} value={appInput} onChange={(e) => setAppInput(e.target.value)} placeholder="例如 Cup holders" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (appInput) { set("applications", [...form.applications, appInput]); setAppInput(""); } } }} />
             </div>
           </div>
           {/* SEO tags */}
           <div>
-            <label className={labelClass}>SEO Tags</label>
+            <label className={labelClass}>搜索标签 / SEO Tags</label>
             <div className="flex flex-wrap gap-1.5 mb-2">
               {form.tags.map((t, i) => (
                 <span key={i} className="inline-flex items-center gap-1 px-2 py-1 bg-[#F3F4F6] rounded text-xs">
@@ -612,7 +627,7 @@ export default function ProductForm({ initial, isNew }: Props) {
               ))}
             </div>
             <div className="flex gap-1.5">
-              <input className={inputClass} value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="e.g. rotary damper" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (tagInput) { set("tags", [...form.tags, tagInput]); setTagInput(""); } } }} />
+              <input className={inputClass} value={tagInput} onChange={(e) => setTagInput(e.target.value)} placeholder="例如 rotary damper" onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); if (tagInput) { set("tags", [...form.tags, tagInput]); setTagInput(""); } } }} />
             </div>
           </div>
         </div>
@@ -620,9 +635,9 @@ export default function ProductForm({ initial, isNew }: Props) {
 
       {/* Application Scenarios */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">Application Scenarios</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">应用场景图</h2>
         <p className="text-xs text-[#6B7280] mb-3">
-          Select preset scenarios for this product. Leave empty to use defaults.
+          请选择此产品的预设应用场景。留空时使用默认场景。
         </p>
 
         {/* Preset grid */}
@@ -657,7 +672,7 @@ export default function ProductForm({ initial, isNew }: Props) {
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={preset.image}
-                    alt={preset.label}
+                    alt={presetLabels[preset.label] ?? preset.label}
                     className="w-full h-full object-cover"
                   />
                   {isSelected && (
@@ -667,7 +682,7 @@ export default function ProductForm({ initial, isNew }: Props) {
                   )}
                 </div>
                 <div className="px-2 py-1.5 text-[11px] font-bold text-[#374151] truncate">
-                  {preset.label}
+                  {presetLabels[preset.label] ?? preset.label}
                 </div>
               </button>
             );
@@ -677,7 +692,7 @@ export default function ProductForm({ initial, isNew }: Props) {
         {/* Custom scenarios */}
         {form.applicationScenarios.filter((s) => !PRESET_SCENARIOS.some((p) => p.image === s.image || p.label === s.label)).length > 0 && (
           <div className="mb-3">
-            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">Custom Scenarios</span>
+            <span className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider">自定义场景</span>
             <div className="space-y-2 mt-1.5">
               {form.applicationScenarios
                 .filter((s) => !PRESET_SCENARIOS.some((p) => p.image === s.image || p.label === s.label))
@@ -693,7 +708,7 @@ export default function ProductForm({ initial, isNew }: Props) {
                           next[origIdx] = { ...next[origIdx], image: e.target.value };
                           set("applicationScenarios", next);
                         }}
-                        placeholder="Image URL or path"
+                        placeholder="图片网址或路径"
                       />
                       <input
                         className={inputClass + " w-32"}
@@ -703,7 +718,7 @@ export default function ProductForm({ initial, isNew }: Props) {
                           next[origIdx] = { ...next[origIdx], label: e.target.value };
                           set("applicationScenarios", next);
                         }}
-                        placeholder="Label"
+                        placeholder="英文场景名称"
                       />
                       <button
                         type="button"
@@ -724,21 +739,21 @@ export default function ProductForm({ initial, isNew }: Props) {
           onClick={() => set("applicationScenarios", [...form.applicationScenarios, { image: "", label: "" }])}
           className="px-4 h-10 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151] hover:bg-[#F8F9FA]"
         >
-          + Add Custom Scenario
+          + 添加自定义场景
         </button>
       </section>
 
       {/* SEO */}
       <section className="rounded-xl border border-[#E5E7EB] bg-white p-6">
-        <h2 className="text-base font-extrabold text-[#111827] mb-5">SEO</h2>
+        <h2 className="text-base font-extrabold text-[#111827] mb-5">搜索优化（SEO）</h2>
         <div className="space-y-4">
           <div>
-            <label className={labelClass}>SEO Title</label>
-            <input className={inputClass} value={form.seoTitle} onChange={(e) => set("seoTitle", e.target.value)} />
+            <label htmlFor="product-seoTitle" className={labelClass}>搜索标题 / SEO Title</label>
+            <input id="product-seoTitle" className={inputClass} value={form.seoTitle} onChange={(e) => set("seoTitle", e.target.value)} />
           </div>
           <div>
-            <label className={labelClass}>SEO Description</label>
-            <textarea className={inputClass + " h-16 py-2"} value={form.seoDescription} onChange={(e) => set("seoDescription", e.target.value)} />
+            <label htmlFor="product-seoDescription" className={labelClass}>搜索描述 / SEO Description</label>
+            <textarea id="product-seoDescription" className={inputClass + " h-16 py-2"} value={form.seoDescription} onChange={(e) => set("seoDescription", e.target.value)} />
           </div>
         </div>
       </section>
@@ -749,24 +764,24 @@ export default function ProductForm({ initial, isNew }: Props) {
           {!isNew && (
             confirmDelete ? (
               <div className="flex items-center gap-2">
-                <span className="text-xs text-red-600 font-medium">Are you sure?</span>
+                <span className="text-xs text-red-600 font-medium">确认删除此产品？</span>
                 <button type="button" onClick={handleDelete} disabled={saving} className="px-3 h-9 rounded-lg bg-red-600 text-white text-xs font-bold hover:bg-red-700 disabled:opacity-50">
-                  {saving ? "Deleting..." : "Yes, delete"}
+                  {saving ? "正在删除…" : "确认删除"}
                 </button>
                 <button type="button" onClick={() => setConfirmDelete(false)} className="px-3 h-9 rounded-lg border border-[#E5E7EB] text-xs font-bold text-[#374151]">
-                  Cancel
+                  取消
                 </button>
               </div>
             ) : (
               <button type="button" onClick={handleDelete} className="px-4 h-10 rounded-lg border border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-colors">
-                Delete Product
+                删除产品
               </button>
             )
           )}
         </div>
         <div className="flex gap-3">
           <button type="button" onClick={() => router.back()} className="px-6 h-11 rounded-lg border border-[#E5E7EB] text-sm font-bold text-[#374151]">
-            Cancel
+            取消
           </button>
           <button
             type="button"
@@ -774,10 +789,10 @@ export default function ProductForm({ initial, isNew }: Props) {
             disabled={saving}
             className="px-6 h-11 rounded-lg border border-[#ED7606] text-[#ED7606] text-sm font-bold hover:bg-[#FFF1E3] disabled:opacity-50 transition-colors"
           >
-            {saving ? "Saving..." : "Save & Continue"}
+            {saving ? "正在保存…" : "保存并继续编辑"}
           </button>
           <button type="submit" disabled={saving} className="px-6 h-11 rounded-lg bg-[#ED7606] text-white text-sm font-bold hover:bg-[#D46900] disabled:opacity-50 transition-colors">
-            {saving ? "Saving..." : isNew ? "Create Product" : "Save Changes"}
+            {saving ? "正在保存…" : isNew ? "创建产品" : "保存修改"}
           </button>
         </div>
       </div>

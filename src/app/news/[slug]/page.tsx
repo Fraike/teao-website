@@ -12,8 +12,27 @@ import { getReadingTime, formatReadingTime } from "@/lib/reading-time";
 import { getProductUrl } from "@/lib/products";
 import { ShareButtons } from "@/components/products/ShareButtons";
 import { env } from "@/lib/env";
+import { damperGuides, damperSelection, getDamperInquiryUrl, getGuideBody } from "@/lib/growth-content";
 
 export const dynamic = "force-dynamic";
+
+const articleBodyClass = `news-article-body mt-10 rounded-[24px] border border-[#E5E7EB] bg-white px-5 py-7 shadow-[0_22px_64px_rgba(17,24,39,0.06)] prose prose-lg max-w-none text-[#333333] leading-relaxed sm:px-8 sm:py-9 lg:px-10
+  prose-headings:text-[#111827] prose-headings:font-extrabold prose-headings:tracking-[-0.02em]
+  prose-h2:text-[28px] prose-h2:mt-12 prose-h2:mb-5
+  prose-h3:text-[22px] prose-h3:mt-8 prose-h3:mb-4
+  prose-p:leading-[1.78] prose-p:my-4
+  prose-a:text-[#ED7606] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
+  prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:mx-auto
+  prose-blockquote:border-l-4 prose-blockquote:border-[#ED7606] prose-blockquote:bg-[#FFF7ED] prose-blockquote:py-4 prose-blockquote:px-5 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-[#374151]
+  prose-code:bg-[#F3F4F6] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-[#ED7606] prose-code:text-sm prose-code:font-normal prose-code:before:content-none prose-code:after:content-none
+  prose-pre:bg-[#111827] prose-pre:text-[#E5E7EB] prose-pre:rounded-xl prose-pre:shadow-lg
+  prose-table:rounded-xl prose-table:overflow-hidden prose-table:shadow-sm
+  prose-th:bg-[#F8F9FA] prose-th:px-4 prose-th:py-2.5 prose-th:text-xs prose-th:font-bold prose-th:text-[#374151] prose-th:uppercase prose-th:tracking-[0.06em]
+  prose-td:px-4 prose-td:py-2.5 prose-td:text-sm prose-td:text-[#374151] prose-td:border-b prose-td:border-[#F3F4F6]
+  prose-li:text-[#374151] prose-li:marker:text-[#ED7606]
+  prose-strong:text-[#111827] prose-strong:font-bold
+  prose-hr:border-[#E5E7EB] prose-hr:my-10
+`;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -41,7 +60,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) return { title: "Article Not Found" };
 
-  const seoTitle = article.seoTitle || article.title;
+  const guide = damperGuides[article.slug];
+  const seoTitle = guide?.title ?? (article.seoTitle || article.title);
+  const summary = guide?.summary ?? article.summary;
   const title = `${seoTitle} | TEAO News`;
   const keywords = article.keywords?.split(",").map((k: string) => k.trim()) || [];
   const canonicalUrl = `${env.SITE_URL}/news/${article.slug}.html`;
@@ -49,14 +70,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title,
-    description: article.summary?.slice(0, 160),
+    description: summary?.slice(0, 160),
     keywords,
     alternates: {
       canonical: canonicalUrl,
     },
     openGraph: {
       title: seoTitle || article.title,
-      description: article.summary,
+      description: summary,
       type: "article",
       publishedTime: article.publishedAt,
       images: heroImage ? [{ url: heroImage, width: 1200, height: 630 }] : [],
@@ -64,7 +85,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: seoTitle || article.title,
-      description: article.summary,
+      description: summary,
       images: heroImage ? [heroImage] : [],
     },
     other: {
@@ -78,6 +99,23 @@ export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
   const article = await db.select().from(news).where(eq(news.slug, slug)).get();
   if (!article) notFound();
+
+  const guide = damperGuides[article.slug];
+  const selection = guide ? damperSelection[guide.category] : undefined;
+  const guideBody = guide ? getGuideBody(article.content, guide) : undefined;
+  const title = guide?.title ?? article.title;
+  const summary = guide?.summary ?? article.summary;
+  const selectionModels = guide && selection
+    ? await db.select({ slug: products.slug, model: products.model, category: products.category })
+      .from(products)
+      .where(and(
+        eq(products.isActive, 1),
+        eq(products.category, guide.category),
+        inArray(products.slug, [...selection.models]),
+      ))
+      .orderBy(products.sortOrder)
+      .all()
+    : [];
 
   // Parse related products
   let relatedSlugs: string[] = [];
@@ -101,13 +139,13 @@ export default async function NewsDetailPage({ params }: Props) {
   const heroImage = getArticleHeroImage(article.image);
 
   // Generate Key Takeaways from content (first 3 H2 headings or sentences)
-  const takeaways = extractTakeaways(article.content, article.summary);
+  const takeaways = guideBody?.hasTakeaways ? [] : extractTakeaways(article.content, summary);
 
   const articleJsonLd = newsArticleSchema({
     slug: article.slug,
-    title: article.title,
-    summary: article.summary,
-    content: article.content,
+    title,
+    summary,
+    content: guideBody ? `${guideBody.beforeSelection}\n${guideBody.afterSelection}` : article.content,
     image: heroImage || article.image,
     category: article.category as "company" | "quality" | "engineering",
     isPublished: Boolean(article.isPublished),
@@ -117,11 +155,11 @@ export default async function NewsDetailPage({ params }: Props) {
   const breadcrumbJsonLd = breadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "News", url: "/news" },
-    { name: article.title },
+    { name: title },
   ]);
   const speakableJsonLd = speakableSchema({
-    title: article.title,
-    summary: article.summary,
+    title,
+    summary,
   });
 
   // FAQ schema for FAQ type articles
@@ -150,7 +188,7 @@ export default async function NewsDetailPage({ params }: Props) {
             </Link>
             <span className="shrink-0 text-[#CBD5E1]">/</span>
             <span className="min-w-0 truncate rounded-full bg-[#F8F9FA] px-2 py-1 text-[#111827]">
-              {article.title}
+              {title}
             </span>
           </nav>
 
@@ -176,12 +214,12 @@ export default async function NewsDetailPage({ params }: Props) {
 
             {/* Title */}
             <h1 className="article-title max-w-[780px] text-[clamp(32px,4.4vw,56px)] font-black leading-[0.96] tracking-[-0.045em] text-[#111827] text-balance">
-              {article.title}
+              {title}
             </h1>
 
             {/* Summary */}
             <p className="article-summary mt-5 max-w-[720px] text-base leading-relaxed text-[#6B7280] sm:text-lg">
-              {article.summary}
+              {summary}
             </p>
           </header>
 
@@ -194,7 +232,7 @@ export default async function NewsDetailPage({ params }: Props) {
               <div className="absolute inset-x-6 bottom-5 h-14 rounded-full bg-[#111827]/10 blur-2xl" />
               <SafeImage
                 src={heroImage}
-                alt={article.title}
+                alt={title}
                 fill
                 className="scale-[1.42] object-contain p-0 transition-transform duration-500 sm:scale-[1.55]"
                 priority
@@ -234,31 +272,38 @@ export default async function NewsDetailPage({ params }: Props) {
             )}
 
           {/* Content Body */}
-          <div
-            className="news-article-body mt-10 rounded-[24px] border border-[#E5E7EB] bg-white px-5 py-7 shadow-[0_22px_64px_rgba(17,24,39,0.06)] prose prose-lg max-w-none text-[#333333] leading-relaxed sm:px-8 sm:py-9 lg:px-10
-              prose-headings:text-[#111827] prose-headings:font-extrabold prose-headings:tracking-[-0.02em]
-              prose-h2:text-[28px] prose-h2:mt-12 prose-h2:mb-5
-              prose-h3:text-[22px] prose-h3:mt-8 prose-h3:mb-4
-              prose-p:leading-[1.78] prose-p:my-4
-              prose-a:text-[#ED7606] prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-              prose-img:rounded-xl prose-img:shadow-lg prose-img:my-8 prose-img:mx-auto
-              prose-blockquote:border-l-4 prose-blockquote:border-[#ED7606] prose-blockquote:bg-[#FFF7ED] prose-blockquote:py-4 prose-blockquote:px-5 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-[#374151]
-              prose-code:bg-[#F3F4F6] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:text-[#ED7606] prose-code:text-sm prose-code:font-normal prose-code:before:content-none prose-code:after:content-none
-              prose-pre:bg-[#111827] prose-pre:text-[#E5E7EB] prose-pre:rounded-xl prose-pre:shadow-lg
-              prose-table:rounded-xl prose-table:overflow-hidden prose-table:shadow-sm
-              prose-th:bg-[#F8F9FA] prose-th:px-4 prose-th:py-2.5 prose-th:text-xs prose-th:font-bold prose-th:text-[#374151] prose-th:uppercase prose-th:tracking-[0.06em]
-              prose-td:px-4 prose-td:py-2.5 prose-td:text-sm prose-td:text-[#374151] prose-td:border-b prose-td:border-[#F3F4F6]
-              prose-li:text-[#374151] prose-li:marker:text-[#ED7606]
-              prose-strong:text-[#111827] prose-strong:font-bold
-              prose-hr:border-[#E5E7EB] prose-hr:my-10
-            "
-            dangerouslySetInnerHTML={{ __html: article.content }}
-          />
+          <div className={articleBodyClass} dangerouslySetInnerHTML={{ __html: guideBody?.beforeSelection ?? article.content }} />
+          {guide && selection && (
+            <section aria-labelledby="related-damper-selection" className="mt-6 rounded-2xl border border-[#FED7AA] bg-[#FFF7ED] p-5 sm:p-6">
+              <h2 id="related-damper-selection" className="text-xl font-extrabold text-[#111827]">Compare {selection.name.toLowerCase()}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-[#4B5563]">{selection.selection}</p>
+              {selectionModels.length > 0 && (
+                <ul className="mt-4 flex flex-wrap gap-2" aria-label="Example TEAO models">
+                  {selectionModels.map((product) => (
+                    <li key={product.slug}>
+                      <Link href={getProductUrl(product)} className="inline-flex rounded-md border border-[#E5E7EB] bg-white px-3 py-2 text-sm font-bold text-[#111827] hover:underline" data-analytics-event="product_click" data-analytics-target-type="product" data-analytics-target-id={product.slug} data-analytics-source="article_selection">
+                        {product.model}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <div className="mt-4 flex flex-wrap items-center gap-4">
+                <Link href={getDamperInquiryUrl(guide.category, selection.application)} className="btn btn-primary" data-analytics-event="cta_click" data-analytics-target-type="category" data-analytics-target-id={guide.category} data-analytics-source="article_selection">
+                  Ask about your application
+                </Link>
+                <Link href={`/${guide.category}`} className="text-sm font-bold text-[#9A4D06] hover:underline">Browse all models</Link>
+              </div>
+            </section>
+          )}
+          {guideBody?.afterSelection && (
+            <div className={articleBodyClass} dangerouslySetInnerHTML={{ __html: guideBody.afterSelection }} />
+          )}
 
           {/* Share Buttons */}
           <div className="mt-12 pt-8 border-t border-[#E5E7EB]">
             <div className="flex items-center justify-between gap-4 flex-wrap">
-              <ShareButtons title={article.seoTitle || article.title} summary={article.summary} />
+              <ShareButtons title={guide?.title ?? (article.seoTitle || article.title)} summary={summary} />
               <Link
                 href="/news"
                 className="text-sm font-medium text-[#6B7280] hover:text-[#ED7606] transition-colors"

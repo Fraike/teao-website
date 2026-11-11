@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 import { usePathname } from "next/navigation";
+import { captureInquiryVisit } from "@/lib/inquiry-attribution";
 
 const SESSION_KEY = "teao_sid";
 const EVENTS = ["product_click", "scene_click", "cta_click", "category_click", "search", "search_open", "search_result_click", "form_submit"] as const;
@@ -44,6 +45,7 @@ export function AnalyticsProvider({ children }: { children: React.ReactNode }) {
   // Page view on route change
   useEffect(() => {
     if (!shouldTrackPath(pathname)) return;
+    captureInquiryVisit();
     if (trackedRef.current && pathname === window.__teao_last_path) return;
     window.__teao_last_path = pathname;
     trackedRef.current = true;
